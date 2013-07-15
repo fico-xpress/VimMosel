@@ -1,0 +1,17 @@
+*mosel.txt*
+
+Author: Sebastien Lannez <sebastien.lannez@gmail.com>
+
+This plugin is licensed under the terms of the BSD license. Please see
+mosel.vim for the license in its entirety.
+
+==============================================================================
+Mosel                                       *mosel*
+
+1. Introduction                             |mosel-intro|
+
+==============================================================================
+1. Introduction                             *mosel-intro*
+
+Mosel is a language for mathematical programming.
+
