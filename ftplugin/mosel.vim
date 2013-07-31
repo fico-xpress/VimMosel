@@ -161,3 +161,7 @@ endif
 let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
+map <F5> :!mosel -s -c 'exec %' 2>&1 \| tee
+map <F6> :split /tmp/results
+
+

@@ -1,12 +1,9 @@
 " Vim syntax file
-" Language:	Mosel
-" Current  Maintainer:  Yves Colombani <Yves.Colombani@dashoptimization.com>
+" Language: Mosel
+" Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
 " Version: 1.0
-" Last Change:	December 2006
-" Contributors: From mosel.vim
-"
-" 2013-06-25 - Added fold capability
-"
+" Last Change: July 2013
+" Contributors: Yves Colombani <YvesColombani@fico.com>
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -16,49 +13,27 @@ elseif exists("b:current_syntax")
   finish
 endif
 
+syntax case ignore
 
-syn sync lines=250
 " List of keywords and operators
 syn keyword moselOperator	and div in mod not or sum prod min max
 syn keyword moselOperator	inter union
 syn keyword moselStatement	is_binary is_continuous is_free is_integer
 syn keyword moselStatement	is_partint is_semcont is_semint is_sos1 is_sos2
 syn keyword moselStatement	uses options include
-syn keyword moselStatement	forall procedure function forward 
-syn keyword moselStatement	to from public
+syn keyword moselStatement	forall while break next
+syn keyword moselStatement	forward
+syn keyword moselStatement	to from
 syn keyword moselStatement	as case
+syn keyword moselStatement	else elif then
 syn keyword moselStatement	array boolean integer real set string
 syn keyword moselStatement	linctr mpvar of dynamic range
-syn keyword moselStatement	list record imports package requirements version
-
-" Keywords from libraries
-syn keyword moselStatement	date time
-
-" Blocks
-syn keyword moselStatement	repeat while until break next 
-syn keyword moselStatement	else elif then
-syn match moselStatement	"end-"
-
+syn keyword moselStatement	list record imports requirements 
+syn keyword moselStatement	package contained
+syn keyword moselStatement	version
 syn keyword moselConstant	true false
 
-syn keyword moselOperator	AND DIV IN MOD NOT OR SUM PROD MIN MAX
-syn keyword moselOperator	INTER UNION
-syn keyword moselOperator	IS_BINARY IS_CONTINUOUS IS_FREE IS_INTEGER
-syn keyword moselOperator	IS_PARTINT IS_SEMCONT IS_SEMINT IS_SOS1 IS_SOS2
-syn keyword moselStatement	USES OPTIONS INCLUDE
-syn keyword moselStatement	REPEAT WHILE UNTIL BREAK NEXT
-syn keyword moselStatement	FORALL PROCEDURE FUNCTION FORWARD DECLARATIONS
-syn keyword moselStatement	MODEL DO INITIALIZATIONS TO FROM
-syn keyword moselStatement	INITIALISATIONS PUBLIC
-syn keyword moselStatement	PARAMETERS AS CASE
-syn keyword moselStatement	IF ELSE ELIF THEN
-syn keyword moselStatement	ARRAY BOOLEAN INTEGER REAL SET STRING
-syn keyword moselStatement	LINCTR MPVAR OF DYNAMIC RANGE
-syn keyword moselStatement	LIST RECORD IMPORTS PACKAGE REQUIREMENTS VERSION
-syn match moselStatement	"END-"
-syn keyword moselConstant	TRUE FALSE
-
-syn keyword moselTodo contained	TODO YCO BUG FIXME XXX
+syn keyword moselTodo contained	TODO YCO BUG
 
 " In case someone wants to see the predefined functions/procedures
 if exists("mosel_functions")
@@ -72,7 +47,16 @@ if exists("mosel_functions")
  syn keyword moselFunction	getcoeff setcoeff getvars exit fflush
  syn keyword moselFunction	makesos1 makesos2 iseof exportprob
  syn keyword moselFunction	fskipline setrandseed
- syn keyword moselFunction	random round
+ syn keyword moselFunction	ceil round
+ syn keyword moselFunction	load compile run
+
+ " mmsystem
+ syn keyword moselFunction	gettime
+ syn keyword moselFunction	fdelete 
+
+ " mmjobs
+ syn keyword moselFunction	getfromid modid disconnect 
+
 endif
 
 " (De)Select IVE style
@@ -101,8 +85,10 @@ endif
 
   "right strings
   syn match   moselStringEscape	contained '\\.'
-  syn region  moselString matchgroup=moselString start=+'+ end=+'+ oneline
-  syn region  moselString matchgroup=moselString start=+"+ end=+"+ oneline contains=moselStringEscape
+  syn region  moselString matchgroup=moselString start=+'+ end=+'+ 
+	\ oneline
+  syn region  moselString matchgroup=moselString start=+"+ end=+"+ 
+	\ oneline contains=moselStringEscape
   " To see the start and end of strings:
 " syn region  moselString matchgroup=moselStringError start=+'+ end=+'+ oneline
 
@@ -119,66 +105,68 @@ if exists("mosel_no_tabs")
   syn match moselShowTab "\t"
 endif
 
-" Format of comments
-syn region moselComment	
-	\ start="(!"  
-	\ end="!)" 
-	\ contains=moselTodo 
-	\ fold
 
-syn region moselComment	
-	\ start="!"  
-	\ end="$" 
-	\ contains=moselTodo 
-	\ fold
+" List of blocks
+syn region moselModel matchgroup=moselStatement 
+      \ start=/^\s*model/ end=/^\s*end-model/ 
+      \ transparent fold 
+syn region moselPackage matchgroup=moselStatement 
+      \ start=/^\s*package/ end=/^\s*end-package/ 
+      \ transparent fold 
+syn cluster mRoot add=moselModel,moselPackage
 
-syn region moselComment	matchgroup=moselStatement 
-	\ start="end-model" 
-	\ end="\%$" 
-	\ contains=moselTodo
+syn region moselParam matchgroup=moselStatement
+      \ start=/^\s*parameters/ end=/^\s*end-parameters/ 
+      \ containedin=moselModel transparent fold
+syn region moselDeclr matchgroup=moselStatement
+      \ start=/^\s*declarations/ end=/end-declarations/ 
+      \ containedin=@mRoot transparent fold
+syn region moselPDecl matchgroup=moselStatement
+      \ start=/^\s*public\s*declarations/ end=/end-declarations/ 
+      \ containedin=@mRoot transparent fold
+syn region moselIniti matchgroup=moselStatement
+      \ start=/^\s*initiali[sz]ations/ end=/end-initiali[sz]ations/ 
+      \ containedin=@mRoot transparent fold
+syn cluster mDatadef add=moselParam,moselDeclr,modelPDecl
 
-syn region moselModel matchgroup=moselStatement
-	\ start="model"
-	\ end="end-model"
-	\ fold contains=ALL
+syn region moselProc matchgroup=moselStatement
+      \ start=/^\s*procedure\|^\s*public\s*procedure/ end=/^\s*end-procedure/ 
+      \ containedin=@mRoot transparent fold
+syn region moselFunc matchgroup=moselStatement
+      \ start=/^\s*function\|^\s*public\s*function/ end=/^\s*end-function/
+      \ containedin=@mRoot transparent fold
+syn cluster mMethod add=moselProc,moselFunc
 
-syn region moselPackage matchgroup=moselStatement
-	\ start="package"
-	\ end="end-package"
-	\ fold contains=ALL
-
+syn region moselBlock matchgroup=moselStatement
+      \ start=/[^-]do/ end=/end-do/ 
+      \ contained transparent fold
 syn region moselIf matchgroup=moselStatement
-	\ start="if"
-	\ end="end-if"
-	\ fold contains=ALL
+      \ start=/[^-]if/ end=/end-if/ 
+      \ contained transparent fold
 
-syn region moselParameters matchgroup=moselStatement
-	\ start="parameters"
-	\ end="end-parameters"
-	\ fold contains=ALL
+syn region moselBlock matchgroup=moselStatement
+      \ start=/\s*repeat/ end=/until/ 
+      \ contained transparent fold
 
-syn region moselDeclarations matchgroup=moselStatement
-	\ start="declarations"
-	\ end="end-declarations"
-	\ fold contains=ALL
+" Enable manual fodling
+syn region moselFold matchgroup=moselComment
+      \ start="{{{" end="}}}"                 
+      \ transparent fold
 
-syn region moselInitialisations matchgroup=moselStatement
-	\ start="initialisations"
-	\ end="end-initialisations"
-	\ fold contains=ALL
+" Format of comments
+syn region moselComment
+      \ start="(!" end="!)" contains=moselTodo fold
+syn region moselComment
+      \ start="!" end="$" contains=moselTodo
+" syn cluster mComment add=moselCommentA,moselCommentB
 
-syn region moselDo matchgroup=moselStatement
-	\ start="do"
-	\ end="end-do"
-	\ fold contains=ALL
-
-" Define the text to show
 function! MoselFoldText()
   let nl = v:foldend - v:foldstart + 1
-  let comment = substitute(getline(v:foldstart),"^.*: *","",1)
+  let comment = substitute(getline(v:foldstart),".*","\\0","g")
   let txt = '+ (' . nl . ' lines) ' . comment
   return txt
 endfunction
+
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
@@ -208,15 +196,17 @@ if !exists("mosel_only_comments")
   HiLink moselTodo		Todo
   HiLink moselError		Error
   HiLink moselShowTab		Error
+
+  HiLink mRoot  	        Statement
 endif
 
   delcommand HiLink
 endif
 
-let b:current_syntax = "mosel"
-
 syn sync fromstart
 set foldtext=MoselFoldText()
 set foldmethod=syntax
+
+let b:current_syntax = "mosel"
 
 " vim: ts=8 sw=2
