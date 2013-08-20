@@ -10,6 +10,11 @@ Content
 . Mosel integrates vim with the mosel command line tools for
   compiling and executing Mosel model.
 
+Install All
+===========
+Simply enter the following command:
+> make install
+
 Install Mosel-Vim
 =================
 > vim -c 'so mosel.vba' -c 'q'
@@ -17,9 +22,6 @@ Install Mosel-Vim
 Install Supertab
 ================
 > vim -c 'so supertab.vmb' -c 'q'
-
-or simply 
-> make install
 
 Remove plugins
 ==============
