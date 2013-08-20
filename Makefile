@@ -11,10 +11,10 @@ clean:
 	@rm -R mosel.vba
 	@rm -R *~
 
-install: supertab.vmb mosel.vmb
+install: supertab.vmb mosel.vba
 	vim $< -c 'so %' -c 'q'
 
 uninstall:
 	vim -c 'RmVimball supertab.vmb' -c 'q'
-	vim -c 'RmVimball mosel.vmb' -c 'q'
+	vim -c 'RmVimball mosel.vba' -c 'q'
 

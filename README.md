@@ -1,5 +1,5 @@
 Mosel vim plugin
-======
+================
 
 A compilation of usefull plugins for developing with
 Mosel.
@@ -10,13 +10,18 @@ Content
 . Mosel integrates vim with the mosel command line tools for
   compiling and executing Mosel model.
 
-Install
-=======
+Install Mosel-Vim
+=================
+> vim -c 'so mosel.vba' -c 'q'
 
-. Supertab plugin
-1) start vim
-2) Open supertab.vmb (:e supertab.vmb)
-3) Source the current buffer (:so %)
+Install Supertab
+================
+> vim -c 'so supertab.vmb' -c 'q'
 
-. Mosel plugin
+or simply 
+> make install
 
+Remove plugins
+==============
+> vim -v 'RmVimball supertab.vmb' -c 'q'
+> vim -v 'RmVimball mosel.vmb' -c 'q'
