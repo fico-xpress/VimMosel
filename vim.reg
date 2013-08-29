@@ -1,0 +1,4 @@
+REGEDIT4
+[HKEY_CURRENT_USER\Software\Classes\Folder\shell\Open Vim here\command]
+@="\"C:\\Program Files (x86)\\Vim\\vim73\\gvim.exe\" ."
+
