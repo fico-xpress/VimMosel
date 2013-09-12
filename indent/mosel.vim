@@ -64,9 +64,6 @@ function! GetMoselIndent()
 
   " Indent with syntax information
   if synid =~ 'moselComment'
-    " let n = substitute(line, '^\\(\\s*\\)[:alnum:]', '\\1', '', '')
-    " echomsg 'indent: [' . n . ']'
-    " return len(n)
     return ind
   elseif synid =~ 'moselCase'
     if line =~ '^.*:\s*\<do\>'
@@ -79,18 +76,12 @@ function! GetMoselIndent()
     endif
   endif
 
-  " Support for one line forall
-  "
-  " if pline =~ '^\s*\%(forall\|for\)'
-  "  if pline !~ '\%(do\s*\)$'
-  "    let ind -= s:indent_value('default')
-  "  endif
-  " endif
-  
   if line =~ '^\s*\(public\)*\s*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|initializations\|if\|then\|.*\sdo\|else\|elif\|case\|while\|until\|for\|forall\|repeat\|requirements\)\>'
     if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
       let ind += s:indent_value('default')
     endif
+  elseif line =~ '\<record\>'
+      let ind += s:indent_value('default')
   elseif line =~ '^\s*\<\k\+\>\s*()\s*{' || line =~ '^\s*{'
     if line !~ '}\s*\%(#.*\)\=$'
       let ind += s:indent_value('default')

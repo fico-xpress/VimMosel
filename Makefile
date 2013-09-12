@@ -20,9 +20,9 @@ clean:
 	@rm -R *~
 
 install: supertab.vmb mosel.vba snipmate.vba
-	vim supertab.vmb -c 'so \%' -c 'q!'
-	vim mosel.vba -c 'so \%' -c 'q!'
-	vim snipmate.vba -c 'so \%' -c 'q!'
+	vim supertab.vmb -c 'so supertab.vmb' -c 'q!'
+	vim mosel.vba -c 'so mosel.vba' -c 'q!'
+	vim snipmate.vba -c 'so snipmate.vba' -c 'q!'
 
 
 uninstall:
