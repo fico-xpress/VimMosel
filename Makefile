@@ -1,14 +1,22 @@
 all: dist
 
-dist:
-	@rm mosel.vmb 2> /dev/null || true
-	@vim -c 'r! git ls-files compiler doc indent ftplugin plugin syntax' \
+dist: mosel.vba snipmate.vba
+
+mosel.vba:
+	@rm -f mosel.vba
+	vim -c 'r! git ls-files compiler/mosel* doc/mosel* ftplugin/mosel* indent/mosel* plugin/mosel* syntax/mosel*' \
 		-c '1,MkVimball! mosel .' \
+		-c 'q!'
+
+snipmate.vba:
+	@rm -f snipmate.vba
+	vim -c 'r! git ls-files after/plugin/snip* autoload/snip* doc/snip* ftplugin/*snip* plugin/snip* snippets/* syntax/snip*' \
+		-c '1,MkVimball! snipmate .' \
 		-c 'q!'
 
 clean:
 	@rm -R build 2> /dev/null || true
-	@rm -R mosel.vba
+	@rm -R mosel.vba snipmate.vba
 	@rm -R *~
 
 install: supertab.vmb mosel.vba

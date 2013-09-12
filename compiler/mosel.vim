@@ -11,7 +11,11 @@ let current_compiler = "mosel"
 let s:mosel_cpo_save = &cpo
 set cpo&vim
 
-let $MOSEL_DSO=".;src/main/mosel;build/mosel/dso"
+" We want to compile against the reference packages
+" So first search is in the staging directories, then the source and at last
+" the current directory
+let $MOSEL_DSO="build/mosel/;build/staging/model_resources;src/main/mosel/;."
+
 if exists("*Mosel_setcomp")
  call Mosel_setcomp()
 else

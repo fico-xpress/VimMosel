@@ -1,4 +1,4 @@
-" Vim syntax file
+as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
 " Version: 1.0
@@ -15,7 +15,7 @@ endif
 
 syntax case ignore
 
-" List of keywords and operators
+" List of keyword and operators
 syn keyword moselOperator	and div in mod not or sum prod min max
 syn keyword moselOperator	inter union
 syn keyword moselStatement	is_binary is_continuous is_free is_integer
@@ -24,10 +24,12 @@ syn keyword moselStatement	uses options include
 syn keyword moselStatement	forall while break next
 syn keyword moselStatement	forward
 syn keyword moselStatement	to from
-syn keyword moselStatement	as case
+syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
 syn keyword moselStatement	array boolean integer real set string
-syn keyword moselStatement	linctr mpvar of dynamic range
+
+syn keyword moselStatement	linctr mpvar of dynamic range basis
+
 syn keyword moselStatement	list record imports requirements 
 syn keyword moselStatement	package contained
 syn keyword moselStatement	version
@@ -108,48 +110,72 @@ endif
 
 " List of blocks
 syn region moselModel matchgroup=moselStatement 
-      \ start=/^\s*model/ end=/^\s*end-model/ 
+      \ start=/^\s*model\>/ 
+      \ end=/^\s*end-model\>/ 
       \ transparent fold 
+
 syn region moselPackage matchgroup=moselStatement 
-      \ start=/^\s*package/ end=/^\s*end-package/ 
+      \ start=/^\s*package\>/ 
+      \ end=/^\s*end-package\>/ 
       \ transparent fold 
+
 syn cluster mRoot add=moselModel,moselPackage
 
 syn region moselParam matchgroup=moselStatement
-      \ start=/^\s*parameters/ end=/^\s*end-parameters/ 
+      \ start=/^\s*parameters\>/
+      \ end=/^\s*end-parameters\>/ 
       \ containedin=moselModel transparent fold
+
 syn region moselDeclr matchgroup=moselStatement
-      \ start=/^\s*declarations/ end=/end-declarations/ 
+      \ start=/^\s*declarations\>/ 
+      \ end=/^\s*end-declarations\>/ 
       \ containedin=@mRoot transparent fold
+
 syn region moselPDecl matchgroup=moselStatement
-      \ start=/^\s*public\s*declarations/ end=/end-declarations/ 
+      \ start=/^\s*public\s*declarations/ 
+      \ end=/^\s*end-declarations/ 
       \ containedin=@mRoot transparent fold
+
 syn region moselIniti matchgroup=moselStatement
-      \ start=/^\s*initiali[sz]ations/ end=/end-initiali[sz]ations/ 
+      \ start=/^\s*initiali[sz]ations\>/ 
+      \ end=/^\s*end-initiali[sz]ations\>/ 
       \ containedin=@mRoot transparent fold
-syn cluster mDatadef add=moselParam,moselDeclr,modelPDecl
+
+syn region moselRequire matchgroup=moselStatement
+      \ start=/^\s*requirements\>/ 
+      \ end=/^\s*end-requirements\>/ 
+      \ containedin=@mRoot transparent fold
+
+syn cluster mDatadef add=moselParam,moselDeclr,modelPDecl,moselRequire,moselIniti
 
 syn region moselProc matchgroup=moselStatement
-      \ start=/^\s*procedure\|^\s*public\s*procedure/ end=/^\s*end-procedure/ 
+      \ start=/^\s*procedure\s\|^\s*public\s*procedure\s/ end=/^\s*end-procedure/ 
       \ containedin=@mRoot transparent fold
+
 syn region moselFunc matchgroup=moselStatement
-      \ start=/^\s*function\|^\s*public\s*function/ end=/^\s*end-function/
+      \ start=/^\s*function\s \|^\s*public\s*function\s/ end=/^\s*end-function/
       \ containedin=@mRoot transparent fold
+
 syn cluster mMethod add=moselProc,moselFunc
 
 syn region moselBlock matchgroup=moselStatement
-      \ start=/[^-]do/ end=/end-do/ 
-      \ contained transparent fold
+      \ start=/\<do\>/ end=/end-do/ 
+      \ containedin=@mRoot transparent fold
+
 syn region moselIf matchgroup=moselStatement
-      \ start=/[^-]if/ end=/end-if/ 
-      \ contained transparent fold
+      \ start=/\<if\>/ end=/\<end-if\>/
+      \ containedin=@mRoot transparent fold
+
+syn region moselCase matchgroup=moselStatement
+      \ start=/\<case\>/ end=/\<end-case\>/
+      \ containedin=@mRoot transparent fold
 
 syn region moselBlock matchgroup=moselStatement
-      \ start=/\s*repeat/ end=/until/ 
+      \ start=/\<repeat\>/ end=/\<until\>/ 
       \ contained transparent fold
 
 " Enable manual fodling
-syn region moselFold matchgroup=moselComment
+syn region moselFold
       \ start="{{{" end="}}}"                 
       \ transparent fold
 
@@ -158,13 +184,25 @@ syn region moselComment
       \ start="(!" end="!)" contains=moselTodo fold
 syn region moselComment
       \ start="!" end="$" contains=moselTodo
-" syn cluster mComment add=moselCommentA,moselCommentB
+syn cluster mComment add=moselComment
+
+" syn match moselIfOneLine "if\s*(.*,.*,.*)\(^then\)"
 
 function! MoselFoldText()
   let nl = v:foldend - v:foldstart + 1
-  let comment = substitute(getline(v:foldstart),".*","\\0","g")
-  let txt = '+ (' . nl . ' lines) ' . comment
-  return txt
+  let line = getline(v:foldstart)
+  let comment = line
+
+  let synid = synIDattr(synID(v:foldstart, 10, 0), "name")
+  let synid2 = synIDattr(synID(v:foldstart+1, 10, 0), "name")
+  if synid =~ 'moselComment'
+    let comment = substitute(line,'(!\s*\(.*\)\s*\(!)\)*', '\1', 'g')
+  elseif synid2 =~ 'moselComment'
+    let line = getline(v:foldstart+1)
+    let comment = substitute(line,'(!\s*\(.*\)\s*\(!)\)*', '\1', 'g')
+  endif
+  endif
+  return '+ (' . nl . ' lines) ' . comment
 endfunction
 
 
@@ -190,7 +228,12 @@ if !exists("mosel_only_comments")
   HiLink moselException		Exception
   HiLink moselFunction		Function
   HiLink moselOperator		Operator
+  
   HiLink moselStatement		Statement
+  HiLink moselIf     		Statement
+  HiLink moselIfOneLine		Statement
+  HiLink moselCase		Statement
+
   HiLink moselSymbolOperator	Operator
   HiLink moselSymbolOpStat	Statement
   HiLink moselTodo		Todo

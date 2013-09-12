@@ -14,8 +14,10 @@ setlocal indentkeys+=0=fin,0=fil,0=fip,0=fir,0=fix
 setlocal indentkeys+=0=model,0=package,0=procedure,0=function
 setlocal indentkeys+=0=end-model,0=end-package,0=end-procedure,0=end-function
 setlocal indentkeys+=0=declarations,0=end-declarations
+setlocal indentkeys+=0=requirements,0=end-requirements
 setlocal indentkeys+=0=parameters,0=end-parameters
 setlocal indentkeys+=0=initialisations,0=end-initialisations
+setlocal indentkeys+=0=initializations,0=end-initializations
 setlocal indentkeys+=0=repeat,0=until
 setlocal indentkeys-=:,0#
 setlocal nosmartindent
@@ -56,8 +58,37 @@ function! GetMoselIndent()
 
   let ind = indent(lnum)
   let line = getline(lnum)
-  if line =~ '^\s*\(public\s*\)*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|if\|then\|do\|else\|elif\|case\|while\|until\|for\|forall\|repeat\)\>'
-	  if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
+  let pline = getline(pnum)
+
+  let synid = synIDattr(synID(lnum, 1, 0), "name")
+
+  " Indent with syntax information
+  if synid =~ 'moselComment'
+    " let n = substitute(line, '^\\(\\s*\\)[:alnum:]', '\\1', '', '')
+    " echomsg 'indent: [' . n . ']'
+    " return len(n)
+    return ind
+  elseif synid =~ 'moselCase'
+    if line =~ '^.*:\s*\<do\>'
+    elseif line =~ '^.*:\s*$'
+      let ind += s:indent_value('default')
+      return ind
+    else
+      let ind -= s:indent_value('default')
+      return ind
+    endif
+  endif
+
+  " Support for one line forall
+  "
+  " if pline =~ '^\s*\%(forall\|for\)'
+  "  if pline !~ '\%(do\s*\)$'
+  "    let ind -= s:indent_value('default')
+  "  endif
+  " endif
+  
+  if line =~ '^\s*\(public\)*\s*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|initializations\|if\|then\|.*\sdo\|else\|elif\|case\|while\|until\|for\|forall\|repeat\|requirements\)\>'
+    if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
       let ind += s:indent_value('default')
     endif
   elseif line =~ '^\s*\<\k\+\>\s*()\s*{' || line =~ '^\s*{'
@@ -75,6 +106,9 @@ function! GetMoselIndent()
   let pine = line
   let line = getline(v:lnum)
   if line =~ '^\s*\%(until\|then\|do\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
+    let ind -= s:indent_value('default')
+  endif
+  if line =~ '^\s*\<end-case\>'
     let ind -= s:indent_value('default')
   endif
 

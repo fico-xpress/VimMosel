@@ -27,3 +27,10 @@ Remove plugins
 ==============
 > vim -v 'RmVimball supertab.vmb' -c 'q'
 > vim -v 'RmVimball mosel.vmb' -c 'q'
+
+Vim usefull command
+===================
+]] -> next procedure/function
+[[ -> previous procedure/function
+gf -> open file (works with 'uses')
+
