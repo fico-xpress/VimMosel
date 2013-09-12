@@ -1,14 +1,21 @@
-*mosel.txt*
+*mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
 Author: Sebastien Lannez <sebastien.lannez@gmail.com>
+Last Change: September 12, 2013
 
 This plugin is licensed under the terms of the BSD license. Please see
 mosel.vim for the license in its entirety.
+
 
 ==============================================================================
 Mosel                                       *mosel*
 
 1. Introduction                             |mosel-intro|
+
+
+For Vim version 7.0 or later.
+This plugin only works if 'compatible' is not set.
+{Vi does not have any of these features.}
 
 ==============================================================================
 1. Introduction                             *mosel-intro*

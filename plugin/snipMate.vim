@@ -9,6 +9,7 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
+" GetLatestVimScripts: 2540 1 :AutoInstall: snipMate.vim
 
 if exists('loaded_snips') || &cp || version < 700
 	finish

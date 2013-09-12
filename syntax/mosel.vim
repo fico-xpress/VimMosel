@@ -142,9 +142,12 @@ syn region moselIniti matchgroup=moselStatement
       \ containedin=@mRoot transparent fold
 
 syn region moselRequire matchgroup=moselStatement
-      \ start=/^\s*requirements\>/ 
-      \ end=/^\s*end-requirements\>/ 
+      \ start=/^\s*requirements\>/ \ end=/^\s*end-requirements\>/ 
       \ containedin=@mRoot transparent fold
+
+syn region moselRecord matchgroup=moselStatement
+      \ start=/\<record\>/ end=/\<end-record\>/ 
+      \ containedin=moselParam transparent fold
 
 syn cluster mDatadef add=moselParam,moselDeclr,modelPDecl,moselRequire,moselIniti
 

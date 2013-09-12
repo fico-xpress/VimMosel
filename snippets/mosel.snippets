@@ -1,0 +1,25 @@
+# #!/bin/bash
+snippet <+header+>
+	(!******************************************************
+	   ${1:<+introduction+>}
+	   =====================================================
+
+	   File: `Filename()`.mos
+	   
+	   Description: ${3:<+description+>}
+	   
+	   (c) 2013 Fair Isaac Corporation
+	       author: ${4:<+author+>}, ${5:<+year+>}
+	*******************************************************!)
+	
+snippet if
+	if (${1:condition}) then
+		${2:#statements}
+	end-if
+snippet elif
+	elif (${1:condition}) then
+		${2:#statements}
+snippet for
+	forall(${1:index} in ${2:set} | ${3:condition}) do
+		${3:#statements}
+	end-do
