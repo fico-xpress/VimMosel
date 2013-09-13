@@ -80,7 +80,7 @@ function! GetMoselIndent()
     if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
       let ind += s:indent_value('default')
     endif
-  elseif line =~ '\<record\>'
+  elseif line =~ '\<\%(record\)\>' && line !~ '\<\%(end-record\)\>' 
       let ind += s:indent_value('default')
   elseif line =~ '^\s*\<\k\+\>\s*()\s*{' || line =~ '^\s*{'
     if line !~ '}\s*\%(#.*\)\=$'

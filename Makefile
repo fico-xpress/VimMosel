@@ -4,7 +4,7 @@ dist: mosel.vba snipmate.vba
 
 mosel.vba:
 	@rm -f mosel.vba
-	@vim -c 'r! git ls-files compiler/mosel* doc/mosel* ftplugin/mosel* indent/mosel* plugin/mosel* syntax/mosel*' \
+	@vim -c 'r! git ls-files compiler/mosel* doc/mosel* ftplugin/mosel* indent/mosel* plugin/mosel* syntax/mosel* autoload/*mosel*' \
 		-c '1,MkVimball! mosel .' \
 		-c 'q!'
 
@@ -20,9 +20,9 @@ clean:
 	@rm -R *~
 
 install: supertab.vmb mosel.vba snipmate.vba
-	vim supertab.vmb -c 'so supertab.vmb' -c 'q!'
-	vim mosel.vba -c 'so mosel.vba' -c 'q!'
-	vim snipmate.vba -c 'so snipmate.vba' -c 'q!'
+	@vim supertab.vmb -c 'so supertab.vmb' -c 'q!'
+	@vim mosel.vba -c 'so mosel.vba' -c 'q!'
+	@vim snipmate.vba -c 'so snipmate.vba' -c 'q!'
 
 
 uninstall:

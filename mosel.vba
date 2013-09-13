@@ -281,7 +281,7 @@ endif
 
 " vim: et:ts=2:sw=2:sts=2
 indent/mosel.vim	[[[1
-131
+122
 " Vim indent file
 " Language:         Mosel Script
 " Maintainer:       sebastien Lannez <sebastien.lannez@gmail.com>
@@ -348,9 +348,6 @@ function! GetMoselIndent()
 
   " Indent with syntax information
   if synid =~ 'moselComment'
-    " let n = substitute(line, '^\\(\\s*\\)[:alnum:]', '\\1', '', '')
-    " echomsg 'indent: [' . n . ']'
-    " return len(n)
     return ind
   elseif synid =~ 'moselCase'
     if line =~ '^.*:\s*\<do\>'
@@ -363,18 +360,12 @@ function! GetMoselIndent()
     endif
   endif
 
-  " Support for one line forall
-  "
-  " if pline =~ '^\s*\%(forall\|for\)'
-  "  if pline !~ '\%(do\s*\)$'
-  "    let ind -= s:indent_value('default')
-  "  endif
-  " endif
-  
   if line =~ '^\s*\(public\)*\s*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|initializations\|if\|then\|.*\sdo\|else\|elif\|case\|while\|until\|for\|forall\|repeat\|requirements\)\>'
     if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
       let ind += s:indent_value('default')
     endif
+  elseif line =~ '\<\%(record\)\>' && line !~ '\<\%(end-record\)\>' 
+      let ind += s:indent_value('default')
   elseif line =~ '^\s*\<\k\+\>\s*()\s*{' || line =~ '^\s*{'
     if line !~ '}\s*\%(#.*\)\=$'
       let ind += s:indent_value('default')
@@ -428,7 +419,7 @@ augroup END
 " Enable automatic file type detection
 filetype plugin on
 syntax/mosel.vim	[[[1
-258
+256
 as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
@@ -458,11 +449,9 @@ syn keyword moselStatement	to from
 syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
 syn keyword moselStatement	array boolean integer real set string
-
 syn keyword moselStatement	linctr mpvar of dynamic range basis
-
-syn keyword moselStatement	list record imports requirements 
-syn keyword moselStatement	package contained
+syn keyword moselStatement	list imports
+syn keyword moselStatement	contained
 syn keyword moselStatement	version
 syn keyword moselConstant	true false
 
@@ -573,7 +562,7 @@ syn region moselIniti matchgroup=moselStatement
       \ containedin=@mRoot transparent fold
 
 syn region moselRequire matchgroup=moselStatement
-      \ start=/^\s*requirements\>/ \ end=/^\s*end-requirements\>/ 
+      \ start=/^\s*requirements\>/ end=/^\s*end-requirements\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselRecord matchgroup=moselStatement

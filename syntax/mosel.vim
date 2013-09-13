@@ -16,7 +16,7 @@ endif
 syntax case ignore
 
 " List of keyword and operators
-syn keyword moselOperator	and div in mod not or sum prod min max
+syn keyword moselOperator	and div in mod not or xor sum prod min max
 syn keyword moselOperator	inter union
 syn keyword moselStatement	is_binary is_continuous is_free is_integer
 syn keyword moselStatement	is_partint is_semcont is_semint is_sos1 is_sos2
@@ -27,11 +27,12 @@ syn keyword moselStatement	to from
 syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
 syn keyword moselStatement	array boolean integer real set string
+syn keyword moselStatement	nlctr linctr mpvar of dynamic range basis
+syn keyword moselStatement      cpctr cpvar
+syn keyword moselStatement      logctr indicator implies
 
-syn keyword moselStatement	linctr mpvar of dynamic range basis
-
-syn keyword moselStatement	list record imports requirements 
-syn keyword moselStatement	package contained
+syn keyword moselStatement	list imports
+syn keyword moselStatement	contained
 syn keyword moselStatement	version
 syn keyword moselConstant	true false
 
@@ -43,6 +44,8 @@ if exists("mosel_functions")
  syn keyword moselFunction	write writeln read readln exists fselect
  syn keyword moselFunction	getfid getsize getfirst getlast substr strfmt
  syn keyword moselFunction	maxlist minlist sqrt sin cos arctan
+ syn keyword moselFunction	abs
+
  syn keyword moselFunction	isodd bittest random log finalize finalise
  syn keyword moselFunction	getsol getobjval getrcost getdual getslack
  syn keyword moselFunction	getact ishidden sethidden gettype settype
@@ -142,7 +145,7 @@ syn region moselIniti matchgroup=moselStatement
       \ containedin=@mRoot transparent fold
 
 syn region moselRequire matchgroup=moselStatement
-      \ start=/^\s*requirements\>/ \ end=/^\s*end-requirements\>/ 
+      \ start=/^\s*requirements\>/ end=/^\s*end-requirements\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselRecord matchgroup=moselStatement

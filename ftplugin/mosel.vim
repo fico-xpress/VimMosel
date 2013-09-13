@@ -196,7 +196,8 @@ map <F11> :!git commit \| tee
 map <F12> :!git svn dcommit \| tee
 
 map <F5> :call <SID>compmos()<CR><CR>
-map <F6> :!mosel -s -c 'exec %' 2>&1 \| tee
+map <F6> :!mosel -s -c 'exec %'
+map <F7> :!mosel -s -c 'load % ; symbols'
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>
