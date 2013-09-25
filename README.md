@@ -16,16 +16,8 @@ Source:
 
 Install All
 ===========
-Simply enter the following command:
-> make
-
-Equivalent to:
-> make clean && make dist && make install
-
-Uninstall All
-===========
-Simply enter the following command:
-> make unistall
+Open Vim and simply source the file makefile.vim:
+> so makefile.vim
 
 Install Mosel-Vim
 =================
