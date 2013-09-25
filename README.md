@@ -6,14 +6,13 @@ Mosel.
 
 Content
 =======
-. Supertab allows for auto-completion based on currently open buffers
-. Snippets allows for code snippet insertion
-. Mosel integrates vim with the mosel command line tools for
-  compiling and executing Mosel model.
+* Supertab allows for auto-completion based on currently open buffers
+* Snippets allows for code snippet insertion
+* Vim tools to develop Mosel application
 
 Source:
- . Supertab: http://www.vim.org/scripts/script.php?script_id=1643
- . snipMate: http://www.vim.org/scripts/script.php?script_id=2540
+* Supertab: http://www.vim.org/scripts/script.php?script_id=1643
+* snipMate: http://www.vim.org/scripts/script.php?script_id=2540
 
 Install All
 ===========
