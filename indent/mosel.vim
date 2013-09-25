@@ -55,15 +55,19 @@ function! GetMoselIndent()
   endif
 
   let pnum = prevnonblank(lnum - 1)
+  let pline = getline(pnum)
+  let pind = indent(pnum)
 
   let ind = indent(lnum)
   let line = getline(lnum)
-  let pline = getline(pnum)
 
   let synid = synIDattr(synID(lnum, 1, 0), "name")
 
   " Indent with syntax information
-  if synid =~ 'moselComment'
+  if synid =~ 'moselHeader'
+    " No indentation in header
+    return pind
+  elseif synid =~ 'moselComment'
     return ind
   elseif synid =~ 'moselCase'
     if line =~ '^.*:\s*\<do\>'
@@ -107,7 +111,7 @@ function! GetMoselIndent()
 endfunction
 
 function! s:is_continuation_line(line)
-  return a:line =~ '\%(\%(^\|[^\\]\)\\\|&&\|||\)$'
+  return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\)\s*$'
 endfunction
 
 function! s:find_continued_lnum(lnum)

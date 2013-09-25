@@ -43,7 +43,8 @@ if exists("mosel_functions")
  syn keyword moselFunction	setparam getparam create fopen fclose
  syn keyword moselFunction	write writeln read readln exists fselect
  syn keyword moselFunction	getfid getsize getfirst getlast substr strfmt
- syn keyword moselFunction	maxlist minlist sqrt sin cos arctan
+ syn keyword moselFunction	maxlist minlist sqrt sin cos 
+ syn keyword moselFunction	arctan arccos arcsin
  syn keyword moselFunction	abs
 
  syn keyword moselFunction	isodd bittest random log finalize finalise
@@ -54,6 +55,9 @@ if exists("mosel_functions")
  syn keyword moselFunction	fskipline setrandseed
  syn keyword moselFunction	ceil round
  syn keyword moselFunction	load compile run
+
+ syn keyword moselFunction	minimize minimise maximize maximise
+ syn keyword insightFunction	insight_minimize insight_minimise insight_maximize insight_maximise
 
  " mmsystem
  syn keyword moselFunction	gettime
@@ -155,11 +159,13 @@ syn region moselRecord matchgroup=moselStatement
 syn cluster mDatadef add=moselParam,moselDeclr,modelPDecl,moselRequire,moselIniti
 
 syn region moselProc matchgroup=moselStatement
-      \ start=/^\s*procedure\s\|^\s*public\s*procedure\s/ end=/^\s*end-procedure/ 
+      \ start=/^\s*procedure\s\|^\s*public\s*procedure\s/ 
+      \ end=/^\s*end-procedure/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselFunc matchgroup=moselStatement
-      \ start=/^\s*function\s \|^\s*public\s*function\s/ end=/^\s*end-function/
+      \ start=/^\s*function\s \|^\s*public\s*function\s/ 
+      \ end=/^\s*end-function/
       \ containedin=@mRoot transparent fold
 
 syn cluster mMethod add=moselProc,moselFunc
@@ -187,10 +193,18 @@ syn region moselFold
 
 " Format of comments
 syn region moselComment
-      \ start="(!" end="!)" contains=moselTodo fold
+      \ start="(!" end="!)" contains=moselTodo 
+      \ containedin=@mRoot fold
+
 syn region moselComment
       \ start="!" end="$" contains=moselTodo
-syn cluster mComment add=moselComment
+      \ containedin=@mRoot fold
+
+syn region moselHeader
+      \ start="\%^(!" end="!)" contains=moselTodo 
+      \ fold
+
+syn cluster mComment add=moselComment,moselHeader
 
 " syn match moselIfOneLine "if\s*(.*,.*,.*)\(^then\)"
 
@@ -204,6 +218,9 @@ function! MoselFoldText()
   if synid =~ 'moselComment'
     let comment = substitute(line,'(!\s*\(.*\)\s*\(!)\)*', '\1', 'g')
   elseif synid2 =~ 'moselComment'
+    let line = getline(v:foldstart+1)
+    let comment = substitute(line,'(!\s*\(.*\)\s*\(!)\)*', '\1', 'g')
+  elseif synid2 =~ 'moselHeader'
     let line = getline(v:foldstart+1)
     let comment = substitute(line,'(!\s*\(.*\)\s*\(!)\)*', '\1', 'g')
   endif
@@ -224,6 +241,8 @@ if version >= 508 || !exists("did_mosel_syn_inits")
   endif
 
   HiLink moselComment		Comment
+  HiLink moselHeader		Comment
+
 if !exists("mosel_only_comments")
   HiLink moselConstant		Constant
   HiLink moselNumber		Constant
@@ -246,7 +265,7 @@ if !exists("mosel_only_comments")
   HiLink moselError		Error
   HiLink moselShowTab		Error
 
-  HiLink mRoot  	        Statement
+  HiLink insightFunction		Function
 endif
 
   delcommand HiLink

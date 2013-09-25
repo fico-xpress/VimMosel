@@ -31,8 +31,8 @@ set statusline+=%10((%l,%c)%)\                " line and column
 set statusline+=%P                            " percentage of file
 
 function! StatusLineMoselBlock()
-	" return synIDattr(synID(line("."), col("."), 1), "name")
-	return synIDattr(synID(line("."), col("."), 0), "name")
+	return synIDattr(synID(line("."), col("."), 1), "name") . '|' .
+        \ synIDattr(synID(line("."), col("."), 0), "name")
 endfunction
 
 function! StatusLineMoselProfile()

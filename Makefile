@@ -1,4 +1,4 @@
-all: dist
+all: clean dist install
 
 dist: mosel.vba snipmate.vba
 
@@ -15,9 +15,9 @@ snipmate.vba:
 		-c 'q!'
 
 clean:
-	@rm -R build 2> /dev/null || true
-	@rm -R mosel.vba snipmate.vba
-	@rm -R *~
+	@rm -Rf build 2> /dev/null || true
+	@rm -Rf mosel.vba snipmate.vba
+	@rm -Rf *~
 
 install: supertab.vmb mosel.vba snipmate.vba
 	@vim supertab.vmb -c 'so supertab.vmb' -c 'q!'
