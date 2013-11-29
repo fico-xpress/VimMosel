@@ -42,6 +42,10 @@ Remove plugins
 
 Vim usefull command
 ===================
+F5: Compile model in current buffer
+F6: Execute model in current buffer
+F7: Profile execution of model in current buffer
+F8: List symbols of the current buffer
 ]] -> next procedure/function
 [[ -> previous procedure/function
 gf -> open file (works with 'uses')

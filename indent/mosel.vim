@@ -111,7 +111,7 @@ function! GetMoselIndent()
 endfunction
 
 function! s:is_continuation_line(line)
-  return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\|\*\|\/\|(\)\s*$'
+  return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\|\*\|\/\|(\|{\|=\|>\|<\)\s*$'
 endfunction
 
 function! s:is_oneline_block(line)

@@ -25,1677 +25,571 @@ setlocal errorformat=%.%#:\ %t\-%n\ %.%#\ (%l%\\,%c)\ %.%#\ `%f':\ %m,
 let &cpo = s:cpo_save
 unlet s:cpo_save
 doc/haskell_ghc.txt	[[[1
-22431
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
+19582
+*haskell_ghc* The Glorious Glasgow Haskell Compilation System User’s Guide.
+
 Version 7.6.3 
 
-The Glorious Glasgow Haskell Compilation System 
-User’s Guide, Version 7.6.3 
+This document has been extracted from :
+  The Glorious Glasgow Haskell Compilation System 
+  User’s Guide, Version 7.6.3.
+Available at:
 
+It has been converted to vim help format by Sebastien Lannez.
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
-COLLABORATORS 
-
-TITLE 
-: 
-The 
-Glorious 
-Glasgow 
-Haskell 
-Compilation 
-System 
-User’s 
-Guide, 
-Version 
-7.6.3 
-ACTION 
-NAME 
-DATE 
-SIGNATURE 
-WRITTEN 
-BY 
-The 
-GHC 
-Team 
-April 
-19, 
-2013 
-
-
-REVISION HISTORY 
-
-NUMBER 
-DATE 
-DESCRIPTION 
-NAME 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
+==============================================================================
+Haskell                                     *Haskell*
 Contents 
 
 1 Introduction to GHC 1 
-
 1.1 ObtainingGHC .................................................... 1 
-
-
 1.2 Meta-information:Websites,mailinglists,etc. ................................... 1 
-
-
 1.3 ReportingbugsinGHC ................................................ 2 
-
-
 1.4 GHCversionnumberingpolicy............................................ 2 
-
-
 1.5 Releasenotesforversion7.6.1 ............................................ 3 
-
-
 1.5.1 Highlights................................................... 3 
-
-
 1.5.2 Fulldetails .................................................. 3 
-
-
 1.5.2.1 Language ............................................. 3 
-
-
 1.5.2.2 Compiler.............................................. 5 
-
-
 1.5.2.3 GHCi................................................ 5 
-
-
 1.5.2.4 TemplateHaskell ......................................... 5 
-
-
 1.5.2.5 Runtimesystem .......................................... 5 
-
-
 1.5.2.6 Buildsystem............................................ 5 
-
-
 1.5.3 Libraries ................................................... 6 
-
-
 1.5.3.1 array................................................ 6 
-
-
 1.5.3.2 base ................................................ 6 
-
-
 1.5.3.3 bin-package-db .......................................... 7 
-
-
 1.5.3.4 binary ............................................... 7 
-
-
 1.5.3.5 bytestring ............................................. 7 
-
-
 1.5.3.6 Cabal................................................ 7 
-
-
 1.5.3.7 containers ............................................. 7 
-
-
 1.5.3.8 deepseq .............................................. 7 
-
-
 1.5.3.9 directory.............................................. 7 
-
-
 1.5.3.10 filepath............................................... 7 
-
-
 1.5.3.11 ghc-prim.............................................. 8 
-
-
 1.5.3.12 haskell98.............................................. 8 
-
-
 1.5.3.13 haskell2010 ............................................ 8 
-
-
 1.5.3.14 hoopl................................................ 8 
-
-
 1.5.3.15 hpc................................................. 8 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 1.5.3.16 integer-gmp ............................................ 8 
-
-
 1.5.3.17 old-locale ............................................. 8 
-
-
 1.5.3.18 old-time .............................................. 8 
-
-
 1.5.3.19 process............................................... 8 
-
-
 1.5.3.20 template-haskell .......................................... 9 
-
-
 1.5.3.21 time ................................................ 9 
-
-
 1.5.3.22 unix ................................................ 9 
-
-
 1.5.3.23 Win32 ............................................... 9 
-
-
 1.6 Releasenotesforversion7.6.2 ............................................ 9 
-
-
 1.6.1 GHC ..................................................... 9 
-
-
 1.6.2 Haddock ................................................... 10 
-
-
 1.6.3 Hsc2hs .................................................... 10 
-
-
 1.6.4 Libraries ................................................... 10 
-
-
 1.6.4.1 base ................................................ 10 
-
-
 1.6.4.2 bytestring ............................................. 10 
-
-
 1.6.4.3 directory.............................................. 10 
-
-
 1.6.4.4 unix ................................................ 10 
-
-
 1.7 Releasenotesforversion7.6.3 ............................................ 10 
-
-
 1.7.1 GHC ..................................................... 11 
 
-
 2 Using GHCi 12 
-
 2.1 IntroductiontoGHCi ................................................. 12 
-
-
 2.2 Loadingsourcefiles.................................................. 12 
-
-
 2.2.1 Modulesvs.filenames ............................................ 13 
-
-
 2.2.2 Makingchangesandrecompilation ..................................... 13 
-
-
 2.3 Loadingcompiledcode ................................................ 14 
-
-
 2.4 Interactiveevaluationattheprompt.......................................... 15 
-
-
 2.4.1 I/Oactionsattheprompt ........................................... 15 
-
-
 2.4.2 Using do-notationattheprompt ...................................... 16 
-
-
 2.4.3 Multilineinput ................................................ 17 
-
-
 2.4.4 Type,classandotherdeclarations ...................................... 18 
-
-
 2.4.5 What’sreallyinscopeattheprompt? .................................... 19 
-
-
 2.4.5.1 :moduleand :load....................................... 20 
-
-
 2.4.5.2 Qualifiednames .......................................... 20 
-
-
 2.4.5.3 The :mainand :runcommands ................................ 21 
-
-
 2.4.6 The itvariable................................................ 21 
-
-
 2.4.7 TypedefaultinginGHCi ........................................... 22 
-
-
 2.4.8 Usingacustominteractiveprintingfunction................................. 23 
-
-
 2.5 TheGHCiDebugger ................................................. 23 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 2.5.1 Breakpointsandinspectingvariables..................................... 24 
-
-
 2.5.1.1 Settingbreakpoints ........................................ 26 
-
-
 2.5.1.2 Listinganddeletingbreakpoints ................................. 26 
-
-
 2.5.2 Single-stepping................................................ 27 
-
-
 2.5.3 Nestedbreakpoints .............................................. 27 
-
-
 2.5.4 The _resultvariable............................................ 28 
-
-
 2.5.5 Tracingandhistory .............................................. 28 
-
-
 2.5.6 Debuggingexceptions ............................................ 29 
-
-
 2.5.7 Example:inspectingfunctions ........................................ 30 
-
-
 2.5.8 Limitations .................................................. 31 
-
-
 2.6 InvokingGHCi .................................................... 31 
-
-
 2.6.1 Packages ................................................... 31 
-
-
 2.6.2 Extralibraries................................................. 32 
-
-
 2.7 GHCicommands ................................................... 32 
-
-
 2.8 The :setand :seticommands .......................................... 36 
-
-
 2.8.1 GHCioptions ................................................. 36 
-
-
 2.8.2 SettingGHCcommand-lineoptionsinGHCi ................................ 37 
-
-
 2.8.3 Settingoptionsforinteractiveevaluationonly ................................ 37 
-
-
 2.9 The .ghcifile.................................................... 38 
-
-
 2.10CompilingtoobjectcodeinsideGHCi ........................................ 38 
-
-
 2.11FAQandThingsToWatchOutFor .......................................... 39 
 
-
 3 Using runghc 40 
-
 3.1 Flags.......................................................... 40 
 
-
 4 Using GHC 41 
-
 4.1 Gettingstarted:compilingprograms ......................................... 41 
-
-
 4.2 Optionsoverview ................................................... 41 
-
-
 4.2.1 Command-linearguments .......................................... 42 
-
-
 4.2.2 Commandlineoptionsinsourcefiles .................................... 42 
-
-
 4.2.3 SettingoptionsinGHCi ........................................... 42 
-
-
 4.3 Static,Dynamic,andModeoptions.......................................... 42 
-
-
 4.4 Meaningfulfilesuffixes ................................................ 43 
-
-
 4.5 Modesofoperation .................................................. 43 
-
-
 4.5.1 Using ghc --make.............................................. 44 
-
-
 4.5.2 Expressionevaluationmode ......................................... 44 
-
-
 4.5.3 Batchcompilermode............................................. 45 
-
-
 4.5.3.1 Overridingthedefaultbehaviourforafile ............................ 45 
-
-
 4.6 Helpandverbosityoptions .............................................. 45 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 4.7 Filenamesandseparatecompilation ......................................... 46 
-
-
 4.7.1 Haskellsourcefiles .............................................. 47 
-
-
 4.7.2 Outputfiles .................................................. 47 
-
-
 4.7.3 Thesearchpath ................................................ 47 
-
-
 4.7.4 Redirectingthecompilationoutput(s) .................................... 48 
-
-
 4.7.5 KeepingIntermediateFiles.......................................... 49 
-
-
 4.7.6 Redirectingtemporaryfiles.......................................... 50 
-
-
 4.7.7 Otheroptionsrelatedtointerfacefiles .................................... 50 
-
-
 4.7.8 Therecompilationchecker .......................................... 50 
-
-
 4.7.9 Howtocompilemutuallyrecursivemodules................................. 51 
-
-
 4.7.10 Using make .................................................. 52 
-
-
 4.7.11 Dependencygeneration............................................ 53 
-
-
 4.7.12 Orphanmodulesandinstancedeclarations.................................. 55 
-
-
 4.8 Warningsandsanity-checking ............................................ 56 
-
-
 4.9 Packages ....................................................... 60 
-
-
 4.9.1 UsingPackages ............................................... 60 
-
-
 4.9.2 Themainpackage .............................................. 62 
-
-
 4.9.3 ConsequencesofpackagesfortheHaskelllanguage . . . . . . . . . . . . . . . . . . . . . . . . . . . . 62 
-
 4.9.4 PackageDatabases .............................................. 62 
-
-
 4.9.4.1 The GHC_PACKAGE_PATHenvironmentvariable ........................ 63 
-
-
 4.9.5 PackageIDs,dependencies,andbrokenpackages .............................. 63 
-
-
 4.9.6 Package management (the ghc-pkgcommand) .............................. 65 
-
-
 4.9.7 BuildingapackagefromHaskellsource ................................... 67 
-
-
 4.9.8 InstalledPackageInfo:apackagespecification .......................... 68 
-
-
 4.10Optimisation(codeimprovement) .......................................... 70 
-
-
 4.10.1 -O*:convenient“packages”ofoptimisationflags. ............................. 71 
-
-
 4.10.2 -f*:platform-independentflags....................................... 71 
-
-
 4.11GHCBackends .................................................... 74 
-
-
 4.11.1 Native code Generator (-fasm)....................................... 74 
-
-
 4.11.2 LLVM Code Generator (-fllvm)...................................... 74 
-
-
 4.11.3 C Code Generator (-fvia-C)........................................ 74 
-
-
 4.11.4 Unregisterisedcompilation.......................................... 75 
-
-
 4.12Optionsrelatedtoaparticularphase ......................................... 75 
-
-
 4.12.1 Replacingtheprogramforoneormorephases ............................... 75 
-
-
 4.12.2 Forcingoptionstoaparticularphase..................................... 75 
-
-
 4.12.3 OptionsaffectingtheCpre-processor .................................... 76 
-
-
 4.12.3.1 CPPandstringgaps ........................................ 77 
-
-
 4.12.4 OptionsaffectingaHaskellpre-processor .................................. 77 
-
-
 4.12.5 Optionsaffectingcodegeneration ...................................... 77 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 4.12.6 Optionsaffectinglinking ........................................... 78 
-
-
 4.13Usingsharedlibraries ................................................. 81 
-
-
 4.13.1 Buildingprogramsthatusesharedlibraries ................................. 81 
-
-
 4.13.2 SharedlibrariesforHaskellpackages .................................... 81 
-
-
 4.13.3 SharedlibrariesthatexportaCAPI ..................................... 82 
-
-
 4.13.4 Findingsharedlibrariesatruntime ...................................... 82 
-
-
 4.13.4.1 Unix ................................................ 82 
-
-
 4.13.4.2 MacOSX ............................................. 83 
-
-
 4.14UsingConcurrentHaskell............................................... 83 
-
-
 4.15UsingSMPparallelism ................................................ 83 
-
-
 4.15.1 Compile-timeoptionsforSMPparallelism ................................. 84 
-
-
 4.15.2 RTSoptionsforSMPparallelism ...................................... 84 
-
-
 4.15.3 HintsforusingSMPparallelism ....................................... 84 
-
-
 4.16Platform-specificFlags ................................................ 85 
-
-
 4.17Runningacompiledprogram ............................................. 85 
-
-
 4.17.1 SettingRTSoptions ............................................. 85 
-
-
 4.17.1.1 SettingRTSoptionsonthecommandline ............................ 85 
-
-
 4.17.1.2 SettingRTSoptionsatcompiletime ............................... 86 
-
-
 4.17.1.3 Setting RTS options with the GHCRTSenvironmentvariable................... 86 
-
-
 4.17.1.4 “Hooks”tochangeRTSbehaviour ................................ 86 
-
-
 4.17.2 MiscellaneousRTSoptions.......................................... 86 
-
-
 4.17.3 RTSoptionstocontrolthegarbagecollector................................. 87 
-
-
 4.17.4 RTSoptionsforconcurrencyandparallelism ................................ 91 
-
-
 4.17.5 RTSoptionsforprofiling ........................................... 91 
-
-
 4.17.6 Tracing .................................................... 91 
-
-
 4.17.7 RTS options for hackers, debuggers, and over-interested souls . . . . . . . . . . . . . . . . . . . . . . . 92 
-
 4.17.8 GettinginformationabouttheRTS...................................... 93 
-
-
 4.18GeneratingandcompilingExternalCoreFiles .................................... 94 
-
-
 4.19Debuggingthecompiler ............................................... 94 
-
-
 4.19.1 Dumpingoutcompilerintermediatestructures................................ 94 
-
-
 4.19.2 Formattingdumps .............................................. 96 
-
-
 4.19.3 Suppressingunwantedinformation...................................... 96 
-
-
 4.19.4 Checkingforconsistency........................................... 96 
-
-
 4.19.5 How to read Core syntax (from some -ddumpflags)............................ 96 
-
-
 4.20Flagreference ..................................................... 98 
-
-
 4.20.1 Helpandverbosityoptions .......................................... 98 
-
-
 4.20.2 Whichphasestorun ............................................. 98 
-
-
 4.20.3 Alternativemodesofoperation........................................ 99 
-
-
 4.20.4 Redirectingoutput .............................................. 99 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 4.20.5 Keepingintermediatefiles .......................................... 99 
-
-
 4.20.6 Temporaryfiles ................................................ 100 
-
-
 4.20.7 Findingimports................................................ 100 
-
-
 4.20.8 Interfacefileoptions ............................................. 100 
-
-
 4.20.9 Recompilationchecking ........................................... 100 
-
-
 4.20.10Interactive-modeoptions . . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 101 
-
 4.20.11Packages ................................................... 101 
-
-
 4.20.12Languageoptions. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 102 
-
 4.20.13Warnings ................................................... 105 
-
-
 4.20.14Optimisationlevels . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 107 
-
 4.20.15Individualoptimisations ........................................... 107 
-
-
 4.20.16Profilingoptions ............................................... 109 
-
-
 4.20.17Programcoverageoptions .......................................... 109 
-
-
 4.20.18Haskellpre-processoroptions ........................................ 109 
-
-
 4.20.19Cpre-processoroptions ........................................... 109 
-
-
 4.20.20Codegenerationoptions ........................................... 110 
-
-
 4.20.21Linkingoptions.. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 110 
-
 4.20.22Pluginoptions ................................................ 111 
-
-
 4.20.23Replacingphases . . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 112 
-
 4.20.24Forcingoptionstoparticularphases ..................................... 112 
-
-
 4.20.25Platform-specificoptions. . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 113 
-
 4.20.26Externalcorefileoptions. . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 113 
-
 4.20.27Compilerdebuggingoptions ......................................... 113 
-
-
 4.20.28Misccompileroptions ............................................ 115 
 
-
 5 Profiling 116 
-
 5.1 Costcentresandcost-centrestacks .......................................... 116 
-
-
 5.1.1 Insertingcostcentresbyhand ........................................ 118 
-
-
 5.1.2 Rulesforattributingcosts .......................................... 119 
-
-
 5.2 Compileroptionsforprofiling ............................................ 119 
-
-
 5.3 Timeandallocationprofiling ............................................. 120 
-
-
 5.4 Profilingmemoryusage................................................ 120 
-
-
 5.4.1 RTSoptionsforheapprofiling ........................................ 121 
-
-
 5.4.2 RetainerProfiling............................................... 122 
-
-
 5.4.2.1 Hintsforusingretainerprofiling ................................. 123 
-
-
 5.4.3 BiographicalProfiling ............................................ 123 
-
-
 5.4.4 Actualmemoryresidency .......................................... 124 
-
-
 5.5 hp2ps––heapprofiletoPostScript .......................................... 124 
-
-
 5.5.1 Manipulatingthehpfile ........................................... 125 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 5.5.2 Zoominginonregionsofyourprofile .................................... 125 
-
-
 5.5.3 Viewingtheheapprofileofarunningprogram ............................... 126 
-
-
 5.5.4 Viewingaheapprofileinrealtime...................................... 126 
-
-
 5.6 ProfilingParallelandConcurrentPrograms ..................................... 126 
-
-
 5.7 ObservingCodeCoverage .............................................. 127 
-
-
 5.7.1 Asmallexample:Reciprocation ....................................... 127 
-
-
 5.7.2 Optionsforinstrumentingcodeforcoverage ................................ 128 
-
-
 5.7.3 Thehpctoolkit ................................................ 128 
-
-
 5.7.3.1 hpcreport ............................................. 129 
-
-
 5.7.3.2 hpcmarkup ............................................ 129 
-
-
 5.7.3.3 hpcsum .............................................. 130 
-
-
 5.7.3.4 hpccombine ............................................ 130 
-
-
 5.7.3.5 hpcmap .............................................. 130 
-
-
 5.7.3.6 hpcoverlayandhpcdraft ..................................... 131 
-
-
 5.7.4 CaveatsandShortcomingsofHaskellProgramCoverage . . . . . . . . . . . . . . . . . . . . . . . . . . 131 
-
 5.8 Using“ticky-ticky”profiling(forimplementors)................................... 131 
 
-
 6 Advice on: sooner, faster, smaller, thriftier 134 
-
 6.1 Sooner:producingaprogrammorequickly ..................................... 134 
-
-
 6.2 Faster:producingaprogramthatrunsquicker .................................... 135 
-
-
 6.3 Smaller:producingaprogramthatissmaller .................................... 137 
-
-
 6.4 Thriftier:producingaprogramthatgobbleslessheapspace . . . . . . . . . . . . . . . . . . . . . . . . . . . . 137 
 
 7 GHC Language Features 138 
-
 7.1 Languageoptions ................................................... 138 
-
-
 7.2 Unboxedtypesandprimitiveoperations ....................................... 138 
-
-
 7.2.1 Unboxedtypes ................................................ 139 
-
-
 7.2.2 Unboxedtuples ................................................ 140 
-
-
 7.3 Syntacticextensions.................................................. 140 
-
-
 7.3.1 Unicodesyntax ................................................ 140 
-
-
 7.3.2 Themagichash ................................................ 141 
-
-
 7.3.3 HierarchicalModules............................................. 141 
-
-
 7.3.4 Patternguards................................................. 142 
-
-
 7.3.5 Viewpatterns ................................................. 143 
-
-
 7.3.6 n+kpatterns.................................................. 144 
-
-
 7.3.7 Traditionalrecordsyntax ........................................... 144 
-
-
 7.3.8 Therecursivedo-notation .......................................... 145 
-
-
 7.3.8.1 Recursivebindinggroups ..................................... 145 
-
-
 7.3.8.2 The mdonotation ......................................... 146 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 7.3.9 ParallelListComprehensions ........................................ 147 
-
-
 7.3.10 Generalised(SQL-Like)ListComprehensions ............................... 147 
-
-
 7.3.11 Monadcomprehensions ........................................... 149 
-
-
 7.3.12 RebindablesyntaxandtheimplicitPreludeimport . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 151 
-
 7.3.13 Postfixoperators ............................................... 151 
-
-
 7.3.14 Tuplesections ................................................ 152 
-
-
 7.3.15 Lambda-case ................................................. 152 
-
-
 7.3.16 Multi-wayif-expressions ........................................... 152 
-
-
 7.3.17 Recordfielddisambiguation ......................................... 153 
-
-
 7.3.18 Recordpuns ................................................. 153 
-
-
 7.3.19 Recordwildcards .............................................. 154 
-
-
 7.3.20 LocalFixityDeclarations .......................................... 155 
-
-
 7.3.21 Package-qualifiedimports .......................................... 155 
-
-
 7.3.22 Safeimports ................................................. 156 
-
-
 7.3.23 Summaryofstolensyntax .......................................... 156 
-
-
 7.4 Extensionstodatatypesandtypesynonyms ..................................... 156 
-
-
 7.4.1 Datatypeswithnoconstructors ....................................... 156 
-
-
 7.4.2 Datatypecontexts .............................................. 157 
-
-
 7.4.3 Infixtypeconstructors,classes,andtypevariables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 157 
-
 7.4.4 Liberalisedtypesynonyms .......................................... 158 
-
-
 7.4.5 Existentiallyquantifieddataconstructors .................................. 159 
-
-
 7.4.5.1 Whyexistential? ......................................... 159 
-
-
 7.4.5.2 Existentialsandtypeclasses.................................... 159 
-
-
 7.4.5.3 RecordConstructors........................................ 160 
-
-
 7.4.5.4 Restrictions ............................................ 161 
-
-
 7.4.6 Declaringdatatypeswithexplicitconstructorsignatures . . . . . . . . . . . . . . . . . . . . . . . . . . 162 
-
 7.4.7 GeneralisedAlgebraicDataTypes(GADTs) ................................ 165 
-
-
 7.5 Extensionstothe"deriving"mechanism ....................................... 166 
-
-
 7.5.1 Inferredcontextforderivingclauses ..................................... 166 
-
-
 7.5.2 Stand-alonederivingdeclarations ...................................... 167 
-
-
 7.5.3 Deriving clause for extra classes (Typeable, Data,etc) ......................... 168 
-
-
 7.5.4 Generalisedderivedinstancesfornewtypes ................................. 168 
-
-
 7.5.4.1 Generalisingthederivingclause ................................. 169 
-
-
 7.5.4.2 Amoreprecisespecification ................................... 170 
-
-
 7.6 Classandinstancesdeclarations ........................................... 170 
-
-
 7.6.1 Classdeclarations............................................... 170 
-
-
 7.6.1.1 Multi-parametertypeclasses ................................... 171 
-
-
 7.6.1.2 Thesuperclassesofaclassdeclaration .............................. 171 
-
-
 7.6.1.3 Classmethodtypes ........................................ 171 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 7.6.1.4 Defaultmethodsignatures..................................... 172 
-
-
 7.6.2 Functionaldependencies ........................................... 172 
-
-
 7.6.2.1 Rulesforfunctionaldependencies ................................ 172 
-
-
 7.6.2.2 Backgroundonfunctionaldependencies ............................. 173 
-
-
 7.6.2.2.1 Anattempttouseconstructorclasses.......................... 174 
-
-
 7.6.2.2.2 Addingfunctionaldependencies ............................ 174 
-
-
 7.6.3 Instancedeclarations ............................................. 176 
-
-
 7.6.3.1 Relaxedrulesfortheinstancehead ................................ 176 
-
-
 7.6.3.2 Relaxedrulesforinstancecontexts ................................ 176 
-
-
 7.6.3.3 Undecidableinstances ....................................... 177 
-
-
 7.6.3.4 Overlappinginstances ....................................... 178 
-
-
 7.6.3.5 Typesignaturesininstancedeclarations ............................. 180 
-
-
 7.6.4 Overloadedstringliterals .......................................... 181 
-
-
 7.7 Typefamilies ..................................................... 181 
-
-
 7.7.1 Datafamilies ................................................. 182 
-
-
 7.7.1.1 Datafamilydeclarations...................................... 182 
-
-
 7.7.1.2 Datainstancedeclarations..................................... 182 
-
-
 7.7.1.3 Overlapofdatainstances ..................................... 183 
-
-
 7.7.2 Synonymfamilies .............................................. 183 
-
-
 7.7.2.1 Typefamilydeclarations ..................................... 184 
-
-
 7.7.2.2 Typeinstancedeclarations..................................... 184 
-
-
 7.7.2.3 Overlapoftypesynonyminstances ................................ 185 
-
-
 7.7.2.4 Decidabilityoftypesynonyminstances.............................. 185 
-
-
 7.7.3 Associateddataandtypefamilies ...................................... 185 
-
-
 7.7.3.1 Associatedinstances........................................ 186 
-
-
 7.7.3.2 Associatedtypesynonymdefaults ................................ 186 
-
-
 7.7.3.3 Scopingofclassparameters .................................... 187 
-
-
 7.7.4 Importandexport............................................... 187 
-
-
 7.7.4.1 Examples ............................................. 187 
-
-
 7.7.4.2 Instances.............................................. 188 
-
-
 7.7.5 Typefamiliesandinstancedeclarations ................................... 188 
-
-
 7.8 Kindpolymorphism.................................................. 189 
-
-
 7.8.1 Overviewofkindpolymorphism....................................... 189 
-
-
 7.8.2 Overview ................................................... 189 
-
-
 7.8.3 Polymorphickindrecursionandcompletekindsignatures . . . . . . . . . . . . . . . . . . . . . . . . . 190 
-
 7.9 Datatypepromotion .................................................. 190 
-
-
 7.9.1 Motivation .................................................. 190 
-
-
 7.9.2 Overview ................................................... 191 
-
-
 7.9.3 Distinguishingbetweentypesandconstructors ............................... 192 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 7.9.4 Promotedlistsandtuplestypes........................................ 192 
-
-
 7.9.5 PromotedLiterals............................................... 192 
-
-
 7.9.6 Promotingexistentialdataconstructors ................................... 193 
-
-
 7.10 Equalityconstraints . . .. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 193 
-
 7.11 The Constraintkind ............................................... 194 
-
-
 7.12 Othertypesystemextensions ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 195 
-
 7.12.1 Explicituniversalquantification(forall) ................................... 195 
-
-
 7.12.2 Thecontextofatypesignature........................................ 195 
-
-
 7.12.3 Implicitparameters .............................................. 196 
-
-
 7.12.3.1 Implicit-parametertypeconstraints ................................ 196 
-
-
 7.12.3.2 Implicit-parameterbindings .................................... 197 
-
-
 7.12.3.3 Implicitparametersandpolymorphicrecursion. . . . . . . . . . . . . . . . . . . . . . . . . . 198 
-
 7.12.3.4 Implicitparametersandmonomorphism ............................. 198 
-
-
 7.12.4 Explicitly-kindedquantification ....................................... 198 
-
-
 7.12.5 Arbitrary-rankpolymorphism ........................................ 199 
-
-
 7.12.5.1 Examples ............................................. 200 
-
-
 7.12.5.2 Typeinference ........................................... 201 
-
-
 7.12.5.3 Implicitquantification ....................................... 202 
-
-
 7.12.6 Impredicativepolymorphism ........................................ 202 
-
-
 7.12.7 Lexicallyscopedtypevariables ....................................... 202 
-
-
 7.12.7.1 Overview ............................................. 203 
-
-
 7.12.7.2 Declarationtypesignatures .................................... 203 
-
-
 7.12.7.3 Expressiontypesignatures .................................... 204 
-
-
 7.12.7.4 Patterntypesignatures....................................... 204 
-
-
 7.12.7.5 Classandinstancedeclarations .................................. 205 
-
-
 7.12.8 Generalisedtypingofmutuallyrecursivebindings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 205 
-
 7.12.9 Monomorphiclocalbindings......................................... 206 
-
-
 7.13Deferringtypeerrorstoruntime ........................................... 206 
-
-
 7.13.1 Enablingdeferringoftypeerrors....................................... 206 
-
-
 7.13.2 DeferredtypeerrorsinGHCi ........................................ 206 
-
-
 7.14TemplateHaskell ................................................... 207 
-
-
 7.14.1 Syntax .................................................... 207 
-
-
 7.14.2 UsingTemplateHaskell ........................................... 208 
-
-
 7.14.3 ATemplateHaskellWorkedExample ................................... 209 
-
-
 7.14.4 UsingTemplateHaskellwithProfiling.................................... 210 
-
-
 7.14.5 TemplateHaskellQuasi-quotation ..................................... 210 
-
-
 7.15Arrownotation .................................................... 212 
-
-
 7.15.1 do-notationforcommands .......................................... 213 
-
-
 7.15.2 Conditionalcommands ............................................ 214 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 7.15.3 Definingyourowncontrolstructures .................................... 215 
-
-
 7.15.4 Primitiveconstructs.............................................. 216 
-
-
 7.15.5 Differenceswiththepaper .......................................... 216 
-
-
 7.15.6 Portability................................................... 217 
-
-
 7.16Bangpatterns ..................................................... 217 
-
-
 7.16.1 Informaldescriptionofbangpatterns .................................... 217 
-
-
 7.16.2 Syntaxandsemantics ............................................ 218 
-
-
 7.17Assertions ...................................................... 219 
-
-
 7.18 Pragmas ... . ... . .. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 219 
-
 7.18.1 LANGUAGEpragma............................................. 220 
-
-
 7.18.2 OPTIONS_GHCpragma........................................... 220 
-
-
 7.18.3 INCLUDEpragma .............................................. 220 
-
-
 7.18.4 WARNINGandDEPRECATEDpragmas .................................. 220 
-
-
 7.18.5 INLINEandNOINLINEpragmas ...................................... 221 
-
-
 7.18.5.1 INLINEpragma .......................................... 221 
-
-
 7.18.5.2 INLINABLEpragma ....................................... 222 
-
-
 7.18.5.3 NOINLINEpragma ........................................ 222 
-
-
 7.18.5.4 CONLIKEmodifier ........................................ 222 
-
-
 7.18.5.5 Phasecontrol ........................................... 223 
-
-
 7.18.6 LINEpragma ................................................. 223 
-
-
 7.18.7 RULESpragma................................................ 223 
-
-
 7.18.8 SPECIALIZEpragma ............................................ 224 
-
-
 7.18.8.1 SPECIALIZEINLINE ...................................... 225 
-
-
 7.18.8.2 SPECIALIZEforimportedfunctions ............................... 225 
-
-
 7.18.8.3 ObsoleteSPECIALIZEsyntax .................................. 226 
-
-
 7.18.9 SPECIALIZEinstancepragma ....................................... 226 
-
-
 7.18.10UNPACKpragma. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 226 
-
 7.18.11NOUNPACKpragma... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 227 
-
 7.18.12SOURCEpragma. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 227 
-
 7.19Rewriterules ..................................................... 227 
-
-
 7.19.1 Syntax .................................................... 227 
-
-
 7.19.2 Semantics................................................... 228 
-
-
 7.19.3 How rules interact with INLINE/NOINLINE and CONLIKE pragmas . . . . . . . . . . . . . . . . . . . 229 
-
 7.19.4 Listfusion .................................................. 229 
-
-
 7.19.5 Specialisation ................................................ 231 
-
-
 7.19.6 Controllingwhat’sgoingoninrewriterules ................................. 231 
-
-
 7.19.7 COREpragma ................................................ 232 
-
-
 7.20Specialbuilt-infunctions ............................................... 232 
-
-
 7.21Genericclasses .................................................... 232 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 7.22 Genericprogramming. .. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 233 
-
 7.22.1 Derivingrepresentations ........................................... 233 
-
-
 7.22.2 Writinggenericfunctions .......................................... 234 
-
-
 7.22.3 Genericdefaults ............................................... 235 
-
-
 7.22.4 Moreinformation............................................... 235 
-
-
 7.23 Controlovermonomorphism ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 235 
-
 7.23.1 SwitchingoffthedreadedMonomorphismRestriction . . . . . . . . . . . . . . . . . . . . . . . . . . . 235 
-
 7.23.2 Monomorphicpatternbindings........................................ 235 
-
-
 7.24ConcurrentandParallelHaskell ........................................... 236 
-
-
 7.24.1 ConcurrentHaskell .............................................. 236 
-
-
 7.24.2 SoftwareTransactionalMemory ....................................... 236 
-
-
 7.24.3 ParallelHaskell................................................ 236 
-
-
 7.24.4 Annotatingpurecodeforparallelism .................................... 237 
-
-
 7.24.5 DataParallelHaskell ............................................. 237 
-
-
 7.25 SafeHaskell. . ... . .. . ... . ... . ... . .. . ... . ... . ... . ... . ... ... . ... . ... 237 
-
 7.25.1 UsesofSafeHaskell ............................................. 238 
-
-
 7.25.1.1 Stricttype-safety(goodstyle) ................................... 238 
-
-
 7.25.1.2 Buildingsecuresystems(restrictedIOMonads) . . . . . . . . . . . . . . . . . . . . . . . . . 238 
-
 7.25.2 SafeLanguage ................................................ 240 
-
-
 7.25.3 SafeImports ................................................. 241 
-
-
 7.25.4 TrustandSafeHaskellModes ........................................ 241 
-
-
 7.25.4.1 Trust check (-fpackage-trustdisabled) .......................... 241 
-
-
 7.25.4.2 Trust check (-fpackage-trustenabled). ... . ... . .. . . ... ... . ... . ... 242 
-
 7.25.4.3 Example.............................................. 242 
-
-
 7.25.4.4 TrustworthyRequirements .................................... 243 
-
-
 7.25.4.5 PackageTrust ........................................... 243 
-
-
 7.25.5 SafeHaskellInference ............................................ 243 
-
-
 7.25.6 SafeHaskellFlagSummary ......................................... 243 
 
-
 8 Foreign function interface (FFI) 245 
-
 8.1 GHCextensionstotheFFIAddendum ........................................ 245 
-
-
 8.1.1 Unboxedtypes ................................................ 245 
-
-
 8.1.2 NewtypewrappingoftheIOmonad ..................................... 245 
-
-
 8.1.3 Primitiveimports ............................................... 246 
-
-
 8.1.4 Interruptibleforeigncalls........................................... 246 
-
-
 8.1.5 TheCAPIcallingconvention......................................... 246 
-
-
 8.2 UsingtheFFIwithGHC ............................................... 247 
-
-
 8.2.1 Using foreign exportand foreign import ccall "wrapper"withGHC ......... 247 
-
-
 8.2.1.1 Using your own main() ... . ... ... . ... . ... . ... ... . ... . ... . ... 247 
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 8.2.1.2 Making a Haskell library that can be called from foreign code . . . . . . . . . . . . . . . . . . 249 
-
 8.2.2 Usingheaderfiles............................................... 250 
-
-
 8.2.3 MemoryAllocation.............................................. 250 
-
-
 8.2.4 Multi-threadingandtheFFI ......................................... 250 
-
-
 8.2.4.1 Foreignimportsandmulti-threading ............................... 250 
-
-
 8.2.4.2 The relationship between Haskell threads and OS threads . . . . . . . . . . . . . . . . . . . . 251 
-
 8.2.4.3 Foreignexportsandmulti-threading ............................... 251 
-
-
 8.2.4.4 On the use of hs_exit() .. . ... ... . ... . ... . ... ... . ... . ... . ... 251 
-
 8.2.5 FloatingpointandtheFFI .......................................... 251 
 
-
 9 Extending and using GHC as a Library 253 
-
 9.1 Sourceannotations .................................................. 253 
-
-
 9.1.1 Annotatingvalues .............................................. 253 
-
-
 9.1.2 Annotatingtypes ............................................... 254 
-
-
 9.1.3 Annotatingmodules ............................................. 254 
-
-
 9.2 UsingGHCasaLibrary ............................................... 254 
-
-
 9.3 CompilerPlugins ................................................... 255 
-
-
 9.3.1 Usingcompilerplugins............................................ 255 
-
-
 9.3.2 Writingcompilerplugins........................................... 255 
-
-
 9.3.2.1 CoreToDoinmoredetail... . .. . ... . ... . ... . ... . ... ... . ... . ... 256 
-
 9.3.2.2 Manipulatingbindings....................................... 256 
-
-
 9.3.2.3 UsingAnnotations......................................... 257 
 
-
 10 An External Representation for the GHC Core Language (For GHC 6.10) 258 
-
 10.1Introduction ...................................................... 1 
-
-
 10.2ExternalGrammarofCore .............................................. 2 
-
-
 10.3InformalSemantics .................................................. 3 
-
-
 10.3.1 ProgramOrganizationandModules ..................................... 4 
-
-
 10.3.2 Namespaces.................................................. 4 
-
-
 10.3.3 TypesandKinds ............................................... 5 
-
-
 10.3.3.1 Types................................................ 5 
-
-
 10.3.3.2 Coercions ............................................. 5 
-
-
 10.3.3.3 Kinds................................................ 5 
-
-
 10.3.3.4 LiftedandUnliftedTypes ..................................... 6 
-
-
 10.3.3.5 TypeConstructors;BaseKindsandHigherKinds . . . . . . . . . . . . . . . . . . . . . . . . 6 
-
 10.3.3.6 TypeSynonymsandTypeEquivalence .............................. 6 
-
-
 10.3.4 Algebraicdatatypes ............................................. 6 
-
-
 10.3.5 Newtypes ................................................... 7 
-
-
 10.3.6 ExpressionForms............................................... 8 
-
-
 10.3.7 ExpressionEvaluation ............................................ 9 
-
-
 10.4PrimitiveModule ................................................... 11 
-
-
 10.4.1 Non-concurrentBackEnd .......................................... 11 
-
-
 10.4.2 Literals .................................................... 11 
 
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
-
 11 What to do when something goes wrong 13 
-
 11.1Whenthecompiler“doesthewrongthing” ..................................... 13 
-
-
 11.2Whenyourprogram“doesthewrongthing” ..................................... 13 
 
-
 12 Other Haskell utility programs 15 
-
 12.1 “Yacc for Haskell”: happy .............................................. 15 
-
-
 12.2 Writing Haskell interfaces to C code: hsc2hs .................................... 15 
-
-
 12.2.1 commandlinesyntax ............................................. 15 
-
-
 12.2.2 Inputsyntax.................................................. 16 
-
-
 12.2.3 Customconstructs .............................................. 17 
-
-
 12.2.4 Cross-compilation .............................................. 17 
 
-
 13 Running GHC on Win32 systems 19 
-
 13.1 StartingGHConWindowsplatforms ........................................ 19 
-
-
 13.2RunningGHCionWindows ............................................. 19 
-
-
 13.3 Interactingwiththeterminal ............................................. 19 
-
-
 13.4 Differencesinlibrarybehaviour ........................................... 20 
-
-
 13.5 UsingGHC(andotherGHC-compiledexecutables)withcygwin. . . . . . . . . . . . . . . . . . . . . . . . . . 20 
-
 13.5.1 Background.................................................. 20 
-
-
 13.5.2 Theproblem ................................................. 20 
-
-
 13.5.3 Thingstodo ................................................. 20 
-
-
 13.6BuildingandusingWin32DLLs ........................................... 21 
-
-
 13.6.1 CreatingaDLL ................................................ 21 
-
-
 13.6.2 MakingDLLstobecalledfromotherlanguages .............................. 22 
-
-
 13.6.2.1 UsingfromVBA ......................................... 22 
-
-
 13.6.2.2 UsingfromC++ .......................................... 23 
 
-
 14 Known bugs and infelicities 24 
-
 14.1 Haskell standards vs. Glasgow Haskell: language non-compliance . . . . . . . . . . . . . . . . . . . . . . . . . 24 
-
 14.1.1 DivergencefromHaskell98andHaskell2010 ............................... 24 
-
-
 14.1.1.1 Lexicalsyntax ........................................... 24 
-
-
 14.1.1.2 Context-freesyntax ........................................ 24 
-
-
 14.1.1.3 Expressionsandpatterns ..................................... 25 
-
-
 14.1.1.4 Declarationsandbindings ..................................... 25 
-
-
 14.1.1.5 Modulesystemandinterfacefiles................................. 25 
-
-
 14.1.1.6 Numbers,basictypes,andbuilt-inclasses ............................ 25 
-
-
 14.1.1.7 In Preludesupport ....................................... 26 
-
-
 14.1.1.8 TheForeignFunctionInterface .................................. 26 
-
-
 14.1.2 GHC’s interpretation of undefined behaviour in Haskell 98 and Haskell 2010 . . . . . . . . . . . . . . . 27 
-
 14.2Knownbugsorinfelicities .............................................. 27 
-
-
 14.2.1 BugsinGHC ................................................. 27 
-
-
 14.2.2 BugsinGHCi(theinteractiveGHC)..................................... 28 
-
 
 15 Index 29 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 
+==============================================================================
 
 The Glasgow Haskell Compiler License 
 
@@ -1717,14 +611,8 @@ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUEN
 (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
-ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 1 
-/ 
-37 
 
 
 Chapter 1 
@@ -1767,14 +655,8 @@ On the World-Wide Web, there are several URLs of likely interest:
 
 • GHC home page 
 • GHC Developers Home (developer documentation, wiki, and bug tracker) 
-We run the following mailing lists about GHC. We encourage you to join, as you feel is appropriate. 
+We run the following mailing lists about GHC. We encourage you to join, as you feel is appropriate. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 2 
-/ 
-37 
 
 
 glasgow-haskell-users: This list is for GHC users to chat among themselves. If you have a specific question about GHC, please 
@@ -1786,7 +668,7 @@ admin email address: glasgow-haskell-users-admin@haskell.org
 list archives: http://www.haskell.org/pipermail/glasgow-haskell-users/ 
 
 
-glasgow-haskell-bugs: This list is for reporting and discussing GHC bugs. However, please see Section 1.3 before posting here. 
+glasgow-haskell-bugs: This list is for reporting and discussing GHC bugs. However, please see Section |1.3| before posting here. 
 
 list email address: glasgow-haskell-bugs@haskell.org 
 subscribe at: http://www.haskell.org/mailman/listinfo/glasgow-haskell-bugs. 
@@ -1823,7 +705,7 @@ where z
 to any system-supplied code. However, if you install a new patchlevel over an old one you will need to recompile any code 
 that was compiled against the old libraries. 
 
-The value of __GLASGOW_HASKELL__(see Section 4.12.3) for a major release x.y.z 
+The value of __GLASGOW_HASKELL__(see Section |4.12.3|) for a major release x.y.z 
 is the integer xyy 
 (if y 
 is a single 
@@ -1844,14 +726,8 @@ The value of __GLASGOW_HASKELL__for a snapshot release is the integer xyy. You s
 code which tests for this value, however: since interfaces change on a day-to-day basis, and we don’t have finer granularity 
 in the values of __GLASGOW_HASKELL__, you should only conditionally compile using predicates which test whether 
 __GLASGOW_HASKELL__is equal to, later than, or earlier than a given major release. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 3 
 / 
-37 
+
 
 
 Unstable snapshots We may make snapshot releases of the HEAD available for download, and the latest sources are available 
@@ -1869,7 +745,7 @@ in the values of __GLASGOW_HASKELL__, you should only conditionally compile usin
 __GLASGOW_HASKELL__is equal to, later than, or earlier than a given major release. 
 
 
-The version number of your copy of GHC can be found by invoking ghcwith the --versionflag (see Section 4.6). 
+The version number of your copy of GHC can be found by invoking ghcwith the --versionflag (see Section |4.6|). 
 
 1.5 Release notes for version 7.6.1 
 The significant changes to the various parts of the compiler are listed in the following sections. There have also been numerous 
@@ -1878,11 +754,11 @@ bug fixes and performance improvements over the 7.4 branch.
 1.5.1 Highlights 
 The highlights, since the 7.4 branch, are: 
 
-• Polymorphic kinds and data promotion are now fully implemented and supported features: Section 7.8. 
+• Polymorphic kinds and data promotion are now fully implemented and supported features: Section |7.8.| 
 • Windows 64bit is now a supported platform. 
-• It is now possible to defer type errors until runtime using the -fdefer-type-errorsflag: Section 7.13. 
+• It is now possible to defer type errors until runtime using the -fdefer-type-errorsflag: Section |7.13.| 
 • The RTS now supports changing the number of capabilities at runtime with Control.Concurrent.setNumCapabilities: 
-Section 4.15.2. 
+Section |4.15.2.| 
 1.5.2 Full details 
 1.5.2.1 Language 
 • There is a new extension ExplicitNamespacesthat allows to qualify the export of a type with the typekeyword. 
@@ -1899,19 +775,13 @@ id :: Ob c a => c a a
 
 and the variable k, ranging over kinds, is in scope within the class declaration. 
 
-• It is now possible to derive instances of Generic1automatically. See Section 7.22 for more information. 
+• It is now possible to derive instances of Generic1automatically. See Section |7.22| for more information. 
 • There is a new FFI calling convention capi, enabled by the CApiFFIextension. For example, given the following declaration: 
 foreign import capi "header.h f" f :: CInt -> IO CInt 
 
 GHC will generate code to call f using the C API defined in the header header.h. Thus f can be called even if it may be 
-defined as a CPP #define, rather than a proper function. 
+defined as a CPP #define, rather than a proper function. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 4 
-/ 
-37 
 
 
 • There is a new pragma CTYPE, which can be used to specify the C type that a Haskell type corresponds to, when it is used 
@@ -1921,7 +791,7 @@ with the capicalling convention.
 declaration (#5712). 
 • There is a new extension InstanceSigs, which allows type signatures to be specified in instance declarations. 
 • GHC now supports numeric and string type literals (enabled by DataKinds), of kind Nat and Symbol respectively (see 
-Section 7.9.5). 
+Section |7.9.5|). 
 • The type Anycan now be used as an argument for foreign primfunctions. 
 • The mdo keyword has been reintroduced. This keyword can be used to create do expressions with recursive bindings. The 
 behavior of the rec keyword has been changed, so that it does not perform automatic segmentation in a do expression 
@@ -1938,7 +808,7 @@ is equivalent to:
 Nothing -> 0 
 Justn ->n 
 
-See Section 7.3.15 for more details. 
+See Section |7.3.15| for more details. 
 
 • There is a new syntactic construct (enabled by the MultiWayIf extension) to create conditional expressions with multiple 
 branches. For example, you can now write: 
@@ -1947,7 +817,7 @@ if|x==0 ->[...]
 |x<0 ->[...] 
 | otherwise -> [...] 
 
-See Section 7.3.16 for more information. 
+See Section |7.3.16| for more information. 
 
 • Some limitations on the usage of unboxed tuples have been lifted. For example, when the UnboxedTuplesextension is on, 
 an unboxed tuple can now be used as the type of a constructor, function argument, or variable: 
@@ -1963,14 +833,8 @@ h x = let y = (# x,x#) in...
 
 Unboxed tuple can now also be nested: 
 
-f :: (# Int, (# Int, Int #), Bool #) 
+f :: (# Int, (# Int, Int #), Bool #) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 5 
-/ 
-37 
 
 
 1.5.2.2 Compiler 
@@ -1980,7 +844,7 @@ Version 7.6.3 5
 enabled by default. 
 • Package database flags have been renamed from -package-conf*to -package-db*. 
 • It is now possible to hide the global package db, and specify the order of the user and global package databases in the stack 
-(see Section 4.9.4). 
+(see Section |4.9.4|). 
 1.5.2.3 GHCi 
 • Commands defined later have now precedence in the resolution of abbreviated commands (#3858). 
 • It is now possible to specify a custom pretty-printing function for expressions evaluated at the prompt using the -interactive-
@@ -1997,17 +861,12 @@ printflag.
 • The presentation of parallel GC work balance in +RTS -sis now expressed as a percentage value (with 100% being "perfect") 
 instead of a number from 1 to N, with N being the number of capabilities. 
 • The RTS now supports changing the number of capabilities at runtime with Control.Concurrent.setNumCapabilities: 
-Section 4.15.2. 
+Section |4.15.2.| 
 • The internal timer is now based on a monotonic clock in both the threaded and non-threaded RTS, on all tier-1 platforms. 
 1.5.2.6 Build system 
 • GHC >= 7.0 is now required for bootstrapping. 
-• Windows 64bit is now a supported platform. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 6 
-/ 
-37 
+• Windows 64bit is now a supported platform./ 
+
 
 
 1.5.3 Libraries 
@@ -2045,13 +904,8 @@ Similarly, a strict version of modifySTRefhas been added to Data.STRef.
 
 • A bug in the fingerprint calculation for TypeRep(#5962) has been fixed. 
 • A new function lookupEnvhas been added to System.Environment, which behaves like getEnv, but returns Nothingwhen 
-the environment variable is not defined, instead of throwing an exception. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 7 
-/ 
-37 
+the environment variable is not defined, instead of throwing an exception./ 
+
 
 
 • There is a new function getGCStatsEnabled in GHC.Stats, which checks whether GC stats have been enabled (for 
@@ -2086,13 +940,8 @@ applications include binary serialization, targets for efficient pretty-printers
 • Version number 1.2.0.0 (was 1.1.0.2) 
 • The dependency on the old-time package has been changed to time. 
 1.5.3.10 filepath 
-• Version number 1.3.0.1 (was 1.3.0.0) 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 8 
-/ 
-37 
+• Version number 1.3.0.1 (was 1.3.0.0)/ 
+
 
 
 1.5.3.11 ghc-prim 
@@ -2123,13 +972,8 @@ other modules.
 • Version number 1.1.0.1 (was 1.1.0.0) 
 1.5.3.19 process 
 • Version number 1.1.0.2 (was 1.1.0.1) 
-• Asynchronous exception bugs in readProcessand readProcessWithExitCodehave been fixed. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 9 
-/ 
-37 
+• Asynchronous exception bugs in readProcessand readProcessWithExitCodehave been fixed./ 
+
 
 
 1.5.3.20 template-haskell 
@@ -2162,13 +1006,8 @@ help long-running often-idle programs such as xmonad.
 • A bug in the RTS, which could cause programs to hang or segfault just before they terminate, has been fixed. 
 • It is now possible to build on Sparc/Solaris with a non-GNU linker. 
 • A bug which caused GHCi to fail to start on some 64bit Windows installations has been fixed. GHCi can now only use a 32bit 
-address space on 64bit Windows. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 10 
-/ 
-37 
+address space on 64bit Windows./ 
+
 
 
 • An interaction between Template Haskell and -fdefer-type-errorsthat could cause segfaults has been fixed. 
@@ -2198,24 +1037,13 @@ Version 7.6.3 10
 • Version number 2.6.0.1 (was 2.6.0.0) 
 • Fixed a bug which caused memory corruption when putEnvis used. 
 1.7 Release notes for version 7.6.3 
-The 7.6.3 release is a bugfix release. The changes relative to 7.6.2 are listed below. 
+The 7.6.3 release is a bugfix release. The changes relative to 7.6.2 are listed below. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 11 
-/ 
-37 
 
 
 1.7.1 GHC 
-• A bug which could cause GHC to accept or infer an incorrect type, resulting in a <<loop>>at runtime, has been fixed. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 12 
-/ 
-37 
+• A bug which could cause GHC to accept or infer an incorrect type, resulting in a <<loop>>at runtime, has been fixed./ 
+
 
 
 Chapter 2 
@@ -2225,7 +1053,7 @@ Using GHCi
 GHCi1 is GHC’s interactive environment, in which Haskell expressions can be interactively evaluated and programs can be interpreted. 
 If you’re familiar with Hugs, then you’ll be right at home with GHCi. However, GHCi also has support for interactively 
 loading compiled code, as well as supporting all2 the language extensions that GHC provides. . GHCi also includes an interactive 
-debugger (see Section 2.5). 
+debugger (see Section |2.5|). 
 
 2.1 Introduction to GHCi 
 Let’s start with an example GHCi session. You can fire up GHCi with the command ghci: 
@@ -2241,7 +1069,7 @@ Prelude>
 
 There may be a short pause while GHCi loads the prelude and standard libraries, after which the prompt is shown. As the banner 
 says, you can type :? to see the list of commands available, and a half line description of each of them. We’ll explain most of 
-these commands as we go along, and there is complete documentation for all the commands in Section 2.7. 
+these commands as we go along, and there is complete documentation for all the commands in Section |2.7.| 
 
 Haskell expressions can be typed at the prompt: 
 
@@ -2262,14 +1090,8 @@ Suppose we have the following Haskell source code, which we place in a file Main
 
 1The ‘i’ stands for “Interactive” 
 2except foreign export, at the moment 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 13 
 / 
-37 
+
 
 
 main = print (fac 20) 
@@ -2296,7 +1118,7 @@ Ok, modules loaded: Main.
 
 
 GHCi has loaded the Mainmodule, and the prompt has changed to “*Main>” to indicate that the current context for expressions 
-typed at the prompt is the Mainmodule we just loaded (we’ll explain what the *means later in Section 2.4.5). So we can now 
+typed at the prompt is the Mainmodule we just loaded (we’ll explain what the *means later in Section |2.4.5|). So we can now 
 type expressions involving the functions from Main.hs: 
 
 *Main> fac 17 
@@ -2322,7 +1144,7 @@ The search path for finding source files is specified with the -ioption on the G
 ghci -idir1:...:dirn 
 
 
-or it can be set using the :setcommand from within GHCi (see Section 2.8.2)4 
+or it can be set using the :setcommand from within GHCi (see Section |2.8.2|)4 
 
 One consequence of the way that GHCi follows dependencies to find modules to load is that every module must have a source 
 file. The only exception to the rule is modules that come from a package, including the Preludeand standard libraries such as 
@@ -2333,21 +1155,15 @@ files for the module, you’ll get an error message.
 If you make some changes to the source code and want GHCi to recompile the program, give the :reload command. The 
 program will be recompiled as necessary, with GHCi doing its best to avoid actually recompiling modules if their external 
 dependencies haven’t changed. This is the same mechanism we use to avoid re-compiling modules in the batch compilation 
-setting (see Section 4.7.8). 
+setting (see Section |4.7.8|). 
 
 3If you started up GHCi from the command line then GHCi’s current directory is the same as the current directory of the shell from which it was started. 
 If you started GHCi from the “Start” menu in Windows, then the current directory is probably something like C:\Documents and Settings\user 
 name. 
 
 4Note that in GHCi, and --make mode, the -i option is used to specify the search path for source files, whereas in standard batch-compilation mode the 
--ioption is used to specify the search path for interface files, see Section 4.7.3. 
+-ioption is used to specify the search path for interface files, see Section |4.7.3.| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 14 
-/ 
-37 
 
 
 2.3 Loading compiled code 
@@ -2415,14 +1231,8 @@ Compiling B ( B.hs, interpreted )
 Compiling C ( C.hs, interpreted ) 
 Compiling A ( A.hs, interpreted ) 
 Ok, modules loaded: A, B, C, D. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 15 
 / 
-37 
+
 
 
 We didn’t get the compiled version of C! What happened? Well, in GHCi a compiled module may only depend on other compiled 
@@ -2442,7 +1252,7 @@ Ok, modules loaded: A, B, C, D.
 
 
 The automatic loading of object files can sometimes lead to confusion, because non-exported top-level definitions of a module 
-are only available for use in expressions at the prompt when the module is interpreted (see Section 2.4.5). For this reason, you 
+are only available for use in expressions at the prompt when the module is interpreted (see Section |2.4.5|). For this reason, you 
 might sometimes want to force GHCi to load a module using the interpreter. This can be done by prefixing a * to the module 
 name or filename when using :load, for example 
 
@@ -2456,7 +1266,7 @@ of modules as object code and decide that you wanted to interpret one of them, i
 :add *M to specify that you want M to be interpreted (note that this might cause other modules to be interpreted too, because 
 compiled modules cannot depend on interpreted ones). 
 
-To always compile everything to object code and never use the interpreter, use the -fobject-codeoption (see Section 2.10). 
+To always compile everything to object code and never use the interpreter, use the -fobject-codeoption (see Section |2.10|). 
 
 HINT: since GHCi will only use a compiled object file if it can be sure that the compiled version is up-to-date, a good technique 
 when working on a large program is to occasionally run ghc --maketo compile the whole project (say before you go for lunch 
@@ -2484,13 +1294,8 @@ hello
 
 Furthermore, GHCi will print the result of the I/O action if (and only if): 
 
-• The result type is an instance of Show. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 16 
-/ 
-37 
+• The result type is an instance of Show./ 
+
 
 
 • The result type is not (). 
@@ -2548,14 +1353,8 @@ Prelude> add 1 2
 Prelude> 
 
 However, this quickly gets tedious when defining functions with multiple clauses, or groups of mutually recursive functions, 
-because the complete definition has to be given on a single line, using explicit braces and semicolons instead of layout: 
+because the complete definition has to be given on a single line, using explicit braces and semicolons instead of layout: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 17 
-/ 
-37 
 
 
 Prelude> let { f op n [] = n ; f opn (h:t) = h‘op‘ f op nt } 
@@ -2578,7 +1377,7 @@ Prelude> g (*) 1 [1..3]
 Such multiline commands can be used with any GHCi command, and the lines between :{ and :} are simply merged into 
 a single line for interpretation. That implies that each such group must form a single valid command when merged, and that 
 no layout rule is used. The main purpose of multiline commands is not to replace module loading but to make definitions in 
-.ghci-files (see Section 2.9) more readable and maintainable. 
+.ghci-files (see Section |2.9|) more readable and maintainable. 
 
 Any exceptions raised during the evaluation or execution of the statement are caught and printed by the GHCi command line 
 interface (for more information on exceptions, see the module Control.Exceptionin the libraries documentation). 
@@ -2620,14 +1419,8 @@ Prelude> :set +m
 Prelude> let x = 42 
 Prelude| y = 3 
 Prelude| 
-Prelude> 
+Prelude> / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 18 
-/ 
-37 
 
 
 Explicit braces and semicolons can be used instead of layout, as usual: 
@@ -2693,14 +1486,8 @@ Couldn’t match expected type ‘main::Interactive.T’
 with actual type ‘T’ 
 In the first argument of ‘f’, namely ‘A’ 
 In the expression: f A 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 19 
 / 
-37 
+
 
 
 In an equation for ‘it’: it = f A 
@@ -2765,14 +1552,8 @@ Note that the Preludeimport is marked as implicit. It can be overriden with an e
 module. 
 
 Another way to manipulate the scope is to use the :module command, which provides a way to do two things that cannot be 
-done with ordinary importdeclarations: 
+done with ordinary importdeclarations: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 20 
-/ 
-37 
 
 
 • :modulesupports the *modifier on modules, which opens the full top-level scope of a module, rather than just its exports. 
@@ -2826,14 +1607,8 @@ message “module M is not loaded”.
 2.4.5.2 Qualified names 
 To make life slightly easier, the GHCi prompt also behaves as if there is an implicit import qualified declaration for 
 every module in every package, and every module currently loaded into GHCi. This behaviour can be disabled with the flag 
--fno-implicit-import-qualified. 
+-fno-implicit-import-qualified. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 21 
-/ 
-37 
 
 
 2.4.5.3 The :main 
@@ -2900,14 +1675,8 @@ No instance for (Show (a -> a))
 arising from use of ‘print’ at <interactive>:1:0-1 
 Possible fix: add an instance declaration for (Show (a -> a)) 
 In the expression: print it 
-In a ’do’ expression: print it 
+In a ’do’ expression: print it / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 22 
-/ 
-37 
 
 
 The error message contains some clues as to the transformation happening internally. 
@@ -2942,7 +1711,7 @@ ghci> reverse ([] :: [Int])
 [] 
 
 
-However, it is tiresome for the user to have to specify the type, so GHCi extends Haskell’s type-defaulting rules (Section 4.3.4 
+However, it is tiresome for the user to have to specify the type, so GHCi extends Haskell’s type-defaulting rules (Section |4.3.4| 
 of the Haskell 2010 Report) as follows. The standard rules take each group of constraints (C1 a, C2 a, ..., Cn a)for 
 each type variable a, and defaults the type variable if 
 
@@ -2969,14 +1738,8 @@ prints ()rather than 0as the type is defaulted to ()rather than Integer.
 The motivation for the change is that it means IO aactions default to IO (), which in turn means that ghci won’t try to print 
 a result when running them. This is particularly important for printf, which has an instance that returns IO a. However, it 
 is only able to return undefined(the reason for the instance having this type is so that printf doesn’t require extensions to the 
-class system), so if the type defaults to Integerthen ghci gives an error when running a printf. 
+class system), so if the type defaults to Integerthen ghci gives an error when running a printf. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 23 
-/ 
-37 
 
 
 2.4.8 Using a custom interactive printing function 
@@ -3033,16 +1796,10 @@ suspend execution until an actual breakpoint is reached. When this happens, the 
 in the program. 
 There is currently no support for obtaining a “stack trace”, but the tracing and history features provide a useful second-best, which 
 will often be enough to establish the context of an error. For instance, it is possible to break automatically when an exception is 
-thrown, even if it is thrown from within compiled code (see Section 2.5.6). 
+thrown, even if it is thrown from within compiled code (see Section |2.5.6|). 
 
-5Note that packages only contain compiled code, so debugging a package requires finding its source and loading that directly. 
+5Note that packages only contain compiled code, so debugging a package requires finding its source and loading that directly. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 24 
-/ 
-37 
 
 
 2.5.1 Breakpoints and inspecting variables 
@@ -3111,14 +1868,8 @@ Cannot resolve unknown runtime types: a
 Use :print or :force to determine these types 
 
 6We originally provided bindings for all variables in scope, rather than just the free variables of the expression, but found that this affected performance 
-considerably, hence the current restriction to just the free variables. 
+considerably, hence the current restriction to just the free variables. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 25 
-/ 
-37 
 
 
 This is because qsort is a polymorphic function, and because GHCi does not carry type information at runtime, it cannot 
@@ -3136,7 +1887,7 @@ This isn’t particularly enlightening. What happened is that left is bound to an 
 thunk), and :print does not force any evaluation. The idea is that :print can be used to inspect values at a breakpoint 
 without any unfortunate side effects. It won’t force any evaluation, which could cause the program to give a different answer 
 than it would normally, and hence it won’t cause any exceptions to be raised, infinite loops, or further breakpoints to be triggered 
-(see Section 2.5.3). Rather than forcing thunks, :print binds each thunk to a fresh variable beginning with an underscore, in 
+(see Section |2.5.3|). Rather than forcing thunks, :print binds each thunk to a fresh variable beginning with an underscore, in 
 this case _t1. 
 
 The flag -fprint-evld-with-show instructs :print to reuse available Show instances when possible. This happens 
@@ -3184,14 +1935,8 @@ Finally, we can continue the current execution:
 
 [qsort.hs:2:15-46] *Main> :continue 
 Stopped at qsort.hs:2:15-46 
-_result :: [a] 
+_result :: [a] / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 26 
-/ 
-37 
 
 
 a :: a 
@@ -3233,7 +1978,7 @@ completely covers the line.
 When a breakpoint is set on a particular line and column, GHCi picks the smallest subexpression that encloses that location on 
 which to set the breakpoint. Note: GHC considers the TAB character to have a width of 1, wherever it occurs; in other words 
 it counts characters, rather than columns. This matches what some editors do, and doesn’t match others. The best advice is to 
-avoid tab characters in your source code altogether (see -fwarn-tabsin Section 4.8). 
+avoid tab characters in your source code altogether (see -fwarn-tabsin Section |4.8|). 
 
 If the module is omitted, then the most recently-loaded module is used. 
 
@@ -3256,14 +2001,8 @@ To delete a breakpoint, use the :deletecommand with the number given in the outp
 *Main> :show breaks 
 
 [1] Main qsort.hs:2:15-46 
-To delete all breakpoints at once, use :delete *. 
+To delete all breakpoints at once, use :delete *. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 27 
-/ 
-37 
 
 
 2.5.2 Single-stepping 
@@ -3326,14 +2065,8 @@ To abandon the current evaluation, use :abandon:
 
 ... [qsort.hs:(1,0)-(3,55)] *Main> :abandon 
 [qsort.hs:2:15-46] *Main> :abandon 
-*Main> 
+*Main> / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 28 
-/ 
-37 
 
 
 2.5.4 The _result 
@@ -3395,14 +2128,8 @@ We can now inspect the history of evaluation steps:
 -14 : qsort.hs:2:15-24 
 -15 : qsort.hs:2:15-46 
 -16 : qsort.hs:(1,0)-(3,55) 
-<end of history> 
+<end of history> / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 29 
-/ 
-37 
 
 
 To examine one of the steps in the history, use :back: 
@@ -3430,7 +2157,7 @@ configurable).
 Another common question that comes up when debugging is “where did this exception come from?”. Exceptions such as 
 those raised by error or head [] have no context information attached to them. Finding which particular call to head in 
 your program resulted in the error can be a painstaking process, usually involving Debug.Trace.trace, or compiling with 
-profiling and using Debug.Trace.traceStackor +RTS -xc(see Section 5.3). 
+profiling and using Debug.Trace.traceStackor +RTS -xc(see Section |5.3|). 
 
 The GHCi debugger offers a way to hopefully shed some light on these errors quickly and without modifying or recompiling the 
 source code. One way would be to set a breakpoint on the location in the source code that throws the exception, and then use 
@@ -3468,14 +2195,8 @@ as = ’b’ : ’c’ : (_t1::[Char])
 The exception itself is bound to a new variable, _exception. 
 
 Breaking on exceptions is particularly useful for finding out what your program was doing when it was in an infinite loop. Just 
-hit Control-C, and examine the history to find out what was going on. 
+hit Control-C, and examine the history to find out what was going on. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 30 
-/ 
-37 
 
 
 2.5.7 Example: inspecting functions 
@@ -3510,7 +2231,7 @@ GHCi tells us that, among other bindings, f is in scope. However, its type is no
 apply it to any arguments. Nevertheless, observe that the type of its first argument is the same as the type of x, and its result type 
 is shared with _result. 
 
-As we demonstrated earlier (Section 2.5.1), the debugger has some intelligence built-in to update the type of f whenever the 
+As we demonstrated earlier (Section |2.5.1|), the debugger has some intelligence built-in to update the type of f whenever the 
 types of xor _result are discovered. So what we do in this scenario is force xa bit, in order to recover both its type and the 
 argument part of f. 
 
@@ -3553,14 +2274,8 @@ b :: a
 
 *Main> :p b 
 
-b = Just 10 
+b = Just 10 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 31 
-/ 
-37 
 
 
 *Main> :t b 
@@ -3583,12 +2298,12 @@ evaluation and return to the prompt.
 The most common way this can happen is when you’re evaluating a CAF (e.g. main), stop at a breakpoint, and ask for the 
 value of the CAF at the prompt again. 
 
-• Implicit parameters (see Section 7.12.3) are only available at the scope of a breakpoint if there is an explicit type signature. 
+• Implicit parameters (see Section |7.12.3|) are only available at the scope of a breakpoint if there is an explicit type signature. 
 2.6 Invoking GHCi 
 GHCi is invoked with the command ghcior ghc --interactive. One or more modules or filenames can also be specified 
 on the command line; this instructs GHCi to load the specified modules or filenames (and all the modules they depend on), just 
 as if you had said :load modules 
-at the GHCi prompt (see Section 2.7). For example, to start GHCi and load the program 
+at the GHCi prompt (see Section |2.7|). For example, to start GHCi and load the program 
 whose topmost module is in the file Main.hs, we could say: 
 
 $ ghci Main.hs 
@@ -3597,7 +2312,7 @@ Most of the command-line options accepted by GHC (see Chapter 4) also make sense
 make sense are mostly obvious. 
 
 2.6.1 Packages 
-Most packages (see Section 4.9.1) are available without needing to specify any extra flags at all: they will be automatically loaded 
+Most packages (see Section |4.9.1|) are available without needing to specify any extra flags at all: they will be automatically loaded 
 the first time they are needed. 
 
 For hidden packages, however, you need to request the package be loaded by using the -packageflag: 
@@ -3614,20 +2329,14 @@ The following command works to load new packages into a running GHCi:
 Prelude> :set -package name 
 
 
-But note that doing this will cause all currently loaded modules to be unloaded, and you’ll be dumped back into the Prelude. 
+But note that doing this will cause all currently loaded modules to be unloaded, and you’ll be dumped back into the Prelude. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 32 
-/ 
-37 
 
 
 2.6.2 Extra libraries 
 Extra libraries may be specified on the command line using the normal -llib 
 option. (The term library here refers to libraries 
-of foreign object code; for using libraries of Haskell source code, see Section 2.2.1.) For example, to load the “m” library: 
+of foreign object code; for using libraries of Haskell source code, see Section |2.2.1.|) For example, to load the “m” library: 
 
 $ ghci -lm 
 
@@ -3644,7 +2353,7 @@ can’t find the library.
 GHCi can also load plain object files (.oor .objdepending on your platform) from the command-line. Just add the name the 
 object file to the command line. 
 
-Ordering of -loptions matters: a library should be mentioned before the libraries it depends on (see Section 4.12.6). 
+Ordering of -loptions matters: a library should be mentioned before the libraries it depends on (see Section |4.12.6|). 
 
 2.7 GHCi commands 
 GHCi commands all begin with ‘:’ and consist of a single command name followed by zero or more parameters. The command 
@@ -3660,7 +2369,7 @@ module will be loaded if available, or otherwise the module will be compiled to 
 module to be loaded as byte-code. 
 
 :back 
-Travel back one step in the history. See Section 2.5.5. See also: :trace, :history, :forward. 
+Travel back one step in the history. See Section |2.5.5.| See also: :trace, :history, :forward. 
 
 :break 
 [identifier 
@@ -3668,12 +2377,12 @@ Travel back one step in the history. See Section 2.5.5. See also: :trace, :histo
 line 
 [column]] 
 Set a breakpoint on the specified function or line and column. 
-See Section 2.5.1.1. 
+See Section |2.5.1.1.| 
 
 :browse[!] [[*]module] ... Displays the identifiers exported by the module module, which must be either loaded into GHCi 
 or be a member of a package. If module 
 is omitted, the most recently-loaded module is used. 
-Like all other GHCi commands, the output is always displayed in the current GHCi scope (Section 2.4.5). 
+Like all other GHCi commands, the output is always displayed in the current GHCi scope (Section |2.4.5|). 
 There are two variants of the browse command: 
 
 • If the *symbol is placed before the module name, then all the identifiers in scope in module 
@@ -3691,14 +2400,8 @@ Prelude> :browse! Data.Maybe
 Data.Maybe.catMaybes :: [Maybe a] -> [a] 
 Data.Maybe.fromJust :: Maybe a -> a 
 Data.Maybe.fromMaybe :: a -> Maybe a -> a 
-Data.Maybe.isJust :: Maybe a -> Bool 
+Data.Maybe.isJust :: Maybe a -> Bool / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 33 
-/ 
-37 
 
 
 Data.Maybe.isNothing :: Maybe a -> Bool 
@@ -3712,7 +2415,7 @@ Nothing :: Maybe a
 maybe :: b -> (a -> b) -> Maybe a ->b 
 
 This output shows that, in the context of the current session (ie in the scope of Prelude), the first group of items 
-from Data.Maybeare not in scope (althought they are available in fully qualified form in the GHCi session -see Section 
+from Data.Maybeare not in scope (althought they are available in fully qualified form in the GHCi session -see Section ||
 2.4.5), whereas the second group of items are in scope (via Prelude) and are therefore available either unqualified, 
 or with a Prelude. qualifier. 
 
@@ -3782,14 +2485,8 @@ Prelude> :. cmds.ghci
 Notice that we named the command :., by analogy with the ‘.’ Unix shell command that does the same thing. 
 
 Typing :def on its own lists the currently-defined macros. Attempting to redefine an existing command name results in 
-an error unless the :def! form is used, in which case the old command with that name is silently overwritten. 
+an error unless the :def! form is used, in which case the old command with that name is silently overwritten. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 34 
-/ 
-37 
 
 
 :delete 
@@ -3819,7 +2516,7 @@ evaluates each thunk that it encounters while traversing the value. This may cau
 breakpoints (which are ignored, but displayed). 
 
 :forward 
-Move forward in the history. See Section 2.5.5. See also: :trace, :history, :back. 
+Move forward in the history. See Section |2.5.5.| See also: :trace, :history, :back. 
 
 :help 
 , :? 
@@ -3831,7 +2528,7 @@ Repeat the previous command.
 :history 
 [num] 
 Display the history of evaluation steps. With a number, displays that many steps (default: 20). For use 
-with :trace; see Section 2.5.5. 
+with :trace; see Section |2.5.5.| 
 
 :info 
 name 
@@ -3887,14 +2584,8 @@ Prelude> :main foo bar
 ["foo","bar"] 
 
 We can also quote arguments which contains characters like spaces, and they are treated like Haskell strings, or we can 
-just use Haskell list syntax: 
+just use Haskell list syntax: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 35 
-/ 
-37 
 
 
 Prelude> :main foo "bar baz" 
@@ -3924,7 +2615,7 @@ bar
 mod 
 Sets or modifies the current context for statements typed at 
 the prompt. The form import mod 
-is equivalent to :module +mod. See Section 2.4.5 for more details. 
+is equivalent to :module +mod. See Section |2.4.5| for more details. 
 
 :print 
 names 
@@ -3932,7 +2623,7 @@ names
 partially known, which might be the case for local variables with polymorphic types at a breakpoint. While inspecting the 
 runtime value, :print attempts to reconstruct the type of the value, and will elaborate the type in GHCi’s environment 
 if possible. If any unevaluated components (thunks) are encountered, then :print binds a fresh variable with a name 
-beginning with _tto each thunk. See Section 2.5.1 for more information. See also the :sprintcommand, which works 
+beginning with _tto each thunk. See Section |2.5.1| for more information. See also the :sprintcommand, which works 
 like :printbut does not bind new variables. 
 
 :quit 
@@ -3952,7 +2643,7 @@ Executes the lines of a file as a series of GHCi commands. This command is compa
 multiline statements as set by :set +m 
 
 :set 
-[option...] Sets various options. See Section 2.8 for a list of available options and Section 4.20.10 for a list of GHCispecific 
+[option...] Sets various options. See Section |2.8| for a list of available options and Section |4.20.10| for a list of GHCispecific 
 flags. The :set command by itself shows which options are currently set. It also lists the current dynamic flag 
 settings, with GHCi-specific flags listed separately. 
 
@@ -3992,20 +2683,14 @@ of :defand :cmdyou can use :set stopto implement conditional breakpoints:
 *Main> :def cond \expr -> return (":cmd if (" ++ expr ++ ") then return \"\" else  . 
 return \":continue\"") 
 
-*Main> :set stop 0 :cond (x < 3) 
+*Main> :set stop 0 :cond (x < 3) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 36 
-/ 
-37 
 
 
 Ignoring breakpoints for a specified number of iterations is also possible using similar techniques. 
 :seti 
 [option...] Like :set, but options set with :seti affect only expressions and commands typed at the prompt, and 
-not modules loaded with :load(in contrast, options set with :setapply everywhere). See Section 2.8.3. 
+not modules loaded with :load(in contrast, options set with :setapply everywhere). See Section |2.8.3.| 
 Without any arguments, displays the current set of options that are applied to expressions and commands typed at the 
 
 prompt. 
@@ -4044,7 +2729,7 @@ a single-step.
 :trace 
 [expr] 
 Evaluates the given expression (or from the last breakpoint if no expression is given), and additionally logs 
-the evaluation steps for later inspection using :history. See Section 2.5.5. 
+the evaluation steps for later inspection using :history. See Section |2.5.5.| 
 :type 
 expression 
 Infers and prints the type of expression, including explicit forall quantifiers for polymorphic types. 
@@ -4055,7 +2740,7 @@ name
 Undefines the user-defined command name 
 (see :defabove). 
 :unset 
-option... Unsets certain options. See Section 2.8 for a list of available options. 
+option... Unsets certain options. See Section |2.8| for a list of available options. 
 :! 
 command... Executes the shell command command. 
 
@@ -4074,14 +2759,8 @@ The available GHCi options are:
 
 +m 
 Enable parsing of multiline commands. A multiline command is prompted for when the current input line contains open 
-layout contexts (see Section 2.4.3). 
+layout contexts (see Section |2.4.3|). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 37 
-/ 
-37 
 
 
 +r 
@@ -4107,12 +2786,12 @@ you would say:
 
 Prelude> :set -fwarn-missing-signatures 
 
-Any GHC command-line option that is designated as dynamic (see the table in Section 4.20), may be set using :set. To unset 
+Any GHC command-line option that is designated as dynamic (see the table in Section |4.20|), may be set using :set. To unset 
 an option, you can set the reverse option: 
 
 Prelude> :set -fno-warn-incomplete-patterns -XNoMultiParamTypeClasses 
 
-Section 4.20 lists the reverse for each option where applicable. 
+Section |4.20| lists the reverse for each option where applicable. 
 
 Certain static options (-package, -I, -i, and -l in particular) will also work, but some may not take effect until the next 
 reload. 
@@ -4142,19 +2821,13 @@ other dynamic, non-language, flag settings:
 warning settings: 
 
 Note that the option -XExtendedDefaultRulesis on, because we apply special defaulting rules to expressions typed at the 
-prompt (see Section 2.4.7). 
+prompt (see Section |2.4.7|). 
 
 It is often useful to change the language options for expressions typed at the prompt only, without having that option apply to 
 loaded modules too. A good example is 
 
-:seti -XNoMonomorphismRestriction 
+:seti -XNoMonomorphismRestriction / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 38 
-/ 
-37 
 
 
 It would be undesirable if -XNoMonomorphismRestriction were to apply to loaded modules too: that might cause a 
@@ -4179,7 +2852,7 @@ and Settings/user/Application Data
 4. 
 $HOME/.ghci 
 The ghci.conf file is most useful for turning on favourite options (eg. :set +s), and defining useful macros. Note: when 
-setting language options in this file it is usually desirable to use :setirather than :set(see Section 2.8.3). 
+setting language options in this file it is usually desirable to use :setirather than :set(see Section |2.8.3|). 
 
 Placing a .ghcifile in a directory with a Haskell project is a useful way to set certain project-wide options so you don’t have to 
 type them every time you start GHCi: eg. if your project uses multi-parameter type classes, scoped type variables, and CPP, and 
@@ -4214,14 +2887,8 @@ Read a specific file after the usual startup files. Maybe be specified repeatedl
 By default, GHCi compiles Haskell source code into byte-code that is interpreted by the runtime system. GHCi can also compile 
 Haskell code to object code: to turn on this feature, use the -fobject-code flag either on the command line or with :set 
 (the option -fbyte-coderestores byte-code compilation again). Compiling to object code takes longer, but typically the code 
-will execute 10-20 times faster than byte-code. 
+will execute 10-20 times faster than byte-code. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 39 
-/ 
-37 
 
 
 Compiling to object code inside GHCi is particularly useful if you are developing a compiled application, because the :reload 
@@ -4258,7 +2925,7 @@ You can make stdin reset itself after every evaluation by giving GHCi the comman
 stdin is just a top-level expression that can be reverted to its unevaluated state in the same way as any other top-level 
 expression (CAF). 
 
-I can’t use Control-C to interrupt computations in GHCi on Windows. See Section 13.2. 
+I can’t use Control-C to interrupt computations in GHCi on Windows. See Section |13.2.| 
 
 The default buffering mode is different in GHCi to GHC. In GHC, the stdout handle is line-buffered by default. However, in 
 GHCi we turn off the buffering on stdout, because this is normally what you want in an interpreter: output appears as it is 
@@ -4266,14 +2933,8 @@ generated.
 
 If you want line-buffered behaviour, as in GHC, you can start your program thus: 
 
-main = do { hSetBuffering stdout LineBuffering; ... } 
+main = do { hSetBuffering stdout LineBuffering; ... } / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 40 
-/ 
-37 
 
 
 Chapter 3 
@@ -4293,14 +2954,8 @@ runghc will try to work out where the boundaries between [runghc flags] and [GHC
 and moduleare, but you can use a --flag if it doesn’t get it right. For example, runghc ---fwarn-unused-bindings 
 Foo means runghc won’t try to use warn-unused-bindingsas the path to GHC, but instead will pass the flag to GHC. If 
 a GHC flag doesn’t start with a dash then you need to prefix it with --ghc-arg=or runghc will think that it is the program to 
-run, e.g. runghc -package-db --ghc-arg=foo.conf Main.hs. 
+run, e.g. runghc -package-db --ghc-arg=foo.conf Main.hs. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 41 
-/ 
-37 
 
 
 Chapter 4 
@@ -4341,14 +2996,8 @@ Data/Person.hson Unix/Linux/Mac, or Data\Person.hson Windows.
 
 4.2 Options overview 
 GHC’s behaviour is controlled by options, which for historical reasons are also sometimes referred to as command-line flags or 
-arguments. Options can be specified in three ways: 
+arguments. Options can be specified in three ways: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 42 
-/ 
-37 
 
 
 4.2.1 Command-line arguments 
@@ -4373,9 +3022,9 @@ module X where
 ... 
 
 
-OPTIONS_GHCis a file-header pragma (see Section 7.18). 
+OPTIONS_GHCis a file-header pragma (see Section |7.18|). 
 
-Only dynamic flags can be used in an OPTIONS_GHCpragma (see Section 4.3). 
+Only dynamic flags can be used in an OPTIONS_GHCpragma (see Section |4.3|). 
 
 Note that your command shell does not get to the source file options, they are just included literally in the array of command-line 
 arguments the compiler maintains internally, so you’ll be desperately disappointed if you try to glob etc. inside OPTIONS_GHC. 
@@ -4388,13 +3037,13 @@ S_GHCpragma is the Right Thing. (If you use -keep-hc-fileand have OPTION flags i
 will get put into the generated .hc file). 
 
 4.2.3 Setting options in GHCi 
-Options may also be modified from within GHCi, using the :setcommand. See Section 2.8 for more details. 
+Options may also be modified from within GHCi, using the :setcommand. See Section |2.8| for more details. 
 
 4.3 Static, Dynamic, and Mode options 
 Each of GHC’s command line options is classified as static, dynamic or mode: 
 
 Mode flags For example, --makeor -E. There may only be a single mode flag on the command line. The available modes are 
-listed in Section 4.5. 
+listed in Section |4.5.| 
 
 Dynamic Flags Most non-mode flags fall into this category. A dynamic flag may be used on the command line, in a OPTION-
 S_GHCpragma in a source file, or set using :setin GHCi. 
@@ -4402,17 +3051,11 @@ S_GHCpragma in a source file, or set using :setin GHCi.
 Static Flags A few flags are "static", which means they can only be used on the command-line, and remain in force over the 
 entire GHC/GHCi run. 
 
-The flag reference tables (Section 4.20) lists the status of each flag. 
+The flag reference tables (Section |4.20|) lists the status of each flag. 
 
 There are a few flags that are static except that they can also be used with GHCi’s :setcommand; these are listed as “static/:set” 
-in the table. 
+in the table. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 43 
-/ 
-37 
 
 
 4.4 Meaningful file suffixes 
@@ -4444,7 +3087,7 @@ Files with other suffixes (or without suffixes) are passed straight to the linke
 GHC’s behaviour is firstly controlled by a mode flag. Only one of these flags may be given, but it does not necessarily need to 
 be the first option on the command-line. 
 
-If no mode flag is present, then GHC will enter make mode (Section 4.5.1) if there are any Haskell source files given on the 
+If no mode flag is present, then GHC will enter make mode (Section |4.5.1|) if there are any Haskell source files given on the 
 command line, or else it will link the objects named on the command line to produce an executable. 
 
 The available mode flags are: 
@@ -4458,7 +3101,7 @@ ghc
 --make 
 In this mode, GHC will build a multi-module Haskell program automatically, figuring out dependencies for 
 itself. If you have a straightforward Haskell program, this is likely to be much easier, and faster, than using make. Make 
-mode is described in Section 4.5.1. 
+mode is described in Section |4.5.1.| 
 
 This mode is the default if there are any Haskell source files mentioned on the command line, and in this case the --make 
 option can be omitted. 
@@ -4467,7 +3110,7 @@ ghc
 -e 
 expr 
 Expression-evaluation mode. This is very similar to interactive mode, except that there is a single expression 
-to evaluate (expr) which is given on the command line. See Section 4.5.2 for more details. 
+to evaluate (expr) which is given on the command line. See Section |4.5.2| for more details. 
 
 ghc 
 -E 
@@ -4480,16 +3123,16 @@ ghc
 This is the traditional batch-compiler mode, in which GHC can compile source files 
 one at a time, or link objects together into an executable. This mode also applies if there is no other mode flag specified on 
 the command line, in which case it means that the specified files should be compiled and then linked to form a program. 
-See Section 4.5.3. 
+See Section |4.5.3.| 
 
 ghc 
 -M 
 Dependency-generation mode. In this mode, GHC can be used to generate dependency information suitable for use 
-in a Makefile. See Section 4.7.11. 
+in a Makefile. See Section |4.7.11.| 
 
 ghc 
 --mk-dll 
-DLL-creation mode (Windows only). See Section 13.6.1. 
+DLL-creation mode (Windows only). See Section |13.6.1.| 
 
 ghc 
 --help 
@@ -4502,14 +3145,8 @@ ghc
 file 
 Read the interface in file 
 and dump it as text to stdout. For example ghc --show-iface 
-M.hi. 
+M.hi. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 44 
-/ 
-37 
 
 
 ghc 
@@ -4534,7 +3171,7 @@ Print the path to GHC’s library directory. This is the top of the directory tree
 
 
 libraries, interfaces, and include files (usually something like /usr/local/lib/ghc-5.04 on Unix). This is the 
-value of $libdirin the package configuration file (see Section 4.9). 
+value of $libdirin the package configuration file (see Section |4.9|). 
 
 4.5.1 Using ghc --make 
 In this mode, GHC will build a multi-module Haskell program by following dependencies from one or more root modules 
@@ -4561,7 +3198,7 @@ file.
 • GHC re-calculates the dependencies each time it is invoked, so the dependencies never get out of sync with the source. 
 Any of the command-line options described in the rest of this chapter can be used with --make, but note that any options you 
 give on the command line will apply to all the source files compiled, so if you want any options to apply to a single source file 
-only, you’ll need to use an OPTIONS_GHCpragma (see Section 4.2.2). 
+only, you’ll need to use an OPTIONS_GHCpragma (see Section |4.2.2|). 
 
 If the program needs to be linked with additional objects (say, some auxiliary C code), then the object files can be given on the 
 command line and GHC will include them when linking the executable. 
@@ -4571,21 +3208,15 @@ there is no source file, even if you have an object and an interface file for th
 this rule is for package modules, which may or may not have source files. 
 
 The source files for the program don’t all need to be in the same directory; the -i option can be used to add directories to the 
-search path (see Section 4.7.3). 
+search path (see Section |4.7.3|). 
 
 4.5.2 Expression evaluation mode 
 This mode is very similar to interactive mode, except that there is a single expression to evaluate which is specified on the 
 command line as an argument to the -eoption: 
 
 ghc -e expr 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 45 
 / 
-37 
+
 
 
 Haskell source files may be named on the command line, and they will be loaded exactly as in interactive mode. The expression 
@@ -4624,9 +3255,9 @@ ghc -c Foo.hs
 to compile the Haskell source file Foo.hsto an object file Foo.o. 
 
 
-Note: What the Haskell compiler proper produces depends on what backend code generator is used. See Section 4.11 for more 
+Note: What the Haskell compiler proper produces depends on what backend code generator is used. See Section |4.11| for more 
 details. 
-Note: C pre-processing is optional, the -cppflag turns it on. See Section 4.12.3 for more details. 
+Note: C pre-processing is optional, the -cppflag turns it on. See Section |4.12.3| for more details. 
 Note: The option -Eruns just the pre-processing passes of the compiler, dumping the result in a file. 
 
 
@@ -4640,14 +3271,8 @@ Causes all files following this option on the command line to be processed as if
 example, to compile a Haskell module in the file M.my-hs, use ghc -c -x hs M.my-hs. 
 
 4.6 Help and verbosity options 
-See also the --help, --version, --numeric-version, and --print-libdirmodes in Section 4.5. 
+See also the --help, --version, --numeric-version, and --print-libdirmodes in Section |4.5.| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 46 
-/ 
-37 
 
 
 -v 
@@ -4701,30 +3326,24 @@ Note that line numbers start counting at one, but column numbers start at zero. 
 convention (i.e. this is how Emacs does it). 
 
 -Hsize 
-Set the minimum size of the heap to size. This option is equivalent to +RTS -Hsize, see Section 4.17.3. 
+Set the minimum size of the heap to size. This option is equivalent to +RTS -Hsize, see Section |4.17.3.| 
 
 -Rghc-timing 
 Prints a one-line summary of timing statistics for the GHC run. This option is equivalent to +RTS -tstderr, 
-see Section 4.17.3. 
+see Section |4.17.3.| 
 
 4.7 Filenames and separate compilation 
 This section describes what files GHC expects to find, what files it creates, where these files are stored, and what options affect 
 this behaviour. 
 
-Note that this section is written with hierarchical modules in mind (see Section 7.3.3); hierarchical modules are an extension to 
+Note that this section is written with hierarchical modules in mind (see Section |7.3.3|); hierarchical modules are an extension to 
 Haskell 98 which extends the lexical syntax of module names to include a dot ‘.’. Non-hierarchical modules are thus a special 
 case in which none of the module names contain dots. 
 
 Pathname conventions vary from system to system. In particular, the directory separator is ‘/’ on Unix systems and ‘\’ on 
 Windows systems. In the sections that follow, we shall consistently use ‘/’ as the directory separator; substitute this for the 
-appropriate character for your system. 
+appropriate character for your system. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 47 
-/ 
-37 
 
 
 4.7.1 Haskell source files 
@@ -4745,7 +3364,7 @@ The object file, which normally ends in a .osuffix, contains the compiled code f
 
 The interface file, which normally ends in a .hi suffix, contains the information that GHC needs in order to compile further 
 modules that depend on this module. It contains things like the types of exported functions, definitions of data types, and so on. 
-It is stored in a binary format, so don’t try to read one; use the --show-ifaceoption instead (see Section 4.7.7). 
+It is stored in a binary format, so don’t try to read one; use the --show-ifaceoption instead (see Section |4.7.7|). 
 
 You should think of the object file and the interface file as a pair, since the interface file is in a sense a compiler-readable 
 description of the contents of the object file. If the interface file and object file get out of sync for any reason, then the compiler 
@@ -4773,7 +3392,7 @@ For example, if GHC compiles the module A.B.Cin the file src/A/B/C.hs, with no -
 file will be put in src/A/B/C.hiand the object file in src/A/B/C.o. 
 
 For any module that is imported, GHC requires that the name of the module in the import statement exactly matches the name 
-of the module in the interface file (or source file) found using the strategy specified in Section 4.7.3. This means that for most 
+of the module in the interface file (or source file) found using the strategy specified in Section |4.7.3.| This means that for most 
 modules, the source file name should match the module name. 
 
 However, note that it is reasonable to have a module Main in a file named foo.hs, but this only works because GHC never 
@@ -4786,14 +3405,8 @@ file can be specified directly using the -ohioption.
 4.7.3 The search path 
 In your program, you import a module Foo by saying import Foo. In --make mode or GHCi, GHC will look for a source 
 file for Foo and arrange to compile it first. Without --make, GHC will look for the interface file for Foo, which should have 
-been created by an earlier compilation of Foo. GHC uses the same strategy in each of these cases for finding the appropriate file. 
+been created by an earlier compilation of Foo. GHC uses the same strategy in each of these cases for finding the appropriate file. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 48 
-/ 
-37 
 
 
 This strategy is as follows: GHC keeps a list of directories called the search path. For each of these directories, it tries appending 
@@ -4818,7 +3431,7 @@ This flag appends a colon-separated list of dirsto the search path.
 resets the search path back to nothing. 
 
 This isn’t the whole story: GHC also looks for modules in pre-compiled libraries, known as packages. See the section on 
-packages (Section 4.9) for details. 
+packages (Section |4.9|) for details. 
 
 4.7.4 Redirecting the compilation output(s) 
 -o 
@@ -4867,14 +3480,8 @@ The object files, Foo.o, Bar.o, and Bumble.o would be put into a subdirectory na
 executing machine (x86, mips, etc). 
 Note that the -odiroption does not affect where the interface files are put; use the -hidiroption for that. In the above 
 example, they would still be put in parse/Foo.hi, parse/Bar.hi, and gurgle/Bumble.hi. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 49 
 / 
-37 
+
 
 
 -ohi 
@@ -4899,7 +3506,7 @@ Redirects all generated interface files into dir, instead of the default.
 -stubdir 
 dir 
 Redirects all generated FFI stub files into dir. Stub files are generated when the Haskell source contains 
-a foreign export or foreign import "&wrapper" declaration (see Section 8.2.1). The -stubdir option 
+a foreign export or foreign import "&wrapper" declaration (see Section |8.2.1|). The -stubdir option 
 behaves in exactly the same way as -odirand -hidirwith respect to hierarchical modules. 
 
 -dumpdir 
@@ -4924,7 +3531,7 @@ whatever you specify. We use this when compiling libraries, so that objects for 
 clobber the normal ones. 
 
 Similarly, the -hisufsuffix 
-will change the .hifile suffix for non-system interface files (see Section 4.7.7). 
+will change the .hifile suffix for non-system interface files (see Section |4.7.7|). 
 Finally, the option -hcsufsuffix 
 will change the .hcfile suffix for compiler-generated intermediate C files. 
 The -hisuf/-osufgame is particularly useful if you want to compile a program both with and without profiling, in the 
@@ -4959,15 +3566,9 @@ Keep intermediate .sfiles.
 
 -keep-tmp-files 
 Instructs the GHC driver not to delete any of its temporary files, which it normally keeps in /tmp (or 
-possibly elsewhere; see Section 4.7.6). Running GHC with -v will show you what temporary files were generated along 
-the way. 
+possibly elsewhere; see Section |4.7.6|). Running GHC with -v will show you what temporary files were generated along 
+the way. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 50 
-/ 
-37 
 
 
 4.7.6 Redirecting temporary files 
@@ -5003,7 +3604,7 @@ labour.
 file 
 where file 
 is the name of an interface file, dumps the contents of that interface in a human-readable 
-(ish) format. See Section 4.5. 
+(ish) format. See Section |4.5.| 
 
 4.7.8 The recompilation checker 
 -fforce-recomp 
@@ -5026,14 +3627,8 @@ the recompilation checking is on, GHC will be clever. It compares the fingerprin
 fingerprints on the things it needed last time (gleaned from the interface file of the module being compiled); if they are all the 
 same it stops compiling early in the process saying “Compilation IS NOT required”. What a beautiful sight! 
 
-You can read about how all this works in the GHC commentary. 
+You can read about how all this works in the GHC commentary. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 51 
-/ 
-37 
 
 
 4.7.9 How to compile mutually recursive modules 
@@ -5089,17 +3684,12 @@ compiled, the two are compared, and an error is reported if the two are inconsis
 interface file A.hi-boot, and an pseudo-object file A.o-boot: 
 – 
 The pseudo-object file A.o-bootis empty (don’t link it!), but it is very useful when using a Makefile, to record when the 
-A.hi-bootwas last brought up to date (see Section 4.7.10). 
+A.hi-bootwas last brought up to date (see Section |4.7.10|). 
 – 
 The hi-bootgenerated by compiling a hs-bootfile is in the same machine-generated binary format as any other GHC-
 generated interface file (e.g. B.hi). You can display its contents with ghc --show-iface. If you specify a directory for 
-interface files, the -ohidirflag, then that affects hi-bootfiles too. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 52 
-/ 
-37 
+interface files, the -ohidirflag, then that affects hi-bootfiles too./ 
+
 
 
 • If hs-boot files are considered distinct from their parent source files, and if a {-# SOURCE #-}import is considered to refer 
@@ -5125,12 +3715,12 @@ double :: Int -> Int
 and everything that follows. For example: 
 data Ta b 
 
-In a source program this would declare TA to have no constructors (a GHC extension: see Section 7.4.1), but in an hi-boot file 
+In a source program this would declare TA to have no constructors (a GHC extension: see Section |7.4.1|), but in an hi-boot file 
 it means "I don’t know or care what the constructors are". This is the most common form of data type declaration, because 
 it’s easy to get right. You can also write out the constructors but, if you do so, you must write it out precisely as in its real 
 definition. 
 
-If you do not write out the constructors, you may need to give a kind annotation (Section 7.12.4), to tell GHC the kind of the 
+If you do not write out the constructors, you may need to give a kind annotation (Section |7.12.4|), to tell GHC the kind of the 
 type variable, if it is not "*". (In source files, this is worked out from the way the type variable is used in the constructors.) For 
 example: 
 
@@ -5154,14 +3744,8 @@ OBJS = Main.o Foo.o Bar.o
 
 
 .SUFFIXES : .o .hs .hi .lhs .hc .s 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 53 
 / 
-37 
+
 
 
 cool_pgm : $(OBJS) 
@@ -5207,7 +3791,7 @@ Foo.o Foo.hc Foo.s : Baz.hi # Foo imports Baz
 
 They tell make that if any of Foo.o, Foo.hc or Foo.s have an earlier modification date than Baz.hi, then the out-of-date 
 file must be brought up to date. To bring it up to date, makelooks for a rule to do so; one of the preceding suffix rules does the 
-job nicely. These dependencies can be generated automatically by ghc; see Section 4.7.11 
+job nicely. These dependencies can be generated automatically by ghc; see Section |4.7.11| 
 
 4.7.11 Dependency generation 
 Putting inter-dependencies of the form Foo.o : Bar.hiinto your Makefileby hand is rather error-prone. Don’t worry, 
@@ -5221,14 +3805,8 @@ Now, before you start compiling, and any time you change the importsin your prog
 cool_pgm. The command ghc -M will append the needed dependencies to your Makefile. 
 
 In general, ghc -M Foo does the following. For each module M in the set Foo plus all its imports (transitively), it adds to the 
-Makefile: 
+Makefile: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 54 
-/ 
-37 
 
 
 • A line recording the dependence of the object file on the source file. 
@@ -5239,7 +3817,7 @@ M.o : M.hs
 M.o : X.hi 
 • For each import declaration import {-# SOURCE #-} Xin M, a line recording the dependence of Mon X: 
 M.o : X.hi-boot 
-(See Section 4.7.9 for details of hi-bootstyle interface files.) 
+(See Section |4.7.9| for details of hi-bootstyle interface files.) 
 
 If Mimports multiple modules, then there will be multiple lines with M.oas the target. 
 
@@ -5266,7 +3844,7 @@ Display a list of the cycles in the module graph. This is useful when trying to 
 
 -v2 
 Print a full list of the module dependencies to stdout. (This is the standard verbosity flag, so the list will also be displayed 
-with -v3and -v4; Section 4.6.) 
+with -v3and -v4; Section |4.6.|) 
 
 -dep-makefile 
 file 
@@ -5292,14 +3870,8 @@ package modules (including Prelude, and all other standard Haskell libraries). D
 into packages; dependencies are only generated for home-package modules on external-package modules directly imported 
 by the home package module. This option is normally only used by the various system libraries. 
 
-1This is a change in behaviour relative to 6.2 and earlier. 
+1This is a change in behaviour relative to 6.2 and earlier. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 55 
-/ 
-37 
 
 
 4.7.12 Orphan modules and instance declarations 
@@ -5309,7 +3881,7 @@ read the interface files of every module below M, just in case they contain an i
 be a disaster in practice, so GHC tries to be clever. 
 
 In particular, if an instance declaration is in the same module as the definition of any type or class mentioned in the head of the 
-instance declaration (the part after the “=>”; see Section 7.6.3.2), then GHC has to visit that interface file anyway. Example: 
+instance declaration (the part after the “=>”; see Section |7.6.3.2|), then GHC has to visit that interface file anyway. Example: 
 
 module A where 
 instance C a => D (T a) where ... 
@@ -5363,14 +3935,8 @@ If you use the flag -fwarn-orphans, GHC will warn you if you are creating an orp
 switch the warning off with -fno-warn-orphans, and -Werrorwill make the compilation fail if the warning is issued. 
 
 You can identify an orphan module by looking in its interface file, M.hi, using the --show-iface mode. If there is a [orphan 
-module]on the first line, GHC considers it an orphan module. 
+module]on the first line, GHC considers it an orphan module. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 56 
-/ 
-37 
 
 
 4.8 Warnings and sanity-checking 
@@ -5400,7 +3966,7 @@ option on the command line.
 
 -fdefer-type-errors: Defer as many type errors as possible until runtime. At compile time you get a warning (instead 
 of an error). At runtime, if you use a value that depends on a type error, you get a runtime error; but you can run any 
-type-correct parts of your code just fine. See Section 7.13 
+type-correct parts of your code just fine. See Section |7.13| 
 
 -fhelpful-errors: When a name or package is not found in scope, make suggestions for the name or package you might 
 have meant instead. 
@@ -5414,7 +3980,7 @@ HUGSand DERIVE.
 This option is on by default. 
 
 -fwarn-warnings-deprecations: Causes a warning to be emitted when a module, function or type with a WARNING 
-or DEPRECATED pragma is used. See Section 7.18.4 for more details on the pragmas. 
+or DEPRECATED pragma is used. See Section |7.18.4| for more details on the pragmas. 
 This option is on by default. 
 
 -fwarn-deprecated-flags: Causes a warning to be emitted when a deprecated commandline flag is used. 
@@ -5430,14 +3996,8 @@ foreign import "f" f :: FunPtr t
 
 on the grounds that it probably should be 
 
-foreign import "&f" f :: FunPtr t 
+foreign import "&f" f :: FunPtr t / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 57 
-/ 
-37 
 
 
 The first form declares that `f` is a (pure) C function that takes no arguments and returns a pointer to a C function with type 
@@ -5505,14 +4065,8 @@ data Foo = Foo{ x :: Int }
 f :: Foo -> Foo 
 f foo = foo { x = 6 } 
 
-This option isn’t enabled by default because it can be very noisy, and it often doesn’t indicate a bug in the program. 
+This option isn’t enabled by default because it can be very noisy, and it often doesn’t indicate a bug in the program. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 58 
-/ 
-37 
 
 
 -fwarn-missing-fields: This option is on by default, and warns you whenever the construction of a labelled field 
@@ -5567,7 +4121,7 @@ neither the class nor the type being instanced are declared in the same module. 
 function declared in another module. A module containing any orphans is called an orphan module. 
 
 The trouble with orphans is that GHC must pro-actively read the interface files for all orphan modules, just in case their 
-instances or rules play a role, whether or not the module’s interface would otherwise be of any use. See Section 4.7.12 for 
+instances or rules play a role, whether or not the module’s interface would otherwise be of any use. See Section |4.7.12| for 
 details. 
 
 The flag -fwarn-orphans warns about user-written orphan rules or instances. The flag -fwarn-auto-orphans 
@@ -5579,14 +4133,8 @@ or argument values (SpecConstr).
 f :: String -> Int 
 f[] =0 
 f (_:xs) = 1 
-f"2" =2 
+f"2" =2 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 59 
-/ 
-37 
 
 
 where the last pattern match in fwon’t ever be reached, as the second pattern overlaps it. More often than not, redundant 
@@ -5653,14 +4201,8 @@ For almost all sensible programs this will indicate a bug, and you probably inte
 do { popInt 10 ; return 10 } 
 
 If you’re feeling really paranoid, the -dcore-lintoption is a good choice. It turns on heavyweight intra-pass sanity-checking 
-within GHC. (It checks GHC’s sanity, not yours.) 
+within GHC. (It checks GHC’s sanity, not yours.) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 60 
-/ 
-37 
 
 
 4.9 Packages 
@@ -5668,7 +4210,7 @@ A package is a library of Haskell modules known to the compiler. GHC comes with 
 library documentation. More packages to install can be obtained from HackageDB. 
 
 Using a package couldn’t be simpler: if you’re using --makeor GHCi, then most of the installed packages will be automatically 
-available to your program without any further options. The exceptions to this rule are covered below in Section 4.9.1. 
+available to your program without any further options. The exceptions to this rule are covered below in Section |4.9.1.| 
 
 Building your own packages is also quite straightforward: we provide the Cabal infrastructure which automates the process 
 of configuring, building, installing and distributing a package. All you need to do is write a simple configuration file, put a 
@@ -5720,14 +4262,8 @@ unix-2.3.1.0
 utf8-string-0.3.4 
 
 An installed package is either exposed or hidden by default. Packages hidden by default are listed in parentheses (eg. (lang-
-1.0)), or possibly in blue if your terminal supports colour, in the output of ghc-pkg list. Command-line flags, described 
+1.0)), or possibly in blue if your terminal supports colour, in the output of ghc-pkg list. Command-line flags, described / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 61 
-/ 
-37 
 
 
 below, allow you to expose a hidden package or hide an exposed one. Only modules from exposed packages may be imported 
@@ -5739,9 +4275,9 @@ when using ghcor ghcidirectly.
 
 Similar to a package’s hidden status is a package’s trusted status. A package can be either trusted or not trusted (distrusted). By 
 default packages are distrusted. This property of a package only plays a role when compiling code using GHC’s Safe Haskell 
-feature (see Section 7.25) with the -fpackage-trustflag enabled. 
+feature (see Section |7.25|) with the -fpackage-trustflag enabled. 
 
-To see which modules are provided by a package use the ghc-pkgcommand (see Section 4.9.6): 
+To see which modules are provided by a package use the ghc-pkgcommand (see Section |4.9.6|): 
 
 $ ghc-pkg field network exposed-modules 
 
@@ -5767,7 +4303,7 @@ option also causes package P
 to be linked into the resulting executable or shared object. Whether a 
 
 packages’ library is linked statically or dynamically is controlled by the flag pair -static/-dynamic. 
-In --make mode and --interactive mode (see Section 4.5), the compiler normally determines which packages are 
+In --make mode and --interactive mode (see Section |4.5|), the compiler normally determines which packages are 
 required by the current Haskell modules, and links only those. In batch mode however, the dependency information isn’t 
 available, and explicit -packageoptions must be given when linking. The one other time you might need to use -package 
 to force linking a package is when the package does not contain any Haskell modules (it might contain a C library 
@@ -5814,14 +4350,8 @@ all.
 Saying -ignore-package P is the same as giving -hide-package flags for P and all the packages that depend 
 on P. Sometimes we don’t know ahead of time which packages will be installed that depend on P, which is when the 
 -ignore-packageflag can be useful. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 62 
 / 
-37 
+
 
 
 -no-auto-link-packages 
@@ -5842,20 +4372,20 @@ P
 This option causes the install package P 
 to be both exposed and trusted by GHC. This command functions in the 
 in a very similar way to the -package command but in addition sets the selected packaged to be trusted by GHC, 
-regardless of the contents of the package database. (see Section 7.25). 
+regardless of the contents of the package database. (see Section |7.25|). 
 
 -distrust 
 P 
 This option causes the install package P 
 to be both exposed and distrusted by GHC. This command functions 
 in the in a very similar way to the -package command but in addition sets the selected packaged to be distrusted by 
-GHC, regardless of the contents of the package database. (see Section 7.25). 
+GHC, regardless of the contents of the package database. (see Section |7.25|). 
 
 -distrust-all 
 Ignore the trusted flag on installed packages, and distrust them by default. If you use this flag and Safe 
 Haskell then any packages you require to be trusted (including base ) need to be explicitly trusted using -trust 
 options. This option does not change the exposed/hidden status of a package, so it isn’t equivalent to applying -distrustto 
-all packages on the system. (see Section 7.25). 
+all packages on the system. (see Section |7.25|). 
 
 4.9.2 The main package 
 Every complete Haskell program must define main in module Main in package main. (Omitting the -package-name flag 
@@ -5881,26 +4411,20 @@ name in which it is defined and its name. In GHC, an entity is uniquely defined 
 A package database is where the details about installed packages are stored. It is a directory, usually called package.conf.d, 
 that contains a file for each package, together with a binary cache of the package data in the file package.cache. Normally 
 you won’t need to look at or modify the contents of a package database directly; all management of package databases can be 
-done through the ghc-pkgtool (see Section 4.9.6). 
+done through the ghc-pkgtool (see Section |4.9.6|). 
 
 GHC knows about two package databases in particular: 
 
 • The global package database, which comes with your GHC installation, e.g. /usr/lib/ghc-6.12.1/package.conf.
 d. 
-2it used to in GHC 6.4, but not since 6.6 
+2it used to in GHC 6.4, but not since 6.6 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 63 
-/ 
-37 
 
 
 • A package database private to each user. 
 On Unix systems this will be $HOME/.ghc/arch-os-version/package.conf.
 d, and on Windows it will be something like C:\Documents And Settings\user\ghc\package.conf.d. 
-The ghc-pkgtool knows where this file should be located, and will create it if it doesn’t exist (see Section 4.9.6). 
+The ghc-pkgtool knows where this file should be located, and will create it if it doesn’t exist (see Section |4.9.6|). 
 When GHC starts up, it reads the contents of these two package databases, and builds up a list of the packages it knows about. 
 You can see GHC’s package table by running GHC with the -vflag. 
 
@@ -5965,14 +4489,8 @@ Cabal-1.7.4 (Cabal-1.7.4-48f5247e06853af93593883240e11238)
 array-0.2.0.1 (array-0.2.0.1-9cbf76a576b6ee9c1f880cf171a0928d) 
 base-3.0.3.0 (base-3.0.3.0-6cbb157b9ae852096266e113b8fac4a2) 
 base-4.2.0.0 (base-4.2.0.0-247bb20cde37c3ef4093ee124e04bc1c) 
-... 
+... / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 64 
-/ 
-37 
 
 
 The string in parentheses after the package name is the package ID: it normally begins with the package name and version, and 
@@ -6038,21 +4556,15 @@ To fix the problem, you need to recompile the broken packages against the new de
 use cabal-install, or download the packages from HackageDB and build and install them as normal. 
 
 Be careful not to recompile any packages that GHC itself depends on, as this may render the ghcpackage itself broken, and ghc 
-cannot be simply recompiled. The only way to recover from this would be to re-install GHC. 
+cannot be simply recompiled. The only way to recover from this would be to re-install GHC. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 65 
-/ 
-37 
 
 
 4.9.6 Package management (the ghc-pkg 
 command) 
 The ghc-pkg tool is for querying and modifying package databases. To see what package databases are in use, use ghc-pkg 
 list. The stack of databases that ghc-pkgknows about can be modified using the GHC_PACKAGE_PATHenvironment 
-variable (see Section 4.9.4.1, and using --package-dboptions on the ghc-pkgcommand line. 
+variable (see Section |4.9.4.1|, and using --package-dboptions on the ghc-pkgcommand line. 
 
 When asked to modify a database, ghc-pkgmodifies the global database by default. Specifying --usercauses it to act on the 
 user database, or --package-db can be used to act on another database entirely. When multiple of these options are given, 
@@ -6083,7 +4595,7 @@ Reads a package specification from file
 (which may be “-” to indicate standard input), and 
 
 adds it to the database of installed packages. The syntax of file 
-is given in Section 4.9.8. 
+is given in Section |4.9.8.| 
 
 The package specification must be a package that isn’t already installed. 
 
@@ -6159,14 +4671,8 @@ c:/fptools/validate/ghc/driver/package.conf.inplace:
 
 $ ghc-pkg find-module Data.Sequence 
 c:/fptools/validate/ghc/driver/package.conf.inplace: 
-containers-0.1 
+containers-0.1 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 66 
-/ 
-37 
 
 
 Otherwise, it behaves like ghc-pkg list, including options. 
@@ -6182,7 +4688,7 @@ P
 Emit the full description of the specified package. The description is in the form of an Installe
 
 
-dPackageInfo, the same as the input file format for ghc-pkg register. See Section 4.9.8 for details. 
+dPackageInfo, the same as the input file format for ghc-pkg register. See Section |4.9.8| for details. 
 If the pattern matches multiple packages, the description for each package is emitted, separated by the string ---on a line 
 by itself. 
 
@@ -6257,14 +4763,8 @@ db, --useror --globaloption.
 --force 
 Causes ghc-pkgto ignore missing dependencies, directories and libraries when registering a package, and just go 
 ahead and add it anyway. This might be useful if your package installation system needs to add the package to GHC before 
-building and installing the files. 
+building and installing the files. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 67 
-/ 
-37 
 
 
 --global 
@@ -6292,7 +4792,7 @@ particularly complicated or requires a lot of configuration, then you might have
 few hints for those brave souls follow. 
 
 You need to build an "installed package info" file for passing to ghc-pkg when installing your package. The contents of this 
-file are described in Section 4.9.8. 
+file are described in Section |4.9.8.| 
 
 The Haskell code in a package may be built into one or more archive libraries (e.g. libHSfoo.a), or a single shared object 
 
@@ -6323,23 +4823,17 @@ underlying linker and provides a common interface to all shared object variants 
 and Mac OS dylibs). The shared object must be named in specific way for two reasons: (1) the name must contain the GHC 
 compiler version, so that two library variants don’t collide that are compiled by different versions of GHC and that therefore are 
 most likely incompatible with respect to calling conventions, (2) it must be different from the static name otherwise we would 
-not be able to control the linker as precisely as necessary to make the -static/-dynamicflags work, see Section 4.12.6. 
+not be able to control the linker as precisely as necessary to make the -static/-dynamicflags work, see Section |4.12.6.| 
 ghc -shared libHSfoo-1.0-ghcGHCVersion.so A.o B.o C.o 
 
 Using GHC’s version number in the shared object name allows different library versions compiled by different GHC versions 
 to be installed in standard system locations, e.g. under *nix /usr/lib. To obtain the version number of GHC invoke ghc --numeric-
-versionand use its output in place of GHCVersion. See also Section 4.12.5 on how object files must be prepared 
-for shared object linking. 
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 68 
-/ 
-37 
+versionand use its output in place of GHCVersion. See also Section |4.12.5| on how object files must be prepared 
+for shared object linking. / 
 
 
-To compile a module which is to be part of a new package, use the -package-name option (Section 4.9.1). Failure to use 
+
+To compile a module which is to be part of a new package, use the -package-name option (Section |4.9.1|). Failure to use 
 the -package-name option when compiling a package will probably result in disaster, but you will only discover later when 
 you attempt to import modules from the package. At this point GHC will complain that the package name it was expecting the 
 module to come from is not the same as the package name stored in the .hifile. 
@@ -6427,14 +4921,8 @@ ld-options:
 
 framework-dirs: 
 
-frameworks: 
+frameworks: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 69 
-/ 
-37 
 
 
 haddock-interfaces: /usr/share/doc/ghc/html/libraries/unix/unix.haddock 
@@ -6507,14 +4995,8 @@ So the package can contain both normal and profiling versions of the same librar
 
 
 library-dirs 
-(string list) A list of directories containing libraries for this package. 
+(string list) A list of directories containing libraries for this package. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 70 
-/ 
-37 
 
 
 hs-libraries 
@@ -6592,14 +5074,8 @@ haddock-html
 
 4.10 Optimisation (code improvement) 
 The -O* options specify convenient “packages” of optimisation flags; the -f* options described later on specify individual 
-optimisations to be turned on/off; the -m*options specify machine-specific optimisations to be turned on/off. 
+optimisations to be turned on/off; the -m*options specify machine-specific optimisations to be turned on/off. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 71 
-/ 
-37 
 
 
 4.10.1 -O*: convenient “packages” of optimisation flags. 
@@ -6654,11 +5130,11 @@ always evaluated in the function at some point). This allow GHC to apply certain
 otherwise don’t apply as they change the semantics of the program when applied to lazy arguments. 
 
 -funbox-strict-fields: This option causes all constructor fields which are marked strict (i.e. “!”) to be unpacked if 
-possible. It is equivalent to adding an UNPACKpragma to every strict constructor field (see Section 7.18.10). 
+possible. It is equivalent to adding an UNPACKpragma to every strict constructor field (see Section |7.18.10|). 
 
 This option is a bit of a sledgehammer: it might sometimes make things worse. Selectively unboxing fields by using 
 UNPACKpragmas might be better. An alternative is to use -funbox-strict-fieldsto turn on unboxing by default 
-but disable it for certain constructor fields using the NOUNPACKpragma (see Section 7.18.11). 
+but disable it for certain constructor fields using the NOUNPACKpragma (see Section |7.18.11|). 
 
 -fspec-constr 
 Off by default, but enabled by -O2. Turn on call-pattern specialisation; see Call-pattern specialisation for 
@@ -6672,14 +5148,8 @@ so consider:
 last :: [a] -> a 
 last [] = error "last" 
 last (x : []) = x 
-last (x : xs) = last xs 
+last (x : xs) = last xs / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 72 
-/ 
-37 
 
 
 In this code, once we pass the initial check for an empty list we know that in the recursive case this pattern match is 
@@ -6701,7 +5171,7 @@ the above example.
 
 -fspecialise 
 On by default. Specialise each type-class-overloaded function defined in this module for the types at which 
-it is called in this module. Also specialise imported functions that have an INLINABLE pragma (Section 7.18.5.2) for the 
+it is called in this module. Also specialise imported functions that have an INLINABLE pragma (Section |7.18.5.2|) for the 
 types at which they are called in this module. 
 
 -fstatic-argument-transformation 
@@ -6761,14 +5231,8 @@ function once in its own RHS, to avoid repeated case analysis of free variables.
 (-fspec-constr) but for free variables rather than arguments. 
 
 -fdicts-cheap 
-A very experimental flag that makes dictionary-valued expressions seem cheap to the optimiser. 
+A very experimental flag that makes dictionary-valued expressions seem cheap to the optimiser. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 73 
-/ 
-37 
 
 
 -feager-blackholing 
@@ -6786,8 +5250,8 @@ particular, stop GHC eta-expanding through a case expression, which is good for 
 seqon partial applications. 
 
 -fsimpl-tick-factor=n 
-GHC’s optimiser can diverge if you write rewrite rules ( Section 7.19) that don’t terminate, or 
-(less satisfactorily) if you code up recursion through data types (Section 14.2.1). To avoid making the compiler fall into an 
+GHC’s optimiser can diverge if you write rewrite rules ( Section |7.19|) that don’t terminate, or 
+(less satisfactorily) if you code up recursion through data types (Section |14.2.1|). To avoid making the compiler fall into an 
 infinite loop, the optimiser carries a "tick count" and stops inlining and applying rewrite rules when this count is exceeded. 
 The limit is set as a multiple of the program size, so bigger programs get more ticks. The -fsimpl-tick-factorflag 
 lets you change the multiplier. The default is 100; numbers larger than 100 give more ticks, and numbers smaller than 100 
@@ -6845,19 +5309,13 @@ the final type. Generally this is a good thing, but some programs may rely on th
 values and should not use this option for their compilation. 
 
 Note that the 32-bit x86 native code generator only supports excess-precision mode, so neither -fexcess-precision 
-nor -fno-excess-precisionhas any effect. This is a known bug, see Section 14.2.1. 
+nor -fno-excess-precisionhas any effect. This is a known bug, see Section |14.2.1.| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 74 
-/ 
-37 
 
 
 -fignore-asserts 
 Causes GHC to ignore uses of the function Exception.assert in source code (in other words, 
-rewriting Exception.assert p eto e(see Section 7.17). This flag is turned on by -O. 
+rewriting Exception.assert p eto e(see Section |7.17|). This flag is turned on by -O. 
 
 -fignore-interface-pragmas 
 Tells GHC to ignore all inessential information when reading interface files. That is, 
@@ -6906,14 +5364,8 @@ it with the -fvia-Cflag.
 The C code generator is only supported when GHC is built in unregisterised mode, a mode where GHC produces ’portable’ C 
 code as output to facilitate porting GHC itself to a new platform. This mode produces much slower code though so it’s unlikely 
 your version of GHC was built this way. If it has then the native code generator probably won’t be available. You can check this 
-information by calling ghc --info. 
+information by calling ghc --info. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 75 
-/ 
-37 
 
 
 4.11.4 Unregisterised compilation 
@@ -6984,7 +5436,7 @@ Use cmd
 as the program to use for embedding manifests on Windows. Normally this is the program 
 
 
-windres, which is supplied with a GHC installation. See -fno-embed-manifestin Section 4.12.6. 
+windres, which is supplied with a GHC installation. See -fno-embed-manifestin Section |4.12.6.| 
 
 4.12.2 Forcing options to a particular phase 
 Options can be forced through to a particular compilation phase, using the following flags: 
@@ -7000,7 +5452,7 @@ to CPP (makes sense only if -cppis also on).
 -optF 
 option 
 Pass option 
-to the custom pre-processor (see Section 4.12.4). 
+to the custom pre-processor (see Section |4.12.4|). 
 -optc 
 option 
 Pass option 
@@ -7009,14 +5461,8 @@ to the C compiler.
 option 
 Pass option 
 to the LLVM optimiser. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 76 
 / 
-37 
+
 
 
 -optlc 
@@ -7045,13 +5491,13 @@ Pass option
 to windreswhen embedding manifests on Windows. See -fno-embed-manife
 
 
-stin Section 4.12.6. 
+stin Section |4.12.6.| 
 
 So, for example, to force an -Ewurble option to the assembler, you would tell the driver -opta-Ewurble (the dash before 
 the E is required). 
 
 GHC is itself a Haskell program, so if you need to pass options directly to GHC’s runtime system you can enclose them in +RTS 
-... -RTS(see Section 4.17). 
+... -RTS(see Section |4.17|). 
 
 4.12.3 Options affecting the C pre-processor 
 -cpp 
@@ -7059,7 +5505,7 @@ The C pre-processor cpp is run over your Haskell code only if the -cppoption is 
 system with significant doses of conditional compilation, you really shouldn’t need it. 
 -Dsymbol[=value] Define macro symbol 
 in the usual way. NB: does not affect -D macros passed to the C compiler when 
-compiling via C! For those, use the -optc-Dfoohack. . . (see Section 4.12.2). 
+compiling via C! For those, use the -optc-Dfoohack. . . (see Section |4.12.2|). 
 -Usymbol 
 Undefine macro symbol 
 in the usual way. 
@@ -7083,7 +5529,7 @@ of GHC, the value of __GLASGOW_HASKELL__ is the integer xyy
 (if y 
 is 
 a single digit, then a leading zero is added, so for example in version 6.2 of GHC, __GLASGOW_HASKELL__==602). 
-More information in Section 1.4. 
+More information in Section |1.4.| 
 
 With any luck, __GLASGOW_HASKELL__ will be undefined in all other implementations that support C-style pre
 
@@ -7109,14 +5555,8 @@ current Operating System (eg. linux, mingw32for Windows, solaris, etc.).
 arch_HOST_ARCH=1 
 This define allows conditional compilation based on the host architecture, wherearch 
 is the name of 
-the current architecture (eg. i386, x86_64, powerpc, sparc, etc.). 
+the current architecture (eg. i386, x86_64, powerpc, sparc, etc.). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 77 
-/ 
-37 
 
 
 4.12.3.1 CPP and string gaps 
@@ -7188,14 +5628,8 @@ to be generated in preference to bytecode.
 
 -fbyte-code 
 Generate byte-code instead of object-code. This is the default in GHCi. Byte-code can currently only be used 
-in the interactive interpreter, not saved to disk. This option is only useful for reversing the effect of -fobject-code. 
+in the interactive interpreter, not saved to disk. This option is only useful for reversing the effect of -fobject-code. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 78 
-/ 
-37 
 
 
 -fPIC 
@@ -7236,7 +5670,7 @@ contains a Mainmodule.
 
 -package 
 name 
-If you are using a Haskell “package” (see Section 4.9), don’t forget to add the relevant -package option 
+If you are using a Haskell “package” (see Section |4.9|), don’t forget to add the relevant -package option 
 when linking the program too: it will cause the appropriate libraries to be linked in with the program. Forgetting the 
 -packageoption will likely result in several pages of link errors. 
 
@@ -7268,7 +5702,7 @@ Tell the linker to avoid shared Haskell libraries, if possible. This is the defa
 
 -dynamic 
 This flag tells GHC to link against shared Haskell libraries. This flag only affects the selection of dependent 
-libraries, not the form of the current target (see -shared). See Section 4.13 on how to create them. 
+libraries, not the form of the current target (see -shared). See Section |4.13| on how to create them. 
 
 Note that this option also has an effect on code generation (see above). 
 
@@ -7279,23 +5713,17 @@ beneath this uniform flag.
 
 The flags -dynamic/-static control whether the resulting shared object links statically or dynamically to Haskell 
 package libraries given as -package option. Non-Haskell libraries are linked as gcc would regularly link it on your 
-system, e.g. on most ELF system the linker uses the dynamic libraries when found. 
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 79 
-/ 
-37 
+system, e.g. on most ELF system the linker uses the dynamic libraries when found. / 
 
 
-Object files linked into shared objects must be compiled with -fPIC, see Section 4.12.5 
+
+Object files linked into shared objects must be compiled with -fPIC, see Section |4.12.5| 
 
 When creating shared objects for Haskell packages, the shared object must be named properly, so that GHC recognizes the 
 shared object when linked against this package. See shared object name mangling. 
 
 -dynload 
-This flag selects one of a number of modes for finding shared libraries at runtime. See Section 4.13.4 for a 
+This flag selects one of a number of modes for finding shared libraries at runtime. See Section |4.13.4| for a 
 description of each mode. 
 
 -main-is 
@@ -7318,7 +5746,7 @@ recompilation by removing the object file, or by using the -fforce-recompflag.
 -no-hs-main 
 In the event you want to include ghc-compiled code as part of another (non-Haskell) program, the RTS will 
 not be supplying its definition of main()at link-time, you will have to. To signal that to the compiler when linking, use 
--no-hs-main. See also Section 8.2.1.1. 
+-no-hs-main. See also Section |8.2.1.1.| 
 
 Notice that since the command-line passed to the linker is rather involved, you probably want to use ghc to do the final 
 link of your `mixed-language’ application. This is not a requirement though, just try linking once with -von to see what 
@@ -7328,7 +5756,7 @@ The -no-hs-mainflag can also be used to persuade the compiler to do the link ste
 
 Haskell Mainmodule present (normally the compiler will not attempt linking when there is no Main). 
 The flags -rtsopts and -with-rtsopts have no effect when used with -no-hs-main, because they are implemented 
-by changing the definition of mainthat GHC generates. See Section 8.2.1.1 for how to get the effect of -rtsopts 
+by changing the definition of mainthat GHC generates. See Section |8.2.1.1| for how to get the effect of -rtsopts 
 and -with-rtsoptswhen using your own main. 
 
 
@@ -7347,27 +5775,21 @@ between Haskell threads just fine.
 The threaded runtime system provides the following benefits: 
 
 • It enables the -NRTS option to be used, which allows threads to run in parallel on a multiprocessor or multicore machine. 
-See Section 4.15. 
+See Section |4.15.| 
 • If a thread makes a foreign call (and the call is not marked unsafe), then other Haskell threads in the program will 
 continue to run while the foreign call is in progress. Additionally, foreign exported Haskell functions may be 
-called from multiple OS threads simultaneously. See Section 8.2.4. 
+called from multiple OS threads simultaneously. See Section |8.2.4.| 
 -eventlog 
 Link the program with the "eventlog" version of the runtime system. A program linked in this way can generate 
 a runtime trace of events (such as thread start/stop) to a binary file program.eventlog, which can then be interpreted 
-later by various tools. See Section 4.17.6 for more information. 
+later by various tools. See Section |4.17.6| for more information. 
 
 -eventlogcan be used with -threaded. It is implied by -debug. 
 
 -rtsopts 
 This option affects the processing of RTS control options given either on the command line or via the GHCRTS 
-environment variable. There are three possibilities: 
+environment variable. There are three possibilities: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 80 
-/ 
-37 
 
 
 -rtsopts=none 
@@ -7388,7 +5810,7 @@ In GHC 6.12.3 and earlier, the default was to process all RTS options. However, 
 logging data to arbitrary files under the security context of the running program, there is a potential security problem. For 
 this reason, GHC 7.0.1 and later default to -rtsops=some. 
 
-Note that -rtsoptshas no effect when used with -no-hs-main; see Section 8.2.1.1 for details. 
+Note that -rtsoptshas no effect when used with -no-hs-main; see Section |8.2.1.1| for details. 
 
 -with-rtsopts 
 This option allows you to set the default RTS options at link-time. For example, -with-rtsopts="-H128m" 
@@ -7396,7 +5818,7 @@ sets the default heap size to 128MB. This will always be the default heap size f
 overrides it. (Depending on the setting of the -rtsoptsoption, the user might not have the ability to change RTS options 
 at run-time, in which case -with-rtsoptswould be the only way to set them.) 
 
-Note that -with-rtsoptshas no effect when used with -no-hs-main; see Section 8.2.1.1 for details. 
+Note that -with-rtsoptshas no effect when used with -no-hs-main; see Section |8.2.1.1| for details. 
 
 -fno-gen-manifest 
 On Windows, GHC normally generates a manifest file when linking a binary. The manifest is placed 
@@ -7424,7 +5846,7 @@ executable itself, by default. This means that the binary can be distributed wit
 The embedding is done by running windres; to see exactly what GHC does to embed the manifest, use the -v flag. A 
 GHC installation comes with its own copy of windresfor this reason. 
 
-See also -pgmwindres(Section 4.12.1) and -optwindres(Section 4.12.2). 
+See also -pgmwindres(Section |4.12.1|) and -optwindres(Section |4.12.2|). 
 
 -fno-shared-implib 
 DLLs on Windows are typically linked to by linking to a corresponding .libor .dll.a-the so-
@@ -7441,14 +5863,8 @@ On Darwin/MacOS X, dynamic libraries are stamped at build time with an "install 
 which is the ultimate install path of the library file. Any libraries or executables that subsequently link against it will pick 
 up that path as their runtime search location for it. By default, ghc sets the install name to the location where the library 
 is built. This option allows you to override it with the specified file path. (It passes -install_nameto Apple’s linker.) 
-Ignored on other platforms. 
+Ignored on other platforms. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 81 
-/ 
-37 
 
 
 4.13 Using shared libraries 
@@ -7462,7 +5878,7 @@ projects, especially where different parts are written in different programming 
 used as a plugin mechanism by various applications. This is particularly common on Windows using COM. 
 
 In GHC version 6.12 building shared libraries is supported for Linux (on x86 and x86-64 architectures). GHC version 7.0 adds 
-support on Windows (see Section 13.6), FreeBSD and OpenBSD (x86 and x86-64), Solaris (x86) and Mac OS X (x86 and 
+support on Windows (see Section |13.6|), FreeBSD and OpenBSD (x86 and x86-64), Solaris (x86) and Mac OS X (x86 and 
 PowerPC). 
 
 Building and using shared libraries is slightly more complicated than building and using static libraries. When using Cabal much 
@@ -7499,16 +5915,10 @@ shared lib. The way it does this is by using packages. When using -dynamic, a mo
 come from a separate shared lib, while modules from the same package (or the default "main" package) are assumed to be within 
 the same shared lib (or main executable binary). 
 
-Most of the conventions GHC expects when using packages are described in Section 4.9.7. In addition note that GHC expects 
+Most of the conventions GHC expects when using packages are described in Section |4.9.7.| In addition note that GHC expects 
 the .hifiles to use the extension .dyn_hi. The other requirements are the same as for C libraries and are described below, in 
-particular the use of the flags -dynamic, -fPICand -shared. 
+particular the use of the flags -dynamic, -fPICand -shared. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 82 
-/ 
-37 
 
 
 4.13.3 Shared libraries that export a C API 
@@ -7518,7 +5928,7 @@ just like any other shared library. The linking can be done using the normal sys
 
 It is possible to load shared libraries generated by GHC in other programs not written in Haskell, so they are suitable for using as 
 plugins. Of course to construct a plugin you will have to use the FFI to export C functions and follow the rules about initialising 
-the RTS. See Section 8.2.1.2. In particular you will probably want to export a C function from your shared library to initialise 
+the RTS. See Section |8.2.1.2.| In particular you will probably want to export a C function from your shared library to initialise 
 the plugin before any Haskell functions are called. 
 
 To build Haskell modules that export a C API into a shared library use the -dynamic, -fPICand -sharedflags: 
@@ -7565,14 +5975,8 @@ directory given by the LD_LIBRARY_PATHenvironment variable.
 
 To use relative paths for dependent libraries on Linux and Solaris you can pass a suitable -rpathflag to the linker: 
 
-ghc -dynamic Main.hs -o main -lfoo -L. -optl-Wl,-rpath,’$ORIGIN’ 
+ghc -dynamic Main.hs -o main -lfoo -L. -optl-Wl,-rpath,’$ORIGIN’ / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 83 
-/ 
-37 
 
 
 This assumes that the library libfoo.so is in the current directory and will be able to be found in the same directory as the 
@@ -7598,13 +6002,13 @@ GHC supports Concurrent Haskell by default, without requiring a special option o
 access to the support libraries for Concurrent Haskell, just import Control.Concurrent. More information on Concurrent 
 Haskell is provided in the documentation for that module. 
 
-Optionally, the program may be linked with the -threadedoption (see Section 4.12.6. This provides two benefits: 
+Optionally, the program may be linked with the -threadedoption (see Section |4.12.6.| This provides two benefits: 
 
 • It enables the -NRTS option to be used, which allows threads to run in parallel on a multiprocessor or multicore machine. See 
-Section 4.15. 
+Section |4.15.| 
 • If a thread makes a foreign call (and the call is not marked unsafe), then other Haskell threads in the program will continue to 
 run while the foreign call is in progress. Additionally, foreign exported Haskell functions may be called from multiple 
-OS threads simultaneously. See Section 8.2.4. 
+OS threads simultaneously. See Section |8.2.4.| 
 The following RTS option(s) affect the behaviour of Concurrent Haskell programs: 
 
 -Cs 
@@ -7625,18 +6029,12 @@ way to structure a program that must respond to multiple asynchronous events.
 However, the two terms are certainly related. By making use of multiple CPUs it is possible to run concurrent threads in parallel, 
 and this is exactly what GHC’s SMP parallelism support does. But it is also possible to obtain performance improvements 
 with parallelism on programs that do not use concurrency. This section describes how to use GHC to compile and run parallel 
-programs, in Section 7.24 we describe the language features that affect parallelism. 
+programs, in Section |7.24| we describe the language features that affect parallelism. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 84 
-/ 
-37 
 
 
 4.15.1 Compile-time options for SMP parallelism 
-In order to make use of multiple CPUs, your program must be linked with the -threaded option (see Section 4.12.6). Additionally, 
+In order to make use of multiple CPUs, your program must be linked with the -threaded option (see Section |4.12.6|). Additionally, 
 the following compiler options affect parallelism: 
 
 -feager-blackholing 
@@ -7671,7 +6069,7 @@ machine.
 Be careful when using all the processors in your machine: if some of your processors are in use by other programs, this 
 can actually harm performance rather than improve it. 
 
-Setting -Nalso has the effect of enabling the parallel garbage collector (see Section 4.17.3). 
+Setting -Nalso has the effect of enabling the parallel garbage collector (see Section |4.17.3|). 
 The current value of the -N option is available to the Haskell program via Control.Concurrent.getNumCapabilities, 
 and it may be changed while the program is running by calling Control.Concurrent.setNumCapabilities. 
 
@@ -7695,21 +6093,15 @@ Add the -s RTS option when running the program to see timing stats, which will h
 faster by using more CPUs or not. If the user time is greater than the elapsed time, then the program used more than one CPU. 
 You should also run the program without -Nfor comparison. 
 
-The output of +RTS -s tells you how many “sparks” were created and executed during the run of the program (see Section 
+The output of +RTS -s tells you how many “sparks” were created and executed during the run of the program (see Section ||
 4.17.3), which will give you an idea how well your parannotations are working. 
 
 GHC’s parallelism support has improved in 6.12.1 as a result of much experimentation and tuning in the runtime system. We’d 
 still be interested to hear how well it works for you, and we’re also interested in collecting parallel programs to add to our 
 benchmarking suite. 
 
-3Whether hyperthreading cores should be counted or not is an open question; please feel free to experiment and let us know what results you find. 
+3Whether hyperthreading cores should be counted or not is an open question; please feel free to experiment and let us know what results you find. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 85 
-/ 
-37 
 
 
 4.16 Platform-specific Flags 
@@ -7733,18 +6125,18 @@ which handles storage management, thread scheduling, profiling, and so on.
 
 The RTS has a lot of options to control its behaviour. For example, you can change the context-switch interval, the default size 
 of the heap, and enable heap profiling. These options can be passed to the runtime system in a variety of different ways; the next 
-section (Section 4.17.1) describes the various methods, and the following sections describe the RTS options themselves. 
+section (Section |4.17.1|) describes the various methods, and the following sections describe the RTS options themselves. 
 
 4.17.1 Setting RTS options 
 There are four ways to set RTS options: 
 
-• on the command line between +RTS ... -RTS, when running the program (Section 4.17.1.1) 
+• on the command line between +RTS ... -RTS, when running the program (Section |4.17.1.1|) 
 
-• at compile-time, using --with-rtsopts(Section 4.17.1.2) 
-• with the environment variable GHCRTS(Section 4.17.1.3) 
-• by overriding “hooks” in the runtime system (Section 4.17.1.4) 
+• at compile-time, using --with-rtsopts(Section |4.17.1.2|) 
+• with the environment variable GHCRTS(Section |4.17.1.3|) 
+• by overriding “hooks” in the runtime system (Section |4.17.1.4|) 
 4.17.1.1 Setting RTS options on the command line 
-If you set the -rtsoptsflag appropriately when linking (see Section 4.12.6), you can give RTS options on the command line 
+If you set the -rtsoptsflag appropriately when linking (see Section |4.12.6|), you can give RTS options on the command line 
 when running your program. 
 
 When your Haskell program starts up, the RTS extracts command-line arguments bracketed between +RTSand -RTSas its own. 
@@ -7761,14 +6153,8 @@ if/when it calls System.Environment.getArgs.
 
 No -RTSoption is required if the runtime-system options extend to the end of the command line, as in this example: 
 
-% hls -ltr /usr/etc +RTS -A5m 
+% hls -ltr /usr/etc +RTS -A5m / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 86 
-/ 
-37 
 
 
 If you absolutely positively want all the rest of the options in a command line to go to the program (and not the RTS), use a 
@@ -7786,7 +6172,7 @@ combination. eg. to set the maximum heap size for a compilation to 128M, you wou
 command line. 
 
 4.17.1.2 Setting RTS options at compile time 
-GHC lets you change the default RTS options for a program at compile time, using the -with-rtsoptsflag (Section 4.12.6). 
+GHC lets you change the default RTS options for a program at compile time, using the -with-rtsoptsflag (Section |4.12.6|). 
 A common use for this is to give your program a default heap and/or stack size that is greater than the default. For example, to 
 set -H128m -K64m, link with -with-rtsopts="-H128m -K64m". 
 
@@ -7837,19 +6223,13 @@ The message printed if mallocfails.
 4.17.2 Miscellaneous RTS options 
 -Vsecs 
 Sets the interval that the RTS clock ticks at. The runtime uses a single timer signal to count ticks; this timer signal is 
-used to control the context switch timer (Section 4.14) and the heap profiling timer Section 5.4.1. Also, the time profiler 
+used to control the context switch timer (Section |4.14|) and the heap profiling timer Section |5.4.1.| Also, the time profiler 
 uses the RTS timer signal directly to record time profiling samples. 
 
 Normally, setting the -V option directly is not necessary: the resolution of the RTS timer is adjusted automatically if a 
 short interval is requested with the -Cor -ioptions. However, setting -Vis required in order to increase the resolution of 
-the time profiler. 
+the time profiler. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 87 
-/ 
-37 
 
 
 Using a value of zero disables the RTS clock completely, and has the effect of disabling timers that depend on it: the context 
@@ -7925,14 +6305,8 @@ is approaching.
 -Ggenerations 
 [Default: 2] Set the number of generations used by the garbage collector. The default of 2 seems to be good, 
 but the garbage collector can support any number of generations. Anything larger than about 4 is probably not a good idea 
-unless your program runs for a long time, because the oldest generation will hardly ever get collected. 
+unless your program runs for a long time, because the oldest generation will hardly ever get collected. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 88 
-/ 
-37 
 
 
 Specifying 1 generation with +RTS -G1gives you a simple 2-space collector, as you would expect. In a 2-space collector, 
@@ -7975,7 +6349,7 @@ useful when the default small -Avalue is suboptimal, as it can be in programs th
 
 
 -Iseconds 
-(default: 0.3) In the threaded and SMP versions of the RTS (see -threaded, Section 4.12.6), a major GC is 
+(default: 0.3) In the threaded and SMP versions of the RTS (see -threaded, Section |4.12.6|), a major GC is 
 automatically performed if the runtime has been idle (no Haskell computation has been running) for a period of time. The 
 amount of idle time which must pass before a GC is performed is set by the -Iseconds 
 option. Specifying -I0disables 
@@ -8007,14 +6381,8 @@ The advantage of smaller stack chunks is that the garbage collector can avoid tr
 to be unmodified since the last collection, so reducing the chunk size means that the garbage collector can identify more 
 stack as unmodified, and the GC overhead might be reduced. On the other hand, making stack chunks too small adds some 
 overhead as there will be more overflow/underflow between chunks. The default setting of 32k appears to be a reasonable 
-compromise in most cases. 
+compromise in most cases. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 89 
-/ 
-37 
 
 
 -kbsize 
@@ -8073,7 +6441,7 @@ This tells you:
 • The average and maximum "residency", which is the amount of live data in bytes. The runtime can only determine the 
 amount of live data during a major GC, which is why the number of samples corresponds to the number of major GCs 
 (and is usually relatively small). To get a better picture of the heap profile of your program, use the -hT RTS option 
-(Section 4.17.5). 
+(Section |4.17.5|). 
 • The peak memory the RTS has allocated from the OS. 
 • The amount of CPU time and elapsed wall clock time while initialising the runtime system (INIT), running the program 
 itself (MUT, the mutator), and garbage collecting (GC). 
@@ -8086,14 +6454,8 @@ You can also get this in a more future-proof, machine readable format, with -t -
 ,("num_byte_usage_samples", "2") 
 ,("peak_megabytes_allocated", "3") 
 ,("init_cpu_seconds", "0.00") 
-,("init_wall_seconds", "0.00") 
+,("init_wall_seconds", "0.00") / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 90 
-/ 
-37 
 
 
 ,("mutator_cpu_seconds", "0.02") 
@@ -8150,14 +6512,8 @@ is the time spent doing garbage collection. RP is the time spent doing retainer 
 other profiling. EXIT is the runtime system shutdown time. And finally, Total is, of course, the total. 
 %GC time tells you what percentage GC is of Total. "Alloc rate" tells you the "bytes allocated in the heap" divided by 
 the MUT CPU time. "Productivity" tells you what percentage of the Total CPU and wall clock elapsed times are spent 
-in the mutator (MUT). 
+in the mutator (MUT). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 91 
-/ 
-37 
 
 
 The -Sflag, as well as giving the same output as the -sflag, prints information about each GC as it happens: 
@@ -8179,20 +6535,20 @@ For each garbage collection, we print:
 • How many page faults occurred since the end of the last garbage collection. 
 • Which generation is being garbage collected. 
 4.17.4 RTS options for concurrency and parallelism 
-The RTS options related to concurrency are described in Section 4.14, and those for parallelism in Section 4.15.2. 
+The RTS options related to concurrency are described in Section |4.14|, and those for parallelism in Section |4.15.2.| 
 
 4.17.5 RTS options for profiling 
-Most profiling runtime options are only available when you compile your program for profiling (see Section 5.2, and Section 5.4.1 
+Most profiling runtime options are only available when you compile your program for profiling (see Section |5.2|, and Section |5.4.1| 
 for the runtime options). However, there is one profiling option that is available for ordinary non-profiled executables: 
 
 -hT 
 (can be shortened to -h.) Generates a basic heap profile, in the file prog.hp. To produce the heap profile graph, use 
-hp2ps (see Section 5.5). The basic heap profile is broken down by data constructor, with other types of closures (functions, 
+hp2ps (see Section |5.5|). The basic heap profile is broken down by data constructor, with other types of closures (functions, 
 thunks, etc.) grouped into broad categories (e.g. FUN, THUNK). To get a more detailed profile, use the full profiling support 
 (Chapter 5). 
 
 4.17.6 Tracing 
-When the program is linked with the -eventlogoption (Section 4.12.6), runtime events can be logged in two ways: 
+When the program is linked with the -eventlogoption (Section |4.12.6|), runtime events can be logged in two ways: 
 
 • In binary format to a file for later analysis by a variety of tools. One such tool is ThreadScope, which interprets the event log 
 to produce a visual parallel execution profile of the program. 
@@ -8212,14 +6568,8 @@ g— GC events, including GC start/stop. Enabled by default.
 p— parallel sparks (sampled). Enabled by default. 
 f— parallel sparks (fully accurate). Disabled by default. 
 u— user events. These are events emitted from Haskell code using functions such as Debug.Trace.traceEvent. Enabled 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 92 
 / 
-37 
+
 
 
 You can disable specific classes, or enable/disable all classes at once: 
@@ -8277,7 +6627,7 @@ Produce “ticky-ticky” statistics at the end of the program run (only available i
 The file 
 business works just like on the -SRTS option, above. 
 
-For more information on ticky-ticky profiling, see Section 5.8. 
+For more information on ticky-ticky profiling, see Section |5.8.| 
 
 -xc 
 (Only available when the program is compiled for profiling.) When an exception is raised in the program, this option 
@@ -8302,14 +6652,8 @@ called from Main.polynomial,
 
 called from Main.zonal_pressure, 
 
-called from Main.make_pressure.p, 
+called from Main.make_pressure.p, / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 93 
-/ 
-37 
 
 
 called from Main.make_pressure, 
@@ -8403,14 +6747,8 @@ architecture, Target
 OS, Target 
 vendor 
 These are the platform the program is 
-compiled to run on. 
+compiled to run on. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 94 
-/ 
-37 
 
 
 Build 
@@ -8455,9 +6793,9 @@ GHC can dump its optimized intermediate code (said to be in “Core” format) to a 
 GHC back-end tools can read and process Core files; these files have the suffix .hcr. The Core format is described in An 
 External Representation for the GHC Core Language, and sample tools for manipulating Core files (in Haskell) are available in 
 the extcore package on Hackage. Note that the format of .hcrfiles is different from the Core output format that GHC generates 
-for debugging purposes (Section 4.19), though the two formats appear somewhat similar. 
+for debugging purposes (Section |4.19|), though the two formats appear somewhat similar. 
 
-The Core format natively supports notes which you can add to your source code using the COREpragma (see Section 7.18). 
+The Core format natively supports notes which you can add to your source code using the COREpragma (see Section |7.18|). 
 
 -fext-core 
 Generate .hcrfiles. 
@@ -8486,19 +6824,13 @@ alphabetically. Using -dppr-debugdumps a type signature for all the imported and
 useful for debugging the compiler. 
 -ddump-deriv: derived instances 
 -ddump-ds: desugarer output 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 95 
 / 
-37 
+
 
 
 -ddump-spec: output of specialisation pass 
 
--ddump-rules: dumps all rewrite rules specified in this module; see Section 7.19.6. 
+-ddump-rules: dumps all rewrite rules specified in this module; see Section |7.19.6.| 
 
 -ddump-rule-firings: dumps the names of all rules that fired in this module 
 
@@ -8584,14 +6916,8 @@ Debugging output is in one of several “styles.” Take the printing of types, for 
 default), the compiler’s internal ideas about types are presented in Haskell source-level syntax, insofar as possible. In the 
 “debug” style (which is the default for debugging output), the types are printed in with explicit foralls, and variables have 
 their unique-id attached (so you can check for things that look the same but aren’t). This flag makes debugging output 
-appear in the more verbose debug style. 
+appear in the more verbose debug style. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 96 
-/ 
-37 
 
 
 4.19.2 Formatting dumps 
@@ -8662,14 +6988,8 @@ Before we jump in, a word about names of things. Within GHC, variables, type con
 Unique came from; e.g., _means “built-in type variable”; tmeans “from the typechecker”; smeans “from the simplifier”; and 
 so on. The `number’ is printed fairly compactly in a `base-62’ format, which everyone hates except me (WDP). 
 
-Remember, everything has a “Unique” and it is usually printed out when debugging, in some form or another. So here we go. . . 
+Remember, everything has a “Unique” and it is usually printed out when debugging, in some form or another. So here we go. . . / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 97 
-/ 
-37 
 
 
 Desugared: 
@@ -8746,14 +7066,8 @@ _NI_
 ds.d4QQ = 
 
 let { 
-ds.d4QY :: _4 
+ds.d4QY :: _4 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 98 
-/ 
-37 
 
 
 _NI_ 
@@ -8772,11 +7086,11 @@ ds.d4QY = +.t4Hg m.r1H4 lit.t4Hb
 (“It’s just a simple functional language” is an unregisterised trademark of Peyton Jones Enterprises, plc.) 
 
 4.20 Flag reference 
-This section is a quick-reference for GHC’s command-line flags. For each flag, we also list its static/dynamic status (see Section 
+This section is a quick-reference for GHC’s command-line flags. For each flag, we also list its static/dynamic status (see Section ||
 4.3), and the flag’s opposite (if available). 
 
 4.20.1 Help and verbosity options 
-Section 4.6 
+Section |4.6| 
 
 Flag Description Static/Dynamic Reverse 
 -? help mode -
@@ -8817,19 +7131,13 @@ GHC (same as +RTS
 static -
 
 4.20.2 Which phases to run 
-Section 4.5.3 
+Section |4.5.3| 
 
 Flag Description Static/Dynamic Reverse 
 -E 
 Stop after preprocessing 
-(.hsppfile) mode -
+(.hsppfile) mode -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 99 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -8845,7 +7153,7 @@ Override default behaviour
 for source files static -
 
 4.20.3 Alternative modes of operation 
-Section 4.5 
+Section |4.5| 
 
 Flag Description Static/Dynamic Reverse 
 --interactive 
@@ -8860,20 +7168,20 @@ automatically figuring out
 dependencies. Likely to be 
 much easier, and faster, 
 than using make; see 
-Section 4.5.1 for details.. 
+Section |4.5.1| for details.. 
 mode -
 -e expr 
 Evaluate expr; see 
-Section 4.5.2 for details. mode -
+Section |4.5.2| for details. mode -
 -M 
 Generate dependency 
 information suitable for use 
 in a Makefile; see 
-Section 4.7.11 for details. 
+Section |4.7.11| for details. 
 mode -
 
 4.20.4 Redirecting output 
-Section 4.7.4 
+Section |4.7.4| 
 
 Flag Description Static/Dynamic Reverse 
 -hcsufsuffix 
@@ -8902,14 +7210,8 @@ redirect dump files dynamic -
 set output directory dynamic -
 
 4.20.5 Keeping intermediate files 
-Section 4.7.5 
+Section |4.7.5| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 100 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -8929,7 +7231,7 @@ retain all intermediate
 temporary files dynamic -
 
 4.20.6 Temporary files 
-Section 4.7.6 
+Section |4.7.6| 
 
 Flag Description Static/Dynamic Reverse 
 -tmpdir 
@@ -8937,7 +7239,7 @@ set the directory for
 temporary files dynamic -
 
 4.20.7 Finding imports 
-Section 4.7.3 
+Section |4.7.3| 
 
 Flag Description Static/Dynamic Reverse 
 -idir1:dir2:... add dir, dir2, etc. to 
@@ -8947,7 +7249,7 @@ Empty the import directory
 list static/:set -
 
 4.20.8 Interface file options 
-Section 4.7.7 
+Section |4.7.7| 
 
 Flag Description Static/Dynamic Reverse 
 -ddump-hi 
@@ -8960,28 +7262,22 @@ old interface dynamic -
 Dump a minimal set of 
 imports dynamic -
 --show-ifacefile 
-See Section 4.5. 
+See Section |4.5.| 
 
 4.20.9 Recompilation checking 
-Section 4.7.8 
+Section |4.7.8| 
 
 Flag Description Static/Dynamic Reverse 
 -fforce-recomp 
 Turn off recompilation 
 checking; implied by any 
 -ddump-Xoption 
-dynamic -fno-force-recomp 
+dynamic -fno-force-recomp / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 101 
-/ 
-37 
 
 
 4.20.10 Interactive-mode options 
-Section 2.9 
+Section |2.9| 
 
 Flag Description Static/Dynamic Reverse 
 -ignore-dot-ghci 
@@ -9020,7 +7316,7 @@ expressions in GHCi
 dynamic -
 
 4.20.11 Packages 
-Section 4.9 
+Section |4.9| 
 
 Flag Description Static/Dynamic Reverse 
 -package-nameP 
@@ -9066,14 +7362,8 @@ to be trusted static/:set -
 -distrustP 
 Expose package P 
 and set it 
-to be distrusted static/:set -
+to be distrusted static/:set -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 102 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9083,12 +7373,12 @@ default static/:set -
 
 4.20.12 Language options 
 Language options can be enabled either by a command-line option -Xblah, or by a {-# LANGUAGE blah #-}pragma in 
-the file itself. See Section 7.1 
+the file itself. See Section |7.1| 
 
 Flag Description Static/Dynamic Reverse 
 -fglasgow-exts 
 Enable most language 
-extensions; see Section 7.1 
+extensions; see Section |7.1| 
 for exactly which ones. 
 dynamic -fno-glasgow-exts 
 -XOverlappingInstances 
@@ -9155,14 +7445,8 @@ polymorphic dynamic -XMonoPatBinds
 Relaxed checking for 
 mutually-recursive 
 polymorphic functions 
-dynamic -XNoRelaxedPolyRec 
+dynamic -XNoRelaxedPolyRec / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 103 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9242,14 +7526,8 @@ declarations. dynamic -XNoEmptyDataDecls
 -XParallelListComp 
 Enable parallel list 
 comprehensions. dynamic -XNoParallelListComp 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 104 
 / 
-37 
+
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9323,14 +7601,8 @@ Enable multi-way
 if-expressions. dynamic -XNoMultiWayIf 
 -XSafe 
 Enable the Safe Haskell 
-Safe mode. dynamic -
+Safe mode. dynamic -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 105 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9347,14 +7619,14 @@ trustworty modules.
 dynamic -
 
 4.20.13 Warnings 
-Section 4.8 
+Section |4.8| 
 
 Flag Description Static/Dynamic Reverse 
 -W enable normal warnings dynamic -w 
 -w disable all warnings dynamic -
 -Wall 
 enable almost all warnings 
-(details in Section 4.8) dynamic -w 
+(details in Section |4.8|) dynamic -w 
 -Werror make warnings fatal dynamic -Wwarn 
 -Wwarn make warnings non-fatal dynamic -Werror 
 -fdefer-type-errors 
@@ -9425,14 +7697,8 @@ declaration does not
 explicitly list all the names 
 brought into scope 
 dynamic -fnowarn-missing-import-
-lists 
+lists / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 106 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9529,18 +7795,12 @@ functions & types that have
 warnings or deprecated 
 pragmas 
 dynamic -fno-warn-warnings-
-deprecations 
+deprecations / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 107 
-/ 
-37 
 
 
 4.20.14 Optimisation levels 
-Section 4.10 
+Section |4.10| 
 
 Flag Description Static/Dynamic Reverse 
 -O 
@@ -9551,7 +7811,7 @@ Set optimisation level n
 dynamic -O0 
 
 4.20.15 Individual optimisations 
-Section 4.10.2 
+Section |4.10.2| 
 
 Flag Description Static/Dynamic Reverse 
 -fcase-merge 
@@ -9625,14 +7885,8 @@ static -fno-liberate-case-
 threshold 
 -fmax-simplifier-iterations 
 Set the max iterations for 
-the simplifier dynamic -
+the simplifier dynamic -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 108 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9728,14 +7982,8 @@ fields
 -funfolding-creation-
 threshold 
 Tweak unfolding settings static -fno-unfolding-creation-
-threshold 
+threshold / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 109 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9778,7 +8026,7 @@ Turn on ticky-ticky
 profiling static -
 
 4.20.17 Program coverage options 
-Section 5.7 
+Section |5.7| 
 
 Flag Description Static/Dynamic Reverse 
 -fhpc 
@@ -9789,7 +8037,7 @@ Directory to deposit .mix
 (default is .hpc) 
 
 4.20.18 Haskell pre-processor options 
-Section 4.12.4 
+Section |4.12.4| 
 
 Flag Description Static/Dynamic Reverse 
 Enable the use of a 
@@ -9797,14 +8045,8 @@ Enable the use of a
 -pgmF) 
 
 4.20.19 C pre-processor options 
-Section 4.12.3 
+Section |4.12.3| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 110 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9824,7 +8066,7 @@ files
 dynamic -
 
 4.20.20 Code generation options 
-Section 4.12.5 
+Section |4.12.5| 
 
 Flag Description Static/Dynamic Reverse 
 -fasm 
@@ -9838,7 +8080,7 @@ code generator dynamic -fasm
 -fobject-code Generate object code dynamic -
 
 4.20.21 Linking options 
-Section 4.12.6 
+Section |4.12.6| 
 
 Flag Description Static/Dynamic Reverse 
 -shared 
@@ -9884,14 +8126,8 @@ Add dir
 to the list of 
 directories searched for 
 libraries 
-dynamic -
+dynamic -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 111 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9959,19 +8195,13 @@ search location for it.
 dynamic -
 
 4.20.22 Plugin options 
-Section 9.3 
+Section |9.3| 
 
 Flag Description Static/Dynamic Reverse 
 -fplugin=module 
 Load a plugin exported by a 
-given module static -
+given module static -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 112 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -9983,7 +8213,7 @@ specified with -fplugin
 static -
 
 4.20.23 Replacing phases 
-Section 4.12.1 
+Section |4.12.1| 
 
 Flag Description Static/Dynamic Reverse 
 -pgmLcmd 
@@ -10026,7 +8256,7 @@ Windows.
 dynamic -
 
 4.20.24 Forcing options to particular phases 
-Section 4.12.2 
+Section |4.12.2| 
 
 Flag Description Static/Dynamic Reverse 
 -optLoption 
@@ -10069,18 +8299,12 @@ to the DLL
 generator dynamic -
 -optwindresoption 
 pass option 
-to windres. dynamic -
+to windres. dynamic -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 113 
-/ 
-37 
 
 
 4.20.25 Platform-specific options 
-Section 4.16 
+Section |4.16| 
 
 Flag Description Static/Dynamic Reverse 
 -msse2 
@@ -10093,7 +8317,7 @@ compiler
 dynamic -
 
 4.20.26 External core file options 
-Section 4.18 
+Section |4.18| 
 
 Flag Description Static/Dynamic Reverse 
 -fext-core 
@@ -10101,7 +8325,7 @@ Generate .hcrexternal
 Core files dynamic -
 
 4.20.27 Compiler debugging options 
-Section 4.19 
+Section |4.19| 
 
 Flag Description Static/Dynamic Reverse 
 -dcore-lint 
@@ -10144,14 +8368,8 @@ Dump the results of C--to
 C--optimising passes dynamic -
 -ddump-parsed Dump parse tree dynamic -
 -ddump-prep Dump prepared core dynamic -
--ddump-rn Dump renamer output dynamic -
+-ddump-rn Dump renamer output dynamic -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 114 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -10235,14 +8453,8 @@ prefixes
 Suppress the printing of 
 module qualification 
 prefixes 
-static -
+static -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 115 
-/ 
-37 
 
 
 Flag Description Static/Dynamic Reverse 
@@ -10296,14 +8508,8 @@ Turn off the GHCi sandbox.
 Means computations are 
 run in the main thread, 
 rather than a forked thread. 
-dynamic -
+dynamic -/ 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 116 
-/ 
-37 
 
 
 Chapter 5 
@@ -10352,14 +8558,8 @@ $
 When a GHC-compiled program is run with the -pRTS option, it generates a file called prog.prof. In this case, the file will 
 contain something like this: 
 
-1-fprof-autowas known as -auto-allprior to GHC 7.4.1. 
+1-fprof-autowas known as -auto-allprior to GHC 7.4.1. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 117 
-/ 
-37 
 
 
 Wed Oct 12 16:14 2011 Time and Allocation Profiling Report (Final) 
@@ -10386,7 +8586,7 @@ fib Main 205 2692537 100.0 100.0 100.0 100.0
 
 The first part of the file gives the program name and options, and the total time and total memory allocation measured during 
 the run of the program (note that the total memory allocation figure isn’t the same as the amount of live memory needed by the 
-program at any one time; the latter can be determined using heap profiling, which we will describe later in Section 5.4). 
+program at any one time; the latter can be determined using heap profiling, which we will describe later in Section |5.4|). 
 
 The second part of the file is a break-down by cost centre of the most costly functions in the program. In this case, there was 
 only one significant function in the program, namely fib, and it was responsible for 100% of both the time and allocation costs 
@@ -10424,14 +8624,8 @@ main.g Main 207 1 0.0 0.0 0.0 0.1
 fib Main 208 1973 0.0 0.1 0.0 0.1 
 main.f Main 205 1 0.0 0.0 100.0 99.9 
 
-fib Main 206 2692537 100.0 99.9 100.0 99.9 
+fib Main 206 2692537 100.0 99.9 100.0 99.9 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 118 
-/ 
-37 
 
 
 Now although we had two calls to fibin the program, it is immediately clear that it was the call from fwhich took all the time. 
@@ -10500,14 +8694,8 @@ print $ {-# SCC last_init_ys #-}last $ init ys
 
 which gives this profile when run: 
 2Note that this policy has changed slightly in GHC 7.4.1 relative to earlier versions, and may yet change further, feedback is welcome. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 119 
 / 
-37 
+
 
 
 COST CENTRE MODULE no. entries %time %alloc %time %alloc 
@@ -10562,14 +8750,8 @@ If you want a cost centre on an INLINE function, you have to add it manually.
 
 -fprof-auto-calls: Adds an automatic SCCannotation to all call sites. This is particularly useful when using profiling 
 for the purposes of generating stack traces; see the function traceStack in the module Debug.Trace, or the -xc 
-RTS flag (Section 4.17.7) for more details. 
+RTS flag (Section |4.17.7|) for more details. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 120 
-/ 
-37 
 
 
 -fprof-cafs: The costs of all CAFs in a module are usually attributed to one “big” CAF cost-centre. With this option, all 
@@ -10605,7 +8787,7 @@ default is 0.02 seconds.
 -xc 
 This option causes the runtime to print out the current cost-centre stack whenever an exception is raised. This can be 
 particularly useful for debugging the location of exceptions, such as the notorious Prelude.head: empty list 
-error. See Section 4.17.7. 
+error. See Section |4.17.7.| 
 
 5.4 Profiling memory usage 
 In addition to profiling the time and allocation behaviour of your program, you can also generate a graph of its memory usage 
@@ -10615,21 +8797,16 @@ out of memory altogether.
 
 To generate a heap profile from your program: 
 
-1. Compile the program for profiling (Section 5.2). 
+1. Compile the program for profiling (Section |5.2|). 
 2. Run it with one of the heap profiling options described below (eg. -hfor a basic producer profile). This generates the file 
 prog.hp. 
-3. Run hp2ps to produce a Postscript file, prog.ps. The hp2ps utility is described in detail in Section 5.5. 
-4. Display the heap profile using a postscript viewer such as Ghostview, or print it out on a Postscript-capable printer. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 121 
-/ 
-37 
+3. Run hp2ps to produce a Postscript file, prog.ps. The hp2ps utility is described in detail in Section |5.5.| 
+4. Display the heap profile using a postscript viewer such as Ghostview, or print it out on a Postscript-capable printer./ 
 
 
 
-For example, here is a heap profile produced for the program given above in Section 5.1.1: 
+
+For example, here is a heap profile produced for the program given above in Section |5.1.1:| 
 You might also want to take a look at hp2any, a more advanced suite of tools (not distributed with GHC) for displaying heap 
 profiles. 
 
@@ -10654,17 +8831,11 @@ Breaks down the graph by type. For closures which have function type or unknown/
 represent an approximation to the actual type. 
 
 -hr 
-Break down the graph by retainer set. Retainer profiling is described in more detail below (Section 5.4.2). 
+Break down the graph by retainer set. Retainer profiling is described in more detail below (Section |5.4.2|). 
 
 -hb 
-Break down the graph by biography. Biographical profiling is described in more detail below (Section 5.4.3). 
+Break down the graph by biography. Biographical profiling is described in more detail below (Section |5.4.3|). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 122 
-/ 
-37 
 
 
 In addition, the profile can be restricted to heap data which satisfies certain criteria -for example, you might want to display a 
@@ -10699,7 +8870,7 @@ There are three more options which relate to heap profiling:
 -isecs: Set the profiling (sampling) interval to secs 
 seconds (the default is 0.1 second). Fractions are allowed: for example 
 -i0.2will get 5 samples per second. This only affects heap profiling; time profiles are always sampled with the frequency 
-of the RTS clock. See Section 5.3 for changing that. 
+of the RTS clock. See Section |5.3| for changing that. 
 
 -xt 
 Include the memory occupied by threads in a heap profile. Each thread takes up a small area for its thread state in addition 
@@ -10729,14 +8900,8 @@ collectively called its retainer set, or its retainer set, or its retainers.
 When retainer profiling is requested by giving the program the -hroption, a graph is generated which is broken down by retainer 
 set. A retainer set is displayed as a set of cost-centre stacks; because this is usually too large to fit on the profile graph, each 
 retainer set is numbered and shown abbreviated on the graph along with its number, and the full list of retainer sets is dumped 
-into the file prog.prof. 
+into the file prog.prof. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 123 
-/ 
-37 
 
 
 Retainer profiling requires multiple passes over the live heap in order to discover the full retainer set for each object, which can 
@@ -10788,14 +8953,8 @@ prog
 +RTS -hr -hccc... 
 
 NOTE: this two stage process is required because GHC cannot currently profile using both biographical and retainer information 
-simultaneously. 
+simultaneously. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 124 
-/ 
-37 
 
 
 5.4.4 Actual memory residency 
@@ -10855,14 +9014,8 @@ scaling. The output is unsuitable for a laser printer.
 -l 
 Normally a profile is limited to 20 bands with additional identifiers being grouped into an OTHERband. The -lflag removes 
 this 20 band and limit, producing as many bands as necessary. No key is produced as it won’t fit!. It is useful for creation 
-time profiles with many bands. 
+time profiles with many bands. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 125 
-/ 
-37 
 
 
 -m<int> 
@@ -10927,14 +9080,8 @@ hp2ps utility should accept any input with a properly-formatted header followed 
 
 5.5.2 Zooming in on regions of your profile 
 You can look at particular regions of your profile simply by loading a copy of the .hp file into a text editor and deleting the 
-unwanted samples. The resulting .hpfile can be run through hp2ps and viewed or printed. 
+unwanted samples. The resulting .hpfile can be run through hp2ps and viewed or printed. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 126 
-/ 
-37 
 
 
 5.5.3 Viewing the heap profile of a running program 
@@ -10998,14 +9145,8 @@ done
 Combining -threadedand -profis perfectly fine, and indeed it is possible to profile a program running on multiple processors 
 with the +RTS -Noption.3 
 
-3This feature was added in GHC 7.4.1. 
+3This feature was added in GHC 7.4.1. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 127 
-/ 
-37 
 
 
 Some caveats apply, however. In the current implementation, a profiled program is likely to scale much less well than the 
@@ -11070,14 +9211,8 @@ showRecip n =
 "1/" ++ show n ++ " =" ++ 
 if r==0 then d else take p d ++ "(" ++ drop pd ++ ")" 
 where 
-p =length d -r 
+p =length d -r / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 128 
-/ 
-37 
 
 
 (d, r) = reciprocal n 
@@ -11135,14 +9270,8 @@ typically be compiled without -fhpc. When the program is run, coverage data will
 that were compiled with -fhpc, and the hpctool will only show information about those modules. 
 
 5.7.3 The hpc toolkit 
-The hpc command has several sub-commands: 
+The hpc command has several sub-commands: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 129 
-/ 
-37 
 
 
 $ hpc 
@@ -11209,14 +9338,8 @@ Options:
 
 --exclude=[PACKAGE:][MODULE] exclude MODULE and/or PACKAGE 
 
---include=[PACKAGE:][MODULE] include MODULE and/or PACKAGE 
+--include=[PACKAGE:][MODULE] include MODULE and/or PACKAGE / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 130 
-/ 
-37 
 
 
 --srcdir=DIR path to source directory of .hs files 
@@ -11275,14 +9398,8 @@ Options:
 
 --exclude=[PACKAGE:][MODULE] exclude MODULE and/or PACKAGE 
 --include=[PACKAGE:][MODULE] include MODULE and/or PACKAGE 
---output=FILE output FILE 
+--output=FILE output FILE / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 131 
-/ 
-37 
 
 
 --function=FUNCTION apply function to .tix files, default = ID 
@@ -11339,19 +9456,13 @@ a module-by-module basis which parts of a program have the counters compiled in,
 Those modules that were not compiled with -tickywon’t contribute to the ticky-ticky profiling results, and that will normally 
 include all the pre-compiled packages that your program links with. 
 
-To get your compiled program to spit out the ticky-ticky numbers: 
+To get your compiled program to spit out the ticky-ticky numbers: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 132 
-/ 
-37 
 
 
 • Link the program with -debug(-tickyis a synonym for -debugat link-time). This links in the debug version of the RTS, 
 which includes the code for aggregating and reporting the results of ticky-ticky profiling. 
-• Run the program with the -rRTS option. See Section 4.17. 
+• Run the program with the -rRTS option. See Section |4.17.| 
 Here is a sample ticky-ticky statistics file, generated by the invocation foo +RTS -rfoo.ticky. 
 foo +RTS -rfoo.ticky 
 
@@ -11419,14 +9530,8 @@ NEW GEN UPDATES: 2274700 ( 99.9%)
 
 OLD GEN UPDATES: 1852 ( 0.1%) 
 
-Total bytes copied during GC: 190096 
+Total bytes copied during GC: 190096 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 133 
-/ 
-37 
 
 
 ************************************************** 
@@ -11459,14 +9564,8 @@ readable: zero or more spaces, an integer, a space, the counter name, and a newl
 In fact, not all counters are necessarily dumped; compile-or run-time flags can render certain counters invalid. In this case, either 
 the counter will simply not appear, or it will appear with a modified counter name, possibly along with an explanation for the 
 omission (notice ENT_PERM_IND_ctrappears with an inserted ! above). Software analysing this output should always check 
-that it has the counters it expects. Also, beware: some of the counters can have large values! 
+that it has the counters it expects. Also, beware: some of the counters can have large values! / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 134 
-/ 
-37 
 
 
 Chapter 6 
@@ -11511,14 +9610,8 @@ unnecessarily: It’s ugly and slow.
 
 GHC compiles some program constructs slowly: We’d rather you reported such behaviour as a bug, so that we can try to 
 correct it. 
-To figure out which part of the compiler is badly behaved, the -v2option is your friend. 
+To figure out which part of the compiler is badly behaved, the -v2option is your friend. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 135 
-/ 
-37 
 
 
 6.2 Faster: producing a program that runs quicker 
@@ -11558,10 +9651,10 @@ practice).
 The automatic specialisation of overloaded functions (with -O) should take care of overloaded local and/or unexported 
 functions. 
 Use SPECIALIZE 
-pragmas: Specialize the overloading on key functions in your program. See Section 7.18.8 and Section 
+pragmas: Specialize the overloading on key functions in your program. See Section |7.18.8| and Section ||
 7.18.9. 
 “But how do I know where overloading is creeping in?”: A low-tech way: grep (search) your interface files for overloaded 
-type signatures. You can view interface files using the --show-ifaceoption (see Section 4.7.7). 
+type signatures. You can view interface files using the --show-ifaceoption (see Section |4.7.7|). 
 
 % ghc --show-iface Foo.hi | egrep ’^[a-z].*::.*=>’ 
 
@@ -11585,14 +9678,8 @@ f (Wibble x y) # beautiful but slow
 (a1, b1, c1) = unpackFoo x 
 (a2, b2, c2) = unpackFoo y 
 
-in ... 
+in ... / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 136 
-/ 
-37 
 
 
 f (Wibble x y) # ugly, and proud of it 
@@ -11626,7 +9713,7 @@ print the self-same pragmatic information as would be put in an interface file. 
 
 
 Force key functions to be INLINEd (esp. monads): Placing INLINEpragmas on certain functions that are used a lot can have 
-a dramatic effect. See Section 7.18.5.1. 
+a dramatic effect. See Section |7.18.5.1.| 
 
 Explicit export 
 list: If you do not have an explicit export list in a module, GHC must assume that everything in that module 
@@ -11646,7 +9733,7 @@ are good, primitive operations (e.g., eqInt#) are good,. . .
 Use strictness annotations: Putting a strictness annotation (’!’) on a constructor field helps in two ways: it adds strictness to 
 
 the program, which gives the strictness analyser more to work with, and it might help to reduce space leaks. 
-It can also help in a third way: when used with -funbox-strict-fields (see Section 4.10.2), a strict field can be 
+It can also help in a third way: when used with -funbox-strict-fields (see Section |4.10.2|), a strict field can be 
 unpacked or unboxed in the constructor, and one or more levels of indirection may be removed. Unpacking only happens 
 for single-constructor datatypes (Intis a good candidate, for example). 
 
@@ -11658,7 +9745,7 @@ performance even with -O, but this is unlikely (let us know if it happens to you
 
 Use unboxed types (a GHC extension): When you are really desperate for speed, and you want to get right down to the “raw 
 
-bits.” Please see Section 7.2.1 for some information about using unboxed types. 
+bits.” Please see Section |7.2.1| for some information about using unboxed types. 
 Before resorting to explicit unboxed types, try using strict constructor fields and -funbox-strict-fieldsfirst (see 
 above). That way, your code stays portable. 
 
@@ -11667,14 +9754,8 @@ Use foreign
 import 
 (a GHC extension) to plug into fast libraries: This may take real work, but. . . There exist piles of 
 massively-tuned library code, and the best thing is not to compete with it, but link with it. 
-Chapter 8 describes the foreign function interface. 
+Chapter 8 describes the foreign function interface. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 137 
-/ 
-37 
 
 
 Don’t use Floats: If you’re using Complex, definitely use Complex Double rather than Complex Float (the former 
@@ -11693,7 +9774,7 @@ Intand Char: see the Data.Array.Unboxedlibrary for details. These arrays are lik
 standard Haskell 98 arrays from the Data.Arraylibrary. 
 
 Use a bigger heap! If your program’s GC stats (-SRTS option) indicate that it’s doing lots of garbage-collection (say, more than 
-20% of execution time), more memory might help—with the -M<size>or -A<size>RTS options (see Section 4.17.3). 
+20% of execution time), more memory might help—with the -M<size>or -A<size>RTS options (see Section |4.17.3|). 
 
 6.3 Smaller: producing a program that is smaller 
 Decrease the “go-for-it” threshold for unfolding smallish expressions. Give a -funfolding-use-threshold0 option 
@@ -11713,14 +9794,8 @@ Once again, the profiling facilities (Chapter 5) are the basic tool for demystif
 
 Strict functions are good for space usage, as they are for time, as discussed in the previous section. Strict functions get right down 
 to business, rather than filling up the heap with closures (the system’s notes to itself about how to evaluate something, should it 
-eventually be required). 
+eventually be required). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 138 
-/ 
-37 
 
 
 Chapter 7 
@@ -11747,7 +9822,7 @@ Language options can be controlled in two ways:
 • Every language option can switched on by a command-line flag "-X..." (e.g. -XTemplateHaskell), and switched off 
 by the flag "-XNo..."; (e.g. -XNoTemplateHaskell). 
 • Language options recognised by Cabal can also be enabled using the LANGUAGEpragma, thus {-# LANGUAGE TemplateHaskell 
-#-}(see Section 7.18.1). 
+#-}(see Section |7.18.1|). 
 The flag -fglasgow-exts is equivalent to enabling the following extensions: -XForeignFunctionInterface, --
 XUnliftedFFITypes, -XImplicitParams, -XScopedTypeVariables, -XUnboxedTuples, -XTypeSynonymInstances, 
 -XStandaloneDeriving, -XDeriveDataTypeable, -XDeriveFunctor, -XDeriveFoldable, 
@@ -11761,14 +9836,8 @@ flag, and towards enabling features individually.
 
 7.2 Unboxed types and primitive operations 
 GHC is built on a raft of primitive data types and operations; "primitive" in the sense that they cannot be defined in Haskell itself. 
-While you really can use this stuff to write fast code, we generally find it a lot less painful, and more satisfying in the long run, 
+While you really can use this stuff to write fast code, we generally find it a lot less painful, and more satisfying in the long run, / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 139 
-/ 
-37 
 
 
 to use higher-level language features and libraries. With any luck, the code you write will be optimised to the efficient unboxed 
@@ -11779,7 +9848,7 @@ All these primitive data types and operations are exported by the library GHC.Pr
 
 If you want to mention any of the primitive data types or operations in your program, you must first import GHC.Primto bring 
 them into scope. Many of them have names ending in "#", and to mention such names you need the -XMagicHashextension 
-(Section 7.3.2). 
+(Section |7.3.2|). 
 
 The primops make extensive use of unboxed types and unboxed tuples, which we briefly summarise here. 
 
@@ -11794,7 +9863,7 @@ the machine-addition that we all know and love—usually one instruction.
 
 Primitive (unboxed) types cannot be defined in Haskell, and are therefore built into the language and compiler. Primitive types 
 are always unlifted; that is, a value of a primitive type cannot be bottom. We use the convention (but it is only a convention) that 
-primitive types, values, and operations have a # suffix (see Section 7.3.2). For some primitive types we have special syntax for 
+primitive types, values, and operations have a # suffix (see Section |7.3.2|). For some primitive types we have special syntax for 
 literals, also described in the same section. 
 
 Primitive values are often represented by a simple bit-pattern, such as Int#, Float#, Double#. But this is not necessarily 
@@ -11825,14 +9894,8 @@ data Foo = Foo Int Int#
 f x = let (Foo a b, w) = ..rhs.. in ..body.. 
 
 
-you must write: 
+you must write: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 140 
-/ 
-37 
 
 
 data Foo = Foo Int Int# 
@@ -11890,14 +9953,8 @@ ASCII Unicode alternative
 :: :: 
 => . 
 forall . 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 141 
 / 
-37 
+
 
 
 ASCII Unicode alternative 
@@ -11916,10 +9973,10 @@ is a valid type constructor or data constructor.
 
 The hash sign does not change semantics at all. We tend to use variable names ending in "#" for unboxed values or types (e.g. 
 Int#), but there is no requirement to do so; they are just plain ordinary variables. Nor does the -XMagicHashextension bring 
-anything into scope. For example, to bring Int#into scope you must import GHC.Prim(see Section 7.2); the -XMagicHash 
+anything into scope. For example, to bring Int#into scope you must import GHC.Prim(see Section |7.2|); the -XMagicHash 
 extension then allows you to refer to the Int#that is now in scope. 
 
-The -XMagicHashalso enables some new forms of literals (see Section 7.2.1): 
+The -XMagicHashalso enables some new forms of literals (see Section |7.2.1|): 
 
 • ’x’#has type Char# 
 • "foo"#has type Addr# 
@@ -11943,17 +10000,11 @@ example:
 
 import qualified Control.Monad.ST.Strict as ST 
 
-For details on how GHC searches for source and interface files in the presence of hierarchical modules, see Section 4.7.3. 
+For details on how GHC searches for source and interface files in the presence of hierarchical modules, see Section |4.7.3.| 
 
 GHC comes with a large collection of libraries arranged hierarchically; see the accompanying library documentation. More 
-libraries to install are available from HackageDB. 
+libraries to install are available from HackageDB. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 142 
-/ 
-37 
 
 
 7.3.4 Pattern guards 
@@ -12021,14 +10072,8 @@ clunky env var1 var2
 , Just val2 <-lookup env var2 
 = val1 + val2 
 
-...other equations for clunky... 
+...other equations for clunky... / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 143 
-/ 
-37 
 
 
 The semantics should be clear enough. The qualifiers are matched in order. For a <-qualifier, which I call a pattern guard, the 
@@ -12097,14 +10142,8 @@ The semantics of a pattern (exp
 Any variables in exp 
 are bound occurrences, but variables bound "to the left" in a pattern are in scope. This feature permits, 
 for example, one argument to a function to be used in the view of another argument. For example, the function clunkyfrom 
-Section 7.3.4 can be written using view patterns as follows: 
+Section |7.3.4| can be written using view patterns as follows: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 144 
-/ 
-37 
 
 
 clunky env (lookup env -> Just val1) (lookup env -> Just val2) = val1 + val2 
@@ -12139,7 +10178,7 @@ has type T1
 ->T2 
 and pat 
 matches a T2, then the whole view pattern matches a T1. 
-• Matching: To the equations in Section 3.17.3 of the Haskell 98 Report, add the following: 
+• Matching: To the equations in Section |3.17.3| of the Haskell 98 Report, add the following: 
 case v of { (e-> p)-> e1; _ -> e2 } 
 = 
 
@@ -12171,14 +10210,8 @@ n+kpattern support is disabled by default. To enable it, you can use the -XNPlus
 
 7.3.7 Traditional record syntax 
 Traditional record syntax, such as C {f = x}, is enabled by default. To disable it, you can use the -XNoTraditionalRecordSyntaxflag. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 145 
 / 
-37 
+
 
 
 7.3.8 The recursive do-notation 
@@ -12240,14 +10273,8 @@ class. Here is an example:
 
 rec { b <-f a c ===> (b,c) <-mfix (\~(b,c) -> do { b <-f a c 
 ; c <-f b a } ; c <-f b a 
-; return (b,c) }) 
+; return (b,c) }) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 146 
-/ 
-37 
 
 
 As usual, the meta-variables b, cetc., can be arbitrary patterns. In general, the statement rec ss 
@@ -12316,13 +10343,8 @@ section. The original mdo-expression typechecks exactly when the desugared versi
 Here are some other important points in using the recursive-do notation: 
 
 • It is enabled with the flag -XRecursiveDo, or the LANGUAGE RecursiveDo pragma. (The same flag enables both 
-mdo-notation, and the use of recblocks inside doexpressions.) 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 147 
-/ 
-37 
+mdo-notation, and the use of recblocks inside doexpressions.)/ 
+
 
 
 • 
@@ -12386,14 +10408,8 @@ output = [ (the dept, sum salary)
 , then group by dept using groupWith 
 , then sortWith by (sum salary) 
 , then take 5 ] 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 148 
 / 
-37 
+
 
 
 In this example, the list outputwould take on the value: 
@@ -12465,19 +10481,13 @@ output =[ x
 This will yield a list containing every prefix of the word "hello" written out 5 times: 
 
 ["","h","he","hel","hell","hello","helloh","hellohe","hellohel","hellohell","hellohello","  . 
-hellohelloh",...] 
+hellohelloh",...] / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 149 
-/ 
-37 
 
 
 7.3.11 Monad comprehensions 
-Monad comprehensions generalise the list comprehension notation, including parallel comprehensions (Section 7.3.9) and transform 
-comprehensions (Section 7.3.10) to work for any monad. 
+Monad comprehensions generalise the list comprehension notation, including parallel comprehensions (Section |7.3.9|) and transform 
+comprehensions (Section |7.3.10|) to work for any monad. 
 
 Monad comprehensions support: 
 
@@ -12528,18 +10538,12 @@ return x)
 return y) 
 
 
-return (x+y) 
+return (x+y) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 150 
-/ 
-37 
 
 
 All these features are enabled by default if the MonadComprehensions extension is enabled. The types and more detailed 
-examples on how to use comprehensions are explained in the previous chapters Section 7.3.10 and Section 7.3.9. In general you 
+examples on how to use comprehensions are explained in the previous chapters Section |7.3.10| and Section |7.3.9.| In general you 
 just have to replace the type [a]with the type Monad m=> m afor monad comprehensions. 
 
 Note: Even though most of these examples are using the list monad, monad comprehensions work for any monad. The base 
@@ -12596,7 +10600,7 @@ mzip Control.Monad.Zip forall a b. m a -> m b -> m (a,b)
 
 The comprehension should typecheck when its desugaring would typecheck. 
 
-Monad comprehensions support rebindable syntax (Section 7.3.12). Without rebindable syntax, the operators from the "standard 
+Monad comprehensions support rebindable syntax (Section |7.3.12|). Without rebindable syntax, the operators from the "standard 
 binding" module are used; with rebindable syntax, the operators are looked up in the current lexical scope. For example, parallel 
 comprehensions will be typechecked and desugared using whatever "mzip" is in scope. 
 
@@ -12606,14 +10610,8 @@ example, you can use a bind operator with the type
 (>>=):: T x y a -> (a -> T yz b) -> T xz b 
 
 In the case of transform comprehensions, notice that the groups are parameterised over some arbitrary type n(provided it has an 
-fmap, as well as the comprehension being over an arbitrary monad. 
+fmap, as well as the comprehension being over an arbitrary monad. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 151 
-/ 
-37 
 
 
 7.3.12 Rebindable syntax and the implicit Prelude import 
@@ -12633,8 +10631,8 @@ versions:
 • Negation (e.g. "-(f x)") means "negate (f x)", both in numeric patterns, and expressions. 
 • Conditionals (e.g. "ife1 thene2 elsee3") means "ifThenElsee1 e2 e3". However caseexpressions are unaffected. 
 • "Do" notation is translated using whatever functions (>>=), (>>), and fail, are in scope (not the Prelude versions). List 
-comprehensions, mdo (Section 7.3.8), and parallel array comprehensions, are unaffected. 
-• Arrow notation (see Section 7.15) uses whatever arr, (>>>), first, app, (|||) and loop functions are in scope. But 
+comprehensions, mdo (Section |7.3.8|), and parallel array comprehensions, are unaffected. 
+• Arrow notation (see Section |7.15|) uses whatever arr, (>>>), first, app, (|||) and loop functions are in scope. But 
 unlike the other constructs, the types of these functions must match the Prelude types very closely. Details are in flux; if you 
 want to use this, ask! 
 -XRebindableSyntaximplies -XNoImplicitPrelude. 
@@ -12668,14 +10666,8 @@ is equivalent (from the point of view of both type checking and execution) to th
 That is, the operator must be a function of two arguments. GHC allows it to take only one argument, and that in turn allows you 
 to write the function postfix. 
 
-The extension does not extend to the left-hand side of function definitions; you must define such a function in prefix form. 
+The extension does not extend to the left-hand side of function definitions; you must define such a function in prefix form. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 152 
-/ 
-37 
 
 
 7.3.14 Tuple sections 
@@ -12735,14 +10727,8 @@ _ | guard1 -> expr1
 ... 
 _ | guardN -> exprN 
 
-except that multi-way if-expressions do not alter the layout. 
+except that multi-way if-expressions do not alter the layout. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 153 
-/ 
-37 
 
 
 7.3.17 Record field disambiguation 
@@ -12776,7 +10762,7 @@ import two records from different modules that use the same field name.
 
 Some details: 
 
-• Field disambiguation can be combined with punning (see Section 7.3.18). For example: 
+• Field disambiguation can be combined with punning (see Section |7.3.18|). For example: 
 module Foo where 
 
 import M 
@@ -12805,14 +10791,8 @@ f (C {a = a}) = a
 
 Record punning permits the variable name to be elided, so one can simply write 
 
-f (C {a}) = a 
+f (C {a}) = a / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 154 
-/ 
-37 
 
 
 to mean the same pattern as above. That is, in a record pattern, the pattern aexpands into the pattern a=afor the same name 
@@ -12857,7 +10837,7 @@ f (C {a = 1, ..})= b +c + d
 
 More details: 
 
-• Wildcards can be mixed with other patterns, including puns (Section 7.3.18); for example, in a pattern C {a= 1, b, ..}). 
+• Wildcards can be mixed with other patterns, including puns (Section |7.3.18|); for example, in a pattern C {a= 1, b, ..}). 
 Additionally, record wildcards can be used wherever record patterns occur, including in letbindings and at the top-level. 
 For example, the top-level binding 
 C {a = 1, ..} = e 
@@ -12867,14 +10847,8 @@ defines b, c, and d.
 • Record wildcards can also be used in expressions, writing, for example, 
 let{a =1; b = 2; c= 3; d = 4} in C {..} 
 
-in place of 
+in place of / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 155 
-/ 
-37 
 
 
 let{a =1; b = 2; c= 3; d = 4} in C {a=a, b=b, c=c, d=d} 
@@ -12915,7 +10889,7 @@ in
 ... 
 
 and the fixity declaration applies wherever the binding is in scope. For example, in a let, it applies in the right-hand sides of 
-other let-bindings and the body of the letC. Or, in recursive doexpressions (Section 7.3.8), the local fixity declarations of a 
+other let-bindings and the body of the letC. Or, in recursive doexpressions (Section |7.3.8|), the local fixity declarations of a 
 letstatement scope over other statements in the group, just as the bound name does. 
 
 Moreover, a local fixity declaration *must* accompany a local binding of that name: it is not possible to revise the fixity of name 
@@ -12940,14 +10914,8 @@ The special package name thiscan be used to refer to the current package being b
 Note: you probably don’t need to use this feature, it was added mainly so that we can build backwards-compatible versions of 
 packages when APIs change. It can lead to fragile dependencies in the common case: modules occasionally move from one 
 package to another, rendering any package-qualified imports broken. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 156 
 / 
-37 
+
 
 
 7.3.22 Safe imports 
@@ -12957,7 +10925,7 @@ optional safekeyword after the importkeyword. This feature is part of the Safe H
 import safe qualified Network.Socket as NS 
 
 would import the module Network.Socketwith compilation only succeeding if Network.Socket can be safely imported. For 
-a description of when a import is considered safe see Section 7.25 
+a description of when a import is considered safe see Section |7.25| 
 
 7.3.23 Summary of stolen syntax 
 Turning on an option that enables special syntax might cause working Haskell 98 code to fail to compile, perhaps because it uses 
@@ -13001,16 +10969,10 @@ dataS --S::*
 dataTa --T::*->* 
 
 Syntactically, the declaration lacks the "= constrs" part. The type can be parameterised over types of any kind, but if the kind is 
-not *then an explicit kind annotation must be used (see Section 7.12.4). 
+not *then an explicit kind annotation must be used (see Section |7.12.4|). 
 
-Such data types have only one value, namely bottom. Nevertheless, they can be useful when defining "phantom types". 
+Such data types have only one value, namely bottom. Nevertheless, they can be useful when defining "phantom types". / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 157 
-/ 
-37 
 
 
 7.4.2 Data type contexts 
@@ -13066,13 +11028,8 @@ infixl 7 T, :*:
 
 sets the fixity for both type constructor Tand data constructor T, and similarly for :*:. Int `a` Bool. 
 
-• Function arrow is infixrwith fixity 0. (This might change; I’m not sure what it should be.) 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 158 
-/ 
-37 
+• Function arrow is infixrwith fixity 0. (This might change; I’m not sure what it should be.)/ 
+
 
 
 7.4.4 Liberalised type synonyms 
@@ -13127,14 +11084,8 @@ type Pr = (# Int, Int #)
 h :: Pr -> Int 
 h x = ... 
 
-because GHC does not allow unboxed tuples on the left of a function arrow. 
+because GHC does not allow unboxed tuples on the left of a function arrow. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 159 
-/ 
-37 
 
 
 7.4.5 Existentially quantified data constructors 
@@ -13194,14 +11145,8 @@ Baz1 :: forall a.Eq a => a -> a ->Baz
 Baz2 :: forall b. Show b => b -> (b -> b) -> Baz 
 
 But when pattern matching on Baz1the matched values can be compared for equality, and when pattern matching on Baz2the 
-first matched value can be converted to a string (as well as applying the function to it). So this program is legal: 
+first matched value can be converted to a string (as well as applying the function to it). So this program is legal: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 160 
-/ 
-37 
 
 
 f :: Baz -> String 
@@ -13268,14 +11213,8 @@ constructor’s result type. For example:
 
 data T a b where { T1 { f1::a, f2::b, f3::(b,c) } :: T a b } --c is existential 
 upd1tx =t{f1=x} --OK: upd1::Tab ->a’-> Ta’b 
-upd2 t x = t { f3=x } --BAD (f3’s type mentions c, which is 
+upd2 t x = t { f3=x } --BAD (f3’s type mentions c, which is / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 161 
-/ 
-37 
 
 
 --existentially quantified) 
@@ -13338,13 +11277,8 @@ aren’t much use. So the simple restriction (no existential stuff on newtype) sta
 change it. 
 
 • You can’t use deriving to define instances of a data type with existentially quantified data constructors. Reason: in most 
-cases it would not make sense. For example:; 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 162 
-/ 
-37 
+cases it would not make sense. For example:;/ 
+
 
 
 data T = forall a. MkT [a] deriving( Eq ) 
@@ -13365,10 +11299,10 @@ data Maybe a where
 Nothing :: Maybe a 
 Just :: a -> Maybe a 
 
-The form is called a "GADT-style declaration" because Generalised Algebraic Data Types, described in Section 7.4.7, can only 
+The form is called a "GADT-style declaration" because Generalised Algebraic Data Types, described in Section |7.4.7|, can only 
 be declared using this form. 
 
-Notice that GADT-style syntax generalises existential types (Section 7.4.5). For example, these two declarations are equivalent: 
+Notice that GADT-style syntax generalises existential types (Section |7.4.5|). For example, these two declarations are equivalent: 
 
 data Foo = forall a. MkFoo a (a -> Bool) 
 data Foo’ where { MKFoo :: a -> (a->Bool) -> Foo’ } 
@@ -13405,19 +11339,13 @@ intInst :: NumInst Int
 intInst = MkNumInst 
 
 plus :: NumInst a ->a -> a -> a 
-plus MkNumInstp q =p + q 
+plus MkNumInstp q =p + q / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 163 
-/ 
-37 
 
 
 Here, a value of type NumInst ais equivalent to an explicit (Num a)dictionary. 
 
-All this applies to constructors declared using the syntax of Section 7.4.5.2. For example, the NumInst data type above could 
+All this applies to constructors declared using the syntax of Section |7.4.5.2.| For example, the NumInst data type above could 
 equivalently be declared like this: 
 
 data NumInst a 
@@ -13435,7 +11363,7 @@ data T2 a where
 
 MkT2 :: (Num a,Eq b)=> a -> b -> T2 a 
 
-All this behaviour contrasts with Haskell 98’s peculiar treatment of contexts on a data type declaration (Section 4.2.1 of the 
+All this behaviour contrasts with Haskell 98’s peculiar treatment of contexts on a data type declaration (Section |4.2.1| of the 
 Haskell 98 Report). In Haskell 98 the definition 
 
 data Eq a => Set’ a = MkSet’ [a] 
@@ -13448,7 +11376,7 @@ The rest of this section gives further details about GADT-style data type declar
 
 • The result type of each data constructor must begin with the type constructor being defined. If the result type of all constructors 
 has the form T a1 ... an, where a1 ... anare distinct type variables, then the data type is ordinary; otherwise is a 
-generalised data type (Section 7.4.7). 
+generalised data type (Section |7.4.7|). 
 • As with other type signatures, you can give a single signature for several data constructors. In this example we give a single 
 signature for T1and T2: 
 data T a where 
@@ -13477,14 +11405,8 @@ f :: T a -> String
 f (T1 x y) | x==y = "yes" 
 | otherwise = "no" 
 f(T2ab) =showa 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 164 
 / 
-37 
+
 
 
 Note that f is not overloaded; the Eq constraint arising from the use of == is discharged by the pattern match on T1 and 
@@ -13525,7 +11447,7 @@ Nil :: Foo
 
 Here the type variable adoes not appear in the result type of either constructor. Although it is universally quantified in the type 
 of the constructor, such a type variable is often called "existential". Indeed, the above declaration declares precisely the same 
-type as the data Fooin Section 7.4.5. 
+type as the data Fooin Section |7.4.5.| 
 
 The type may contain a class context too, of course: 
 
@@ -13543,16 +11465,11 @@ just as in the non-record case. (NB: the "type" that follows the double-colon is
 and strictness annotations. A "type" of this form can appear only in a constructor signature.) 
 
 • Record updates are allowed with GADT-style declarations, only fields that have the following property: the type of the field 
-mentions no existential type variables. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 165 
-/ 
-37 
+mentions no existential type variables./ 
 
 
-• As in the case of existentials declared using the Haskell-98-like record syntax (Section 7.4.5.3), record-selector functions are 
+
+• As in the case of existentials declared using the Haskell-98-like record syntax (Section |7.4.5.3|), record-selector functions are 
 generated only for those fields that have well-typed selectors. Here is the example of that section, in GADT-style syntax: 
 data Counter a where 
 
@@ -13613,14 +11530,8 @@ type signature is supplied for eval, no type refinement happens, and lots of obs
 refinement is quite general. For example, if we had: 
 
 eval :: Term a -> a -> a 
-eval (Lit i) j = i+j 
+eval (Lit i) j = i+j / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 166 
-/ 
-37 
 
 
 the pattern match causes the type a to be refined to Int (because of the type of the constructor Lit), and that refinement also 
@@ -13633,14 +11544,14 @@ implemented in GHC.
 The rest of this section outlines the extensions to GHC that support GADTs. The extension is enabled with -XGADTs. The 
 -XGADTsflag also sets -XRelaxedPolyRec. 
 
-• A GADT can only be declared using GADT-style syntax (Section 7.4.6); the old Haskell-98 syntax for data declarations always 
+• A GADT can only be declared using GADT-style syntax (Section |7.4.6|); the old Haskell-98 syntax for data declarations always 
 declares an ordinary data type. The result type of each constructor must begin with the type constructor being defined, but for a 
 GADT the arguments to the type constructor can be arbitrary monotypes. For example, in the Termdata type above, the type 
 of each constructor must end with Term ty, but the tyneed not be a type variable (e.g. the Litconstructor). 
 • It is permitted to declare an ordinary algebraic data type using GADT-style syntax. What makes a GADT into a GADT is not 
 the syntax, but rather the presence of data constructors whose result type is not just Tab. 
 • You cannot use a derivingclause for a GADT; only for an ordinary data type. 
-• As mentioned in Section 7.4.6, record syntax is supported. For example: 
+• As mentioned in Section |7.4.6|, record syntax is supported. For example: 
 data Term a where 
 Lit { val :: Int } :: Term Int 
 Succ { num :: Term Int } :: Term Int 
@@ -13673,14 +11584,8 @@ criteria implemented by GHC are given in the Appendix.
 
 7.5 Extensions to the "deriving" mechanism 
 7.5.1 Inferred context for deriving clauses 
-The Haskell Report is vague about exactly when a derivingclause is legal. For example: 
+The Haskell Report is vague about exactly when a derivingclause is legal. For example: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 167 
-/ 
-37 
 
 
 data T0 f a = MkT0 a deriving( Eq ) 
@@ -13714,9 +11619,9 @@ the wherepart. Note the following points:
 • You must supply an explicit context (in the example the context is (Eq a)), exactly as you would in an ordinary instance 
 declaration. (In contrast, in a derivingclause attached to a data type declaration, the context is inferred.) 
 •A deriving instance declaration must obey the same rules concerning form and termination as ordinary instance declarations, 
-controlled by the same flags; see Section 7.6.3. 
+controlled by the same flags; see Section |7.6.3.| 
 • Unlike a derivingdeclaration attached to a datadeclaration, the instance can be more specific than the data type (assuming 
-you also use -XFlexibleInstances, Section 7.6.3.2). Consider for example 
+you also use -XFlexibleInstances, Section |7.6.3.2|). Consider for example 
 data Foo a = Bar a | Baz String 
 
 deriving instance Eq a => Eq (Foo [a]) 
@@ -13736,18 +11641,12 @@ T2 :: T Bool
 deriving instance Show (T a) 
 
 In this example, you cannot say ... deriving( Show ) on the data type declaration for T, because Tis a GADT, but 
-you can generate the instance declaration using stand-alone deriving. 
+you can generate the instance declaration using stand-alone deriving. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 168 
-/ 
-37 
 
 
 • The stand-alone syntax is generalised for newtypes in exactly the same way that ordinary derivingclauses are generalised 
-(Section 7.5.4). For example: 
+(Section |7.5.4|). For example: 
 newtype Foo a = MkFoo (State Int a) 
 deriving instance MonadState Int Foo 
 
@@ -13764,12 +11663,12 @@ GHC extends this list with several more classes that may be automatically derive
 modules Data.Typeableand Data.Genericsrespectively. 
 An instance of Typeable can only be derived if the data type has seven or fewer type parameters, all of kind *. The reason 
 for this is that the Typeable class is derived using the scheme described in Scrap More Boilerplate: Reflection, Zips, and 
-Generalised Casts . (Section 7.4 of the paper describes the multiple Typeable classes that are used, and only Typeable1 
+Generalised Casts . (Section |7.4| of the paper describes the multiple Typeable classes that are used, and only Typeable1 
 up to Typeable7are provided in the library.) In other cases, there is nothing to stop the programmer writing a TypeableX 
 class, whose kind suits that of the data type constructor, and then writing the data type instance by hand. 
 
 • With -XDeriveGeneric, you can derive instances of the classes Genericand Generic1, defined in GHC.Generics. 
-You can use these to define generic functions, as described in Section 7.22. 
+You can use these to define generic functions, as described in Section |7.22.| 
 • With -XDeriveFunctor, you can derive instances of the class Functor, defined in GHC.Base. 
 • With -XDeriveFoldable, you can derive instances of the class Foldable, defined in Data.Foldable. 
 • With -XDeriveTraversable, you can derive instances of the class Traversable, defined in Data.Traversable. 
@@ -13789,14 +11688,8 @@ Dollars a + Dollars b = Dollars (a+b)
 ... 
 
 All the instance does is apply and remove the newtypeconstructor. It is particularly galling that, since the constructor doesn’t 
-appear at run-time, this instance declaration defines a dictionary which is wholly equivalent to the Intdictionary, only slower! 
+appear at run-time, this instance declaration defines a dictionary which is wholly equivalent to the Intdictionary, only slower! / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 169 
-/ 
-37 
 
 
 7.5.4.1 Generalising the deriving clause 
@@ -13853,14 +11746,8 @@ StateMonad [tok] (Parser tok m)
 
 As a result of this extension, all derived instances in newtype declarations are treated uniformly (and implemented just by 
 reusing the dictionary for the representation type), except Showand Read, which really behave differently for the newtype and 
-its representation. 
+its representation. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 170 
-/ 
-37 
 
 
 7.5.4.2 A more precise specification 
@@ -13908,14 +11795,8 @@ standard method is used or the one described here.)
 7.6 Class and instances declarations 
 7.6.1 Class declarations 
 This section, and the next one, documents GHC’s type-class extensions. There’s lots of background in the paper Type classes: 
-exploring the design space (Simon Peyton Jones, Mark Jones, Erik Meijer). 
+exploring the design space (Simon Peyton Jones, Mark Jones, Erik Meijer). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 171 
-/ 
-37 
 
 
 7.6.1.1 Multi-parameter type classes 
@@ -13927,7 +11808,7 @@ union :: c a -> c a -> c a
 
 7.6.1.2 The superclasses of a class declaration 
 In Haskell 98 the context of a class declaration (which introduces superclasses) must be simple; that is, each predicate must 
-consist of a class applied to type variables. The flag -XFlexibleContexts (Section 7.12.2) lifts this restriction, so that the 
+consist of a class applied to type variables. The flag -XFlexibleContexts (Section |7.12.2|) lifts this restriction, so that the 
 only restriction on the context in a class declaration is that the class hierarchy must be acyclic. So these class declarations are 
 OK: 
 
@@ -13971,14 +11852,8 @@ fromList :: [a] -> s a
 elem ::Eqa =>a->sa ->Bool 
 
 The type of elemis illegal in Haskell 98, because it contains the constraint Eq a, constrains only the class type variable (in this 
-case a). GHC lifts this restriction (flag -XConstrainedClassMethods). 
+case a). GHC lifts this restriction (flag -XConstrainedClassMethods). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 172 
-/ 
-37 
 
 
 7.6.1.4 Default method signatures 
@@ -14002,7 +11877,7 @@ We reuse the keyword default to signal that a signature applies to the default m
 Enum class, the original type [a] of enum still applies. When giving an empty instance, however, the default implementation 
 map to genumis filled-in, and type-checked with the type (Generic a, GEnum (Rep a)) => [a]. 
 
-We use default signatures to simplify generic programming in GHC (Section 7.22). 
+We use default signatures to simplify generic programming in GHC (Section |7.22|). 
 
 7.6.2 Functional dependencies 
 Functional dependencies are implemented as described by Mark Jones in “Type Classes with Functional Dependencies”, Mark P. 
@@ -14017,7 +11892,7 @@ class Fooa b c | a b -> c where ...
 There should be more documentation, but there isn’t (yet). Yell if you need it. 
 
 7.6.2.1 Rules for functional dependencies 
-In a class declaration, all of the class type variables must be reachable (in the sense mentioned in Section 7.12.2) from the free 
+In a class declaration, all of the class type variables must be reachable (in the sense mentioned in Section |7.12.2|) from the free 
 variables of each method type. For example: 
 
 class Coll s a where 
@@ -14036,14 +11911,8 @@ class Coll s a where
 
 empty ::sa 
 
-insert :: s a -> a -> s a 
+insert :: s a -> a -> s a / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 173 
-/ 
-37 
 
 
 which makes the connection between the type of a collection of a’s (namely (s a)) and the element type a. Occasionally this 
@@ -14105,14 +11974,8 @@ Notice that the type for f allows the two parameters x and y to be assigned diff
 of the two values, one after the other, into the same collection. If we’re trying to model collections that contain only one type 
 of value, then this is clearly an inaccurate type. Worse still, the definition for g is accepted, without causing a type error. As a 
 result, the error in this code will not be flagged at the point where it appears. Instead, it will show up only when we try to use g, 
-which might even be in a different module. 
+which might even be in a different module. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 174 
-/ 
-37 
 
 
 7.6.2.2.1 An attempt to use constructor classes 
@@ -14171,14 +12034,8 @@ error in the program. Examples of dependencies like this include a -> a , a -> a
 redundancy if multiple dependencies are given, as in a->b, b->c , a->c , and in which some subset implies the remaining 
 dependencies. Examples like this are not treated as errors. Note that dependencies appear only in class declarations, and not 
 in any other part of the language. In particular, the syntax for instance declarations, class constraints, and types is completely 
-unchanged. 
+unchanged. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 175 
-/ 
-37 
 
 
 By including dependencies in a class declaration, we provide a mechanism for the programmer to specify each multiple parameter 
@@ -14241,14 +12098,8 @@ In a similar way, the earlier definition of g will now be flagged as a type erro
 
 Although we have given only a few examples here, it should be clear that the addition of dependency information can help 
 to make multiple parameter classes more useful in practice, avoiding ambiguity problems, and allowing more general sets of 
-instance declarations. 
+instance declarations. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 176 
-/ 
-37 
 
 
 7.6.3 Instance declarations 
@@ -14289,7 +12140,7 @@ The -XFlexibleInstancesflag implies -XTypeSynonymInstances.
 In Haskell 98, the assertions in the context of the instance declaration must be of the form Ca where a is a type variable that 
 occurs in the head. 
 
-The -XFlexibleContexts flag relaxes this rule, as well as the corresponding rule for type signatures (see Section 7.12.2). 
+The -XFlexibleContexts flag relaxes this rule, as well as the corresponding rule for type signatures (see Section |7.12.2|). 
 With this flag the context of the instance declaration can each consist of arbitrary (well-kinded) assertions (C t1 ... tn) 
 subject only to the following rules: 
 
@@ -14301,17 +12152,11 @@ must appear in S(tvsleft), where S is the substitution mapping each type variabl
 corresponding type in the instance declaration. 
 These restrictions ensure that context reduction terminates: each reduction step makes the problem smaller by at least one 
 constructor. Both the Paterson Conditions and the Coverage Condition are lifted if you give the -XUndecidableInstances 
-flag (Section 7.6.3.3). You can find lots of background material about the reason for these restrictions in the paper Understanding 
+flag (Section |7.6.3.3|). You can find lots of background material about the reason for these restrictions in the paper Understanding 
 functional dependencies via Constraint Handling Rules. 
 
-For example, these are OK: 
+For example, these are OK: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 177 
-/ 
-37 
 
 
 instance C Int [a] --Multiple parameters 
@@ -14355,7 +12200,7 @@ instance C a where
 op = ... --Default 
 
 7.6.3.3 Undecidable instances 
-Sometimes even the rules of Section 7.6.3.2 are too onerous. For example, sometimes you might want to use the following to get 
+Sometimes even the rules of Section |7.6.3.2| are too onerous. For example, sometimes you might want to use the following to get 
 the effect of a "class synonym": 
 
 class (C1a, C2a, C3a) => C a where {} 
@@ -14369,15 +12214,9 @@ instead of
 
 f :: (C1 a, C2 a, C3 a) => ... 
 
-The restrictions on functional dependencies (Section 7.6.2) are particularly troublesome. It is tempting to introduce type variables 
-in the context that do not appear in the head, something that is excluded by the normal rules. For example: 
+The restrictions on functional dependencies (Section |7.6.2|) are particularly troublesome. It is tempting to introduce type variables 
+in the context that do not appear in the head, something that is excluded by the normal rules. For example: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 178 
-/ 
-37 
 
 
 class HasConverter a b | a -> b where 
@@ -14411,7 +12250,7 @@ f =\ b xy -> if b then x .*. [y] elsey
 makes instance inference go into a loop, because it requires the constraint (Mul a [b] b). 
 
 Nevertheless, GHC allows you to experiment with more liberal rules. If you use the experimental flag -XUndecidableInstances 
-, both the Paterson Conditions and the Coverage Condition (described in Section 7.6.3.2) are lifted. Termination is 
+, both the Paterson Conditions and the Coverage Condition (described in Section |7.6.3.2|) are lifted. Termination is 
 ensured by having a fixed-depth recursion stack. If you exceed the stack depth you get a sort of backtrace, and the opportunity to 
 increase the stack depth with -fcontext-stack=N. 
 
@@ -14419,7 +12258,7 @@ increase the stack depth with -fcontext-stack=N.
 In general, GHC requires that that it be unambiguous which instance declaration should be used to resolve a type-class constraint. 
 This behaviour can be modified by two flags: -XOverlappingInstances and -XIncoherentInstances , as this 
 section discusses. Both these flags are dynamic flags, and can be set on a per-module basis, using an OPTIONS_GHCpragma if 
-desired (Section 4.2.2). 
+desired (Section |4.2.2|). 
 
 When GHC tries to resolve, say, the constraint C Int Bool, it tries to match every instance declaration against the constraint, 
 by instantiating the head of the instance declaration. For example, consider these declarations: 
@@ -14438,14 +12277,8 @@ The -XOverlappingInstances flag instructs GHC to allow more than one instance to
 specific one. For example, the constraint C Int [Int] matches instances (A), (C) and (D), but the last is more specific, and 
 hence is chosen. If there is no most-specific match, the program is rejected. 
 
-However, GHC is conservative about committing to an overlapping instance. For example: 
+However, GHC is conservative about committing to an overlapping instance. For example: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 179 
-/ 
-37 
 
 
 f :: [b] -> [b] 
@@ -14513,14 +12346,8 @@ instance MyShow [T] where
 myshow xs = "Used more specific instance" 
 
 
-main = do { print (myshow [MkT]); print (showHelp [MkT]) } 
+main = do { print (myshow [MkT]); print (showHelp [MkT]) } / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 180 
-/ 
-37 
 
 
 In function showHelp GHC sees no overlapping instances, and so uses the MyShow [a] instance without complaint. In the 
@@ -14579,15 +12406,9 @@ xs :: [b]
 xs = [x,x,x] 
 
 
-Provided that you also specify -XScopedTypeVariables (Section 7.12.7), the forall b scopes over the definition of 
-foo, and in particular over the type signature for xs. 
+Provided that you also specify -XScopedTypeVariables (Section |7.12.7|), the forall b scopes over the definition of 
+foo, and in particular over the type signature for xs. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 181 
-/ 
-37 
 
 
 7.6.4 Overloaded string literals 
@@ -14614,7 +12435,7 @@ for it), you can import it from module GHC.Exts.
 Haskell’s defaulting mechanism is extended to cover string literals, when -XOverloadedStringsis specified. Specifically: 
 
 • Each type in a default declaration must be an instance of Numor of IsString. 
-• The standard defaulting rule (Haskell Report, Section 4.3.4) is extended thus: defaulting applies when all the unresolved 
+• The standard defaulting rule (Haskell Report, Section |4.3.4|) is extended thus: defaulting applies when all the unresolved 
 constraints involve standard classes or IsString; and at least one is a numeric class or IsString. 
 A small example: 
 
@@ -14645,13 +12466,8 @@ Jones. In Proceedings of “The Tenth ACM SIGPLAN International Conference on Func
 241-253, 2005). Type families themselves are described in the paper “Type Checking with Open Type Functions”, T. Schrijvers, 
 
 S. Peyton-Jones, M. Chakravarty, and M. Sulzmann, in Proceedings of “ICFP 2008: The 13th ACM SIGPLAN International 
-Conference on Functional Programming”, ACM Press, pages 51-62, 2008. Type families essentially provide type-indexed data 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 182 
-/ 
-37 
+Conference on Functional Programming”, ACM Press, pages 51-62, 2008. Type families essentially provide type-indexed data/ 
+
 
 
 types and named functions on types, which are useful for generic programming and highly parameterised library interfaces as 
@@ -14707,14 +12523,8 @@ data instance GMap (Either a b) v = GMapEither (GMap a v) (GMap b v)
 In this example, the declaration has only one variant. In general, it can be any number. 
 
 Data and newtype instance declarations are only permitted when an appropriate family declaration is in scope -just as a class 
-instance declaration requires the class declaration to be visible. Moreover, each instance declaration has to conform to the kind 
+instance declaration requires the class declaration to be visible. Moreover, each instance declaration has to conform to the kind / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 183 
-/ 
-37 
 
 
 determined by its family declaration. This implies that the number of parameters of an instance declaration matches the arity 
@@ -14769,14 +12579,8 @@ Type families appear in two flavours: (1) they can be defined on the toplevel or
 case they are known as associated type synonyms). The former is the more general variant, as it lacks the requirement for the 
 type-indexes to coincide with the class parameters. However, the latter can lead to more clearly structured code and compiler 
 warnings if some type instances were -possibly accidentally -omitted. In the following, we always discuss the general toplevel 
-form first and then cover the additional constraints placed on associated types. 
+form first and then cover the additional constraints placed on associated types. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 184 
-/ 
-37 
 
 
 7.7.2.1 Type family declarations 
@@ -14835,14 +12639,8 @@ forall type
 
 type familyG a b :: * -> * 
 type instance G Int = (,) --WRONG: must be two type parameters 
-type instance G Int Char Float = Double --WRONG: must be two type parameters 
+type instance G Int Char Float = Double --WRONG: must be two type parameters / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 185 
-/ 
-37 
 
 
 7.7.2.3 Overlap of type synonym instances 
@@ -14899,14 +12697,8 @@ other than in the class head. Hence, the following contrived example is admissib
 class C ab c where 
 type T c a x :: * 
 
-Here cand aare class parameters, but the type is also indexed on a third parameter x. 
+Here cand aare class parameters, but the type is also indexed on a third parameter x. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 186 
-/ 
-37 
 
 
 7.7.3.1 Associated instances 
@@ -14962,14 +12754,8 @@ type F a b
 typeFaInt =Bool 
 type F a Bool =Int 
 
-A default declaration is not permitted for an associated data type. 
+A default declaration is not permitted for an associated data type. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 187 
-/ 
-37 
 
 
 7.7.3.3 Scoping of class parameters 
@@ -14988,7 +12774,7 @@ Here, the right-hand side of the data instance mentions the type variable d that
 admit such data instances as they would compromise type safety. 
 
 7.7.4 Import and export 
-The rules for export lists (Haskell Report Section 5.2) needs adjustment for type families: 
+The rules for export lists (Haskell Report Section |5.2|) needs adjustment for type families: 
 
 • The form T(..), where T is a data family, names the family T and all the in-scope constructors (whether in scope qualified 
 or unqualified) that are data instances of T. 
@@ -15023,13 +12809,8 @@ module GMap( GMapKey( type GMap, empty, lookup, insert ) ): Same as the previous
 "type" keyword. 
 • 
 module GMap( GMapKey(..), GMap(..) ): Same as previous item, but also exports all the data constructors for 
-GMap, namely GMapEither. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 188 
-/ 
-37 
+GMap, namely GMapEither./ 
+
 
 
 • module GMap ( GMapKey( empty, lookup, insert), GMap(..) ): Same as previous item. 
@@ -15060,7 +12841,7 @@ Family instances are implicitly exported, just like class instances. However, th
 data constructors an instance defines. 
 
 7.7.5 Type families and instance declarations 
-Type families require us to extend the rules for the form of instance heads, which are given in Section 7.6.3.1. Specifically: 
+Type families require us to extend the rules for the form of instance heads, which are given in Section |7.6.3.1.| Specifically: 
 
 • Data type families may appear in an instance head 
 • Type synonym families may not appear (at all) in an instance head 
@@ -15084,14 +12865,8 @@ data instance T Int = T1 Int | T2 Bool
 instance Eq (T Int) where 
 (T1 i) == (T1 j) = i==j 
 (T2 i) == (T2 j) = i==j 
-_ == _ = False 
+_ == _ = False / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 189 
-/ 
-37 
 
 
 Note that class instances are always for particular instances of a data family and never for an entire family as a whole. This is for 
@@ -15112,7 +12887,7 @@ This section describes kind polymorphism, and extension enabled by -XPolyKinds. 
 Giving Haskell a Promotion, which appeared at TLDI 2012. 
 
 7.8.1 Overview of kind polymorphism 
-Currently there is a lot of code duplication in the way Typeable is implemented (Section 7.5.3): 
+Currently there is a lot of code duplication in the way Typeable is implemented (Section |7.5.3|): 
 
 class Typeable (t :: *) where 
 typeOf :: t -> TypeRep 
@@ -15152,14 +12927,8 @@ There is no "forall" for kind variables. Instead, you can simply mention a kind 
 
 data T (m :: k ->*) a = MkT (m a) 
 --GHC now infers kind T :: forall k. (k -> *) -> k -> * 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 190 
 / 
-37 
+
 
 
 7.8.3 Polymorphic kind recursion and complete kind signatures 
@@ -15209,16 +12978,10 @@ by -XDataKinds, and described in more detail in the paper Giving Haskell a Promo
 7.9.1 Motivation 
 Standard Haskell has a rich type language. Types classify terms and serve to avoid many common programming mistakes. The 
 kind language, however, is relatively simple, distinguishing only lifted types (kind *), type constructors (eg. kind * -> * -> 
-*), and unlifted types (Section 7.2.1). In particular when using advanced type system features, such as type families (Section 7.7) 
-or GADTs (Section 7.4.7), this simple kind system is insufficient, and fails to prevent simple errors. Consider the example of 
-type-level natural numbers, and length-indexed vectors: 
+*), and unlifted types (Section |7.2.1|). In particular when using advanced type system features, such as type families (Section |7.7|) 
+or GADTs (Section |7.4.7|), this simple kind system is insufficient, and fails to prevent simple errors. Consider the example of 
+type-level natural numbers, and length-indexed vectors: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 191 
-/ 
-37 
 
 
 data Ze 
@@ -15281,13 +13044,8 @@ datatypes such as data Fix f = In (f (Fix f)), or datatypes whose kinds involve 
 Vec:: *->Nat-> *. 
 • We do not promote data constructors that are kind polymorphic, involve constraints, mention type or data families, or involve 
 types that are not promotable. 
-• We do not promote data family instances (Section 7.7.1). 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 192 
-/ 
-37 
+• We do not promote data family instances (Section |7.7.1|)./ 
+
 
 
 7.9.3 Distinguishing between types and constructors 
@@ -15305,7 +13063,7 @@ type T2 = ’P --promoted 2
 Note that promoted datatypes give rise to named kinds. Since these can never be ambiguous, we do not allow quotes in kind 
 names. 
 
-Just as in the case of Template Haskell (Section 7.14.1), there is no way to quote a data constructor or type constructor whose 
+Just as in the case of Template Haskell (Section |7.14.1|), there is no way to quote a data constructor or type constructor whose 
 second character is a single quote. 
 
 7.9.4 Promoted lists and tuples types 
@@ -15344,14 +13102,8 @@ Here is an example of using type-level string literals to simulate simple record
 data Label (l :: Symbol) = Get 
 
 classHas al b |a l -> b where 
-from :: a-> Label l -> b 
+from :: a-> Label l -> b / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 193 
-/ 
-37 
 
 
 data Point = Point Int Int deriving Show 
@@ -15408,14 +13160,8 @@ type F a
 
 That is, we represent every functional dependency (FD) a1.. an->b by an FD type family F a1 .. an and a 
 superclass context equality Fa1.. an~b, essentially giving a name to the functional dependency. In class instances, we 
-define the type instances of FD families in accordance with the class head. Method signatures are not affected by that process. 
+define the type instances of FD families in accordance with the class head. Method signatures are not affected by that process. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 194 
-/ 
-37 
 
 
 7.11 The Constraint 
@@ -15463,14 +13209,8 @@ type instance OkClsish () a = OkCls a
 instance OkClsish () a => OkCls a where 
 
 You may write programs that use exotic sorts of constraints in instance contexts and superclasses, but to do so you must use 
--XUndecidableInstancesto signal that you don’t mind if the type checker fails to terminate. 
+-XUndecidableInstancesto signal that you don’t mind if the type checker fails to terminate. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 195 
-/ 
-37 
 
 
 7.12 Other type system extensions 
@@ -15496,8 +13236,8 @@ are perfectly OK
 g :: Eq [a] => ... 
 g :: Ord (T a ()) => ... 
 
-The flag -XFlexibleContexts also lifts the corresponding restriction on class declarations (Section 7.6.1.2) and instance 
-declarations (Section 7.6.3.2). 
+The flag -XFlexibleContexts also lifts the corresponding restriction on class declarations (Section |7.6.1.2|) and instance 
+declarations (Section |7.6.3.2|). 
 
 GHC imposes the following restrictions on the constraints in a type signature. Consider the type: 
 
@@ -15505,7 +13245,7 @@ forall tv1..tvn (c1, ...,cn) => type
 
 (Here, we write the "foralls" explicitly, although the Haskell source language omits them; in Haskell 98, all the free type variables 
 of an explicit source-language type signature are universally quantified, except for the class type variables in a class declaration. 
-However, in GHC, you can give the foralls if you want. See Section 7.12.1). 
+However, in GHC, you can give the foralls if you want. See Section |7.12.1|). 
 
 1. 
 Each universally quantified type variable tvi 
@@ -15520,7 +13260,7 @@ When a value with this type was used, the constraint Eq tv would be introduced w
 we can never know which instance of Eqto use because we never get any more information about tv. 
 
 Note that the reachability condition is weaker than saying that ais functionally dependent on a type variable free in type 
-(see Section 7.6.2). The reason for this is there might be a "hidden" dependency, in a superclass perhaps. So "reachable" 
+(see Section |7.6.2|). The reason for this is there might be a "hidden" dependency, in a superclass perhaps. So "reachable" 
 is a conservative approximation to "functionally dependent". For example, consider: 
 
 class C a b | a ->b where ... 
@@ -15532,13 +13272,8 @@ This is fine, because in fact adoes functionally determine bbut that is not imme
 2. 
 Every constraint ci 
 must mention at least one of the universally quantified type variables tvi. For example, this type is 
-OK because Cabmentions the universally quantified type variable b: 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 196 
-/ 
-37 
+OK because Cabmentions the universally quantified type variable b:/ 
+
 
 
 forall a. C a b => burble 
@@ -15595,14 +13330,8 @@ least xs = head (sort xs)
 
 Without lifting a finger, the ?cmp parameter is propagated to become a parameter of leastas well. With explicit parameters, 
 the default is that parameters must always be explicit propagated. With implicit parameters, the default is to always propagate 
-them. 
+them. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 197 
-/ 
-37 
 
 
 An implicit-parameter type constraint differs from other type class constraints in the following way: All uses of a particular 
@@ -15653,14 +13382,8 @@ ft = let { ?x = t; ?y =?x+(1::Int)} in ?x + ?y
 
 The use of ?xin the binding for ?ydoes not "see" the binding for ?x, so the type of fis 
 
-f :: (?x::Int) => Int -> Int 
+f :: (?x::Int) => Int -> Int / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 198 
-/ 
-37 
 
 
 7.12.3.3 Implicit parameters and polymorphic recursion 
@@ -15721,14 +13444,8 @@ The only use for the Unusedconstructor was to force the correct kind for the typ
 GHC now instead allows you to specify the kind of a type variable directly, wherever a type variable is explicitly bound, with the 
 flag -XKindSignatures. 
 This flag enables kind signatures in the following places: 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 199 
 / 
-37 
+
 
 
 • datadeclarations: 
@@ -15786,14 +13503,8 @@ GHC has three flags to control higher-rank types:
 
 
 • -XRank2Types: any function (including data constructors) can have a rank-2 type. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 200 
 / 
-37 
+
 
 
 • 
@@ -15809,7 +13520,7 @@ above would be valid field type signatures.
 – 
 As the type of an implicit parameter 
 – 
-In a pattern type signature (see Section 7.12.7) 
+In a pattern type signature (see Section |7.12.7|) 
 7.12.5.1 Examples 
 In a dataor newtypedeclaration one can quantify the types of the constructor arguments. Here are several examples: 
 
@@ -15861,14 +13572,8 @@ a4 = let r x = Justx
 
 b m k = case m of 
 Just y -> k y 
-Nothing -> Nothing 
+Nothing -> Nothing / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 201 
-/ 
-37 
 
 
 in 
@@ -15909,7 +13614,7 @@ For a lambda-bound or case-bound variable, x, either the programmer provides an 
 type inference will assume that x’s type has no foralls in it. 
 
 What does it mean to "provide" an explicit type for x? You can do that by giving a type signature for x directly, using a pattern 
-type signature (Section 7.12.7), thus: 
+type signature (Section |7.12.7|), thus: 
 
 \ f :: (forall a. a->a) -> (f True, f ’c’) 
 
@@ -15931,14 +13636,8 @@ f:: T a -> a-> (a, Char)
 f(T1 wk) x = (w kx, w ’c’ ’d’) 
 
 Here we do not need to give a type signature to w, because it is an argument of constructor T1and that tells GHC all it needs to 
-know. 
+know. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 202 
-/ 
-37 
 
 
 7.12.5.3 Implicit quantification 
@@ -16007,17 +13706,11 @@ where
 
 ys :: [a] 
 
-ys = reverse xs 
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 203 
-/ 
-37 
+ys = reverse xs / 
 
 
-The type signature for f brings the type variable a into scope, because of the explicit forall (Section 7.12.7.2). The type 
+
+The type signature for f brings the type variable a into scope, because of the explicit forall (Section |7.12.7.2|). The type 
 variables bound by a forallscope over the entire definition of the accompanying value declaration. In this example, the type 
 variable a scopes over the whole definition of f, including over the type signature for ys. In Haskell 98 it is not possible to 
 declare a type for ys; a major benefit of scoped type variables is that it becomes possible to do so. 
@@ -16038,11 +13731,11 @@ type checker, and no inference is involved.
 • Lexical type variables may be alpha-renamed freely, without changing the program. 
 A lexically scoped type variable can be bound by: 
 
-• A declaration type signature (Section 7.12.7.2) 
-• An expression type signature (Section 7.12.7.3) 
-• A pattern type signature (Section 7.12.7.4) 
-• Class and instance declarations (Section 7.12.7.5) 
-In Haskell, a programmer-written type signature is implicitly quantified over its free type variables (Section 4.1.2 of the Haskell 
+• A declaration type signature (Section |7.12.7.2|) 
+• An expression type signature (Section |7.12.7.3|) 
+• A pattern type signature (Section |7.12.7.4|) 
+• Class and instance declarations (Section |7.12.7.5|) 
+In Haskell, a programmer-written type signature is implicitly quantified over its free type variables (Section |4.1.2| of the Haskell 
 Report). Lexically scoped type variables affect this implicit quantification rules as follows: any type variable that is in scope is 
 not universally quantified. For example, if type variable ais in scope, then 
 
@@ -16066,14 +13759,8 @@ g(x:xs) = xs ++ [ x :: a ]
 
 
 This program will be rejected, because "a" does not scope over the definition of "g", so"x::a" means "x::forall a. 
-a" by Haskell’s usual implicit quantification rules. 
+a" by Haskell’s usual implicit quantification rules. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 204 
-/ 
-37 
 
 
 • The signature gives a type for a function binding or a bare variable binding, not a pattern binding. For example: 
@@ -16135,14 +13822,8 @@ data T = forall a. MkT [a]
 k :: T ->T 
 k (MkT [t::a]) = MkT t3 
 where 
-t3::[a] = [t,t,t] 
+t3::[a] = [t,t,t] / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 205 
-/ 
-37 
 
 
 Here, the pattern type signature (t::a)mentions a lexical type variable that is not already in scope. Indeed, it cannot already 
@@ -16174,9 +13855,9 @@ head ys
 
 7.12.8 Generalised typing of mutually recursive bindings 
 The Haskell Report specifies that a group of bindings (at top level, or in a let or where) should be sorted into strongly-
-connected components, and then type-checked in dependency order (Haskell Report, Section 4.5.1). As each group is type-
+connected components, and then type-checked in dependency order (Haskell Report, Section |4.5.1|). As each group is type-
 checked, any binders of the group that have an explicit type signature are put in the type environment with the specified polymorphic 
-type, and all others are monomorphic until the group is generalised (Haskell Report, Section 4.5.2). 
+type, and all others are monomorphic until the group is generalised (Haskell Report, Section |4.5.2|). 
 
 Following a suggestion of Mark Jones, in his paper Typing Haskell in Haskell, GHC implements a more general scheme. If -XRelaxedPolyRecis 
 specified: the dependency analysis ignores references to variables that have an explicit type signature. As 
@@ -16198,7 +13879,7 @@ g :: Ord a => a-> Bool
 Now, the definition for fis typechecked, with this type for gin the type environment. 
 
 The same refined dependency analysis also allows the type signatures of mutually-recursive functions to have different contexts, 
-something that is illegal in Haskell 98 (Section 4.5.2, last sentence). With -XRelaxedPolyRecGHC only insists that the type 
+something that is illegal in Haskell 98 (Section |4.5.2|, last sentence). With -XRelaxedPolyRecGHC only insists that the type 
 signatures of a refined group have identical type signatures; in practice this means that only variables bound by the same pattern 
 binding must have the same context. For example, this is fine: 
 
@@ -16206,14 +13887,8 @@ f :: Eq a => a -> Bool
 f x = (x == x) || g True 
 
 g :: Ord a => a-> Bool 
-g y = (y <= y) || f True 
+g y = (y <= y) || f True / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 206 
-/ 
-37 
 
 
 7.12.9 Monomorphic local bindings 
@@ -16269,14 +13944,8 @@ No instance for (Num Char) arising from the literal ‘1’
 Possible fix: add an instance declaration for (Num Char) 
 In the first argument of ‘(==)’, namely ‘1’ 
 In the expression: 1 == ’a’ 
-In the first argument of ‘fst’, namely ‘(True, 1 == ’a’)’ 
+In the first argument of ‘fst’, namely ‘(True, 1 == ’a’)’ / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 207 
-/ 
-37 
 
 
 Otherwise, in the common case of a simple type error such as typing reverse True at the prompt, you would get a warning 
@@ -16305,7 +13974,7 @@ to look for further details. You may also consult the online Haskell library ref
 Haskell.TH). Many changes to the original design are described in Notes on Template Haskell version 2. Not all of these 
 changes are in GHC, however. 
 
-The first example from that paper is set out below (Section 7.14.3) as a worked example to help get you started. 
+The first example from that paper is set out below (Section |7.14.3|) as a worked example to help get you started. 
 
 The documentation here describes the realisation of Template Haskell in GHC. It is not detailed enough to understand Template 
 Haskell; see the Wiki page. 
@@ -16330,18 +13999,13 @@ functions defined elsewhere in the same module.
 – [d| ... |], where the "..." is a list of top-level declarations; the quotation has type Q [Dec]. 
 – [t| ... |], where the "..." is a type; the quotation has type Q Type. 
 – [p| ... |], where the "..." is a pattern; the quotation has type Q Pat. 
-• A quasi-quotation can appear in either a pattern context or an expression context and is also written in Oxford brackets: 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 208 
-/ 
-37 
+• A quasi-quotation can appear in either a pattern context or an expression context and is also written in Oxford brackets:/ 
+
 
 
 – 
 [varid| ... |], where the "..." is an arbitrary string; a full description of the quasi-quotation facility is given in 
-Section 7.14.5. 
+Section |7.14.5.| 
 • A name can be quoted with either one or two prefix single quotes: 
 – 
 ’f has type Name, and names the function f. Similarly ’C has type Name and names the data constructor C. In general 
@@ -16392,14 +14056,8 @@ A stage1
 compiler will reject the TH constructs. Reason: TH compiles and runs a program, and then looks at the result. So it’s 
 important that the program it compiles produces results whose representations are identical to those of the compiler itself. 
 Template Haskell works in any mode (--make, --interactive, or file-at-a-time). There used to be a restriction to the 
-former two, but that restriction has been lifted. 
+former two, but that restriction has been lifted. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 209 
-/ 
-37 
 
 
 7.14.3 A Template Haskell Worked Example 
@@ -16466,14 +14124,8 @@ $ ghc --make -XTemplateHaskell main.hs -o main.exe
 Run "main.exe" and here is your output: 
 
 $ ./main 
-Hello 
+Hello / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 210 
-/ 
-37 
 
 
 7.14.4 Using Template Haskell with Profiling 
@@ -16536,14 +14188,8 @@ quotePat :: String -> Q Pat,
 quoteType :: String -> Q Type, 
 quoteDec :: String -> Q [Dec] } 
 
-That is, a quoter is a tuple of four parsers, one for each of the contexts in which a quasi-quote can occur. 
+That is, a quoter is a tuple of four parsers, one for each of the contexts in which a quasi-quote can occur. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 211 
-/ 
-37 
 
 
 • A quasi-quote is expanded by applying the appropriate parser to the string enclosed by the Oxford brackets. The context of the 
@@ -16616,14 +14262,8 @@ expr = QuasiQuoter { quoteExp = parseExprExp, quotePat = parseExprPat }
 --either a Q Exp or a Q Pat. See the referenced paper 
 --for how to use SYB to do this by writing a single 
 --parser of type String -> Expr instead of two 
---separate parsers. 
+--separate parsers. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 212 
-/ 
-37 
 
 
 parseExprExp :: String -> Q Exp 
@@ -16701,14 +14341,8 @@ of { calts
 | do{ cstmt 
 ; ... cstmt 
 ; cmd 
-} 
+} / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 213 
-/ 
-37 
 
 
 | fcmd 
@@ -16779,14 +14413,8 @@ returnAis defined in the Control.Arrowmodule as arr id. The above example is tre
 
 arr (\ x -> (x, x)) >>> 
 first (arr (\ x -> x+1) >>> f) >>> 
-arr (\ (y, x) -> (y, (x, y))) >>> 
+arr (\ (y, x) -> (y, (x, y))) >>> / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 214 
-/ 
-37 
 
 
 first (arr (\ y -> 2*y) >>> g) >>> 
@@ -16797,7 +14425,7 @@ arr (\ (t, z) -> t+z) >>>
 returnA 
 
 
-Note that variables not used later in the composition are projected out. After simplification using rewrite rules (see Section 7.19) 
+Note that variables not used later in the composition are projected out. After simplification using rewrite rules (see Section |7.19|) 
 defined in the Control.Arrowmodule, this reduces to 
 
 arr (\ x -> (x+1, x)) >>> 
@@ -16857,14 +14485,8 @@ ys <-k -< xs
 returnA -< y:ys 
 
 The syntax is the same as for caseexpressions, except that the bodies of the alternatives are commands rather than expressions. 
-The translation is similar to that of ifcommands. 
+The translation is similar to that of ifcommands. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 215 
-/ 
-37 
 
 
 7.15.3 Defining your own control structures 
@@ -16934,14 +14556,8 @@ proc x -> do
 
 y <-f -<x+1 
 
-(|untilA (increment -< x+y) (within 0.5 -< x)|) 
+(|untilA (increment -< x+y) (within 0.5 -< x)|) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 216 
-/ 
-37 
 
 
 7.15.4 Primitive constructs 
@@ -17010,13 +14626,8 @@ cond f g = arr (\ (e,b) -> if b then Left e else Right e) >>> f ||| g
 7.15.5 Differences with the paper 
 • Instead of a single form of arrow application (arrow tail) with two translations, the implementation provides two forms ‘-<’ 
 (first-order) and ‘-<<’ (higher-order). 
-• User-defined operators are flagged with banana brackets instead of a new formkeyword. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 217 
-/ 
-37 
+• User-defined operators are flagged with banana brackets instead of a new formkeyword./ 
+
 
 
 7.15.6 Portability 
@@ -17073,14 +14684,8 @@ the syntax of the binding, creating a "bang-pattern binding".) For example:
 
 let ![x,y] = e inb 
 
-is a bang-pattern binding. Operationally, it behaves just like a case expression: 
+is a bang-pattern binding. Operationally, it behaves just like a case expression: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 218 
-/ 
-37 
 
 
 case e of [x,y] -> b 
@@ -17121,32 +14726,26 @@ latter. If you want to define (!) with bang-patterns enabled, you have to do so 
 
 (!) fx = 3 
 
-The semantics of Haskell pattern matching is described in Section 3.17.2 of the Haskell Report. To this description add one extra 
+The semantics of Haskell pattern matching is described in Section |3.17.2| of the Haskell Report. To this description add one extra 
 item 10, saying: 
 
 • Matching the pattern !patagainst a value vbehaves as follows: 
 – if vis bottom, the match diverges 
 – otherwise, patis matched against v 
-Similarly, in Figure 4 of Section 3.17.3, add a new case (t): 
+Similarly, in Figure 4 of Section |3.17.3|, add a new case (t): 
 
 case v of {!pat -> e; _ -> e’ } 
 = v ‘seq‘ casev of { pat -> e; _ -> e’ } 
 
 
-That leaves let expressions, whose translation is given in Section 3.12 of the Haskell Report. In the translation box, first apply 
+That leaves let expressions, whose translation is given in Section |3.12| of the Haskell Report. In the translation box, first apply 
 the following transformation: for each pattern pi that is of form !qi = ei, transform it to (xi,!qi) = ((),ei), and 
 replace e0 by (xi `seq` e0). Then, when none of the left-hand-side patterns have a bang at the top, apply the rules in the 
 existing box. 
 
 The effect of the let rule is to force complete matching of the pattern qi before evaluation of the body is begun. The bang is 
-retained in the translated form in case qiis a variable, thus: 
+retained in the translated form in case qiis a variable, thus: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 219 
-/ 
-37 
 
 
 let!y = f x inb 
@@ -17206,13 +14805,8 @@ Certain pragmas are file-header pragmas:
 • A file-header pragma must precede the modulekeyword in the file. 
 • There can be as many file-header pragmas as you please, and they can be preceded or followed by comments. 
 • File-header pragmas are read once only, before pre-processing the file (e.g. with cpp). 
-• The file-header pragmas are: {-# LANGUAGE #-}, {-# OPTIONS_GHC #-}, and {-# INCLUDE #-}. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 220 
-/ 
-37 
+• The file-header pragmas are: {-# LANGUAGE #-}, {-# OPTIONS_GHC #-}, and {-# INCLUDE #-}./ 
+
 
 
 7.18.1 LANGUAGE pragma 
@@ -17224,12 +14818,12 @@ For example, to enable the FFI and preprocessing with CPP:
 
 {-# LANGUAGE ForeignFunctionInterface, CPP #-} 
 
-LANGUAGEis a file-header pragma (see Section 7.18). 
+LANGUAGEis a file-header pragma (see Section |7.18|). 
 
 
 Every language extension can also be turned into a command-line flag by prefixing it with "-X"; for example -XForeignFunctionInterface. 
 (Similarly, all "-X" flags can be written as LANGUAGEpragmas. 
-A list of all supported language extensions can be obtained by invoking ghc --supported-extensions(see Section 4.5). 
+A list of all supported language extensions can be obtained by invoking ghc --supported-extensions(see Section |4.5|). 
 Any extension from the Extension type defined in Language.Haskell.Extension may be used. GHC will report an 
 
 
@@ -17238,9 +14832,9 @@ error if any of the requested extensions are not supported.
 
 7.18.2 OPTIONS_GHC pragma 
 The OPTIONS_GHCpragma is used to specify additional options that are given to the compiler when compiling this source file. 
-See Section 4.2.2 for details. 
+See Section |4.2.2| for details. 
 Previous versions of GHC accepted OPTIONSrather than OPTIONS_GHC, but that is now deprecated. 
-OPTIONS_GHCis a file-header pragma (see Section 7.18). 
+OPTIONS_GHCis a file-header pragma (see Section |7.18|). 
 
 
 7.18.3 INCLUDE pragma 
@@ -17270,15 +14864,9 @@ When you compile any module that import Wibble, GHC will print the specified mes
 When you compile any module that imports and uses any of the specified entities, GHC will print the specified message. 
 You can only attach to entities declared at top level in the module being compiled, and you can only use unqualified names in 
 the list of entities. A capitalised name, such as T refers to either the type constructor T or the data constructor T, or both if 
-both are in scope. If both are in scope, there is currently no way to specify one without the other (c.f. fixities Section 7.4.3). 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 221 
+both are in scope. If both are in scope, there is currently no way to specify one without the other (c.f. fixities Section |7.4.3|). 
 / 
-37 
+
 
 
 Warnings and deprecations are not reported for (a) uses within the defining module, and (b) uses in an export list. The latter 
@@ -17338,13 +14926,8 @@ definition of the function to use for inlining (we call this the "inline-RHS"), 
 ordinarily RHS as usual. For externally-visible functions the inline-RHS (not the optimised RHS) is recorded in the interface 
 file. 
 
-• An INLINE function is not worker/wrappered by strictness analysis. It’s going to be inlined wholesale instead. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 222 
-/ 
-37 
+• An INLINE function is not worker/wrappered by strictness analysis. It’s going to be inlined wholesale instead./ 
+
 
 
 GHC ensures that inlining cannot go on forever: every mutually-recursive group is cut by one or more loop breakers that is 
@@ -17361,7 +14944,7 @@ GHC’s own UniqueSupplymonad code, we have:
 {-# INLINE thenUs #-} 
 {-# INLINE returnUs #-} 
 
-See also the NOINLINE(Section 7.18.5.3) and INLINABLE(Section 7.18.5.2) pragmas. 
+See also the NOINLINE(Section |7.18.5.3|) and INLINABLE(Section |7.18.5.2|) pragmas. 
 
 Note: the HBC compiler doesn’t like INLINEpragmas, so if you want your code to be HBC-compatible you’ll have to surround 
 the pragma with C pre-processor directives #ifdef __GLASGOW_HASKELL__...#endif. 
@@ -17374,12 +14957,12 @@ choice is left to GHC, which uses the same rules as for pragma-free functions. U
 call site, and will therefore be affected by the inlining threshold, optimisation level etc. 
 • Like INLINE, the INLINABLEpragma retains a copy of the original RHS for inlining purposes, and persists it in the interface 
 file, regardless of the size of the RHS. 
-• One way to use INLINABLE is in conjunction with the special function inline (Section 7.20). The call inline f tries 
+• One way to use INLINABLE is in conjunction with the special function inline (Section |7.20|). The call inline f tries 
 very hard to inline f. To make sure that fcan be inlined, it is a good idea to mark the definition of fas INLINABLE, so that 
 GHC guarantees to expose an unfolding regardless of how big it is. Moreover, by annotating f as INLINABLE, you ensure 
 that f’s original RHS is inlined, rather than whatever random optimised version of fGHC’s optimiser has produced. 
 • The INLINABLEpragma also works with SPECIALISE: if you mark function fas INLINABLE, then you can subsequently 
-SPECIALISEin another module (see Section 7.18.8). 
+SPECIALISEin another module (see Section |7.18.8|). 
 • Unlike INLINE, it is OK to use an INLINABLEpragma on a recursive function. The principal reason do to so to allow later 
 use of SPECIALISE 
 7.18.5.3 NOINLINE pragma 
@@ -17390,14 +14973,8 @@ NOTINLINEis a synonym for NOINLINE(NOINLINEis specified by Haskell 98 as the sta
 should be used if you want your code to be portable). 
 
 7.18.5.4 CONLIKE modifier 
-An INLINE or NOINLINE pragma may have a CONLIKE modifier, which affects matching in RULEs (only). See Section 7.19.3. 
+An INLINE or NOINLINE pragma may have a CONLIKE modifier, which affects matching in RULEs (only). See Section |7.19.3.| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 223 
-/ 
-37 
 
 
 7.18.5.5 Phase control 
@@ -17437,7 +15014,7 @@ looking arguments etc). Another way to understand the semantics is this:
 • For both INLINE and NOINLINE, the phase number says when inlining is allowed at all. 
 • The INLINE pragma has the additional effect of making the function body look small, so that when inlining is allowed it is 
 very likely to happen. 
-The same phase-numbering control is available for RULES (Section 7.19). 
+The same phase-numbering control is available for RULES (Section |7.19|). 
 
 7.18.6 LINE pragma 
 This pragma is similar to C’s #linepragma, and is mainly for use in automatically generated Haskell code. It lets you specify 
@@ -17449,14 +15026,8 @@ if you’d generated the current file from something called Foo.vhsand this line c
 adjust its error messages to refer to the line/file named in the LINEpragma. 
 
 7.18.7 RULES pragma 
-The RULES pragma lets you specify rewrite rules. It is described in Section 7.19. 
+The RULES pragma lets you specify rewrite rules. It is described in Section |7.19.| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 224 
-/ 
-37 
 
 
 7.18.8 SPECIALIZE pragma 
@@ -17470,12 +15041,12 @@ If it is heavily used on lists with Widgetkeys, you could specialise it as follo
 {-# SPECIALIZE hammeredLookup :: [(Widget, value)] -> Widget -> value #-} 
 
 •A SPECIALIZEpragma for a function can be put anywhere its type signature could be put. Moreover, you can also SPECI-
-ALIZEan imported function provided it was given an INLINABLEpragma at its definition site (Section 7.18.5.2). 
-•A SPECIALIZEhas the effect of generating (a) a specialised version of the function and (b) a rewrite rule (see Section 7.19) 
+ALIZEan imported function provided it was given an INLINABLEpragma at its definition site (Section |7.18.5.2|). 
+•A SPECIALIZEhas the effect of generating (a) a specialised version of the function and (b) a rewrite rule (see Section |7.19|) 
 that rewrites a call to the un-specialised function into a call to the specialised one. Moreover, given a SPECIALIZE pragma 
 for a function f, GHC will automatically create specialisations for any type-class-overloaded functions called by f, if they are 
 in the same module as the SPECIALIZEpragma, or if they are INLINABLE; and so on, transitively. 
-• You can add phase control (Section 7.18.5.5) to the RULE generated by a SPECIALIZEpragma, just as you can if you write 
+• You can add phase control (Section |7.18.5.5|) to the RULE generated by a SPECIALIZEpragma, just as you can if you write 
 a RULE directly. For example: 
 {-# SPECIALIZE [0] hammeredLookup :: [(Widget, value)] -> Widget -> value #-} 
 
@@ -17522,19 +15093,13 @@ h:: Eq a =>a -> a -> a
 
 
 The last of these examples will generate a RULE with a somewhat-complex left-hand side (try it yourself), so it might not fire 
-very well. If you use this kind of specialisation, let us know how well it works. 
+very well. If you use this kind of specialisation, let us know how well it works. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 225 
-/ 
-37 
 
 
 7.18.8.1 SPECIALIZE INLINE 
 A SPECIALIZEpragma can optionally be followed with a INLINEor NOINLINEpragma, optionally followed by a phase, as 
-described in Section 7.18.5. The INLINE pragma affects the specialised version of the function (only), and applies even if the 
+described in Section |7.18.5.| The INLINE pragma affects the specialised version of the function (only), and applies even if the 
 function is recursive. The motivating example is this: 
 
 --A GADT for arrays with type-indexed representation 
@@ -17554,14 +15119,14 @@ Here, (!:) is a recursive function that indexes arrays of type Arr e. Consider a
 second specialisation will fire, and the specialised function will be inlined. It has two calls to (!:), both at type Int. Both 
 these calls fire the first specialisation, whose body is also inlined. The result is a type-based unrolling of the indexing function. 
 
-You can add explicit phase control (Section 7.18.5.5) to SPECIALISE INLINE pragma, just like on an INLINE pragma; if 
+You can add explicit phase control (Section |7.18.5.5|) to SPECIALISE INLINE pragma, just like on an INLINE pragma; if 
 you do so, the same phase is used for the rewrite rule and the INLINE control of the specialised function. 
 
 Warning: you can make GHC diverge by using SPECIALISE INLINEon an ordinarily-recursive function. 
 
 7.18.8.2 SPECIALIZE for imported functions 
 Generally, you can only give a SPECIALIZEpragma for a function defined in the same module. However if a function fis given 
-an INLINABLEpragma at its definition site, then it can subsequently be specialised by importing modules (see Section 7.18.5.2). 
+an INLINABLEpragma at its definition site, then it can subsequently be specialised by importing modules (see Section |7.18.5.2|). 
 For example 
 
 module Map( lookup, blah blah ) where 
@@ -17594,14 +15159,8 @@ data T = T1 | T2 deriving( Eq, Ord )
 findT1 :: [(T,a)] -> Maybe a 
 findT1 m = lookup m T1 --A call of lookup at type T 
 
-However, sometimes there are no such calls, in which case the pragma can be useful. 
+However, sometimes there are no such calls, in which case the pragma can be useful. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 226 
-/ 
-37 
 
 
 7.18.8.3 Obsolete SPECIALIZE syntax 
@@ -17609,7 +15168,7 @@ Note: In earlier versions of GHC, it was possible to provide your own specialise
 
 {-# SPECIALIZE hammeredLookup :: [(Int, value)] -> Int -> value = intLookup #-} 
 
-This feature has been removed, as it is now subsumed by the RULESpragma (see Section 7.19.5). 
+This feature has been removed, as it is now subsumed by the RULESpragma (see Section |7.19.5|). 
 
 7.18.9 SPECIALIZE instance pragma 
 Same idea, except for instance declarations. For example: 
@@ -17653,14 +15212,8 @@ data S = S {-# UNPACK #-} !Int {-# UNPACK #-} !Int
 will store two unboxed Int#s directly in the Tconstructor. The unpacker can see through newtypes, too. 
 See also the -funbox-strict-fields flag, which essentially has the effect of adding {-# UNPACK #-} to every strict 
 constructor field. 
-1in fact, UNPACK has no effect without -O, for technical reasons (see tick 5252) 
+1in fact, UNPACK has no effect without -O, for technical reasons (see tick 5252) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 227 
-/ 
-37 
 
 
 7.18.11 NOUNPACK pragma 
@@ -17672,7 +15225,7 @@ Even with the flags -funbox-strict-fieldsand -O, the field of the constructor Ti
 
 7.18.12 SOURCE pragma 
 The {-# SOURCE #-} pragma is used only in import declarations, to break a module loop. It is described in detail in 
-Section 4.7.9. 
+Section |4.7.9.| 
 
 7.19 Rewrite rules 
 The programmer can specify rewrite rules as part of the source program (in a pragma). Here is an example: 
@@ -17702,7 +15255,7 @@ Furthermore, the closing #-}should start in a column to the right of the opening
 
 • Each rule has a name, enclosed in double quotes. The name itself has no significance at all. It is only used when reporting how 
 many times the rule fired. 
-• A rule may optionally have a phase-control number (see Section 7.18.5.5), immediately after the name of the rule. Thus: 
+• A rule may optionally have a phase-control number (see Section |7.18.5.5|), immediately after the name of the rule. Thus: 
 {-# RULES 
 "map/map" [2] forall f g xs. map f (map g xs) = map (f.g) xs 
 #-} 
@@ -17713,13 +15266,8 @@ that the rule is active up to, but not including, Phase 2.
 • Each variable mentioned in a rule must either be in scope (e.g. map), or bound by the forall(e.g. f, g, xs). The variables 
 bound by the forallare called the pattern variables. They are separated by spaces, just like in a type forall. 
 • A pattern variable may optionally have a type signature. If the type of the pattern variable is polymorphic, it must have a type 
-signature. For example, here is the foldr/buildrule: 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 228 
-/ 
-37 
+signature. For example, here is the foldr/buildrule:/ 
+
 
 
 "fold/build" forall k z (g::forall b. (a->b->b) -> b -> b) . 
@@ -17738,17 +15286,17 @@ In "wrong1", the LHS is not an application; in "wrong2", the LHS has a pattern v
 the rule, directly or indirectly. (That is, if A imports B, which imports C, then C’s rules are in force when compiling A.) The 
 situation is very similar to that for instance declarations. 
 • Inside a RULE "forall" is treated as a keyword, regardless of any other flag settings. Furthermore, inside a RULE, the 
-language extension -XScopedTypeVariablesis automatically enabled; see Section 7.12.7. 
+language extension -XScopedTypeVariablesis automatically enabled; see Section |7.12.7.| 
 • Like other pragmas, RULE pragmas are always checked for scope errors, and are typechecked. Typechecking means that the 
 LHS and RHS of a rule are typechecked, and must have the same type. However, rules are only enabled if the -fenable-rewrite-
-rulesflag is on (see Section 7.19.2). 
+rulesflag is on (see Section |7.19.2|). 
 7.19.2 Semantics 
 From a semantic point of view: 
 
 • Rules are enabled (that is, used during optimisation) by the -fenable-rewrite-rules flag. This flag is implied by 
 -O, and may be switched off (as usual) by -fno-enable-rewrite-rules. (NB: enabling -fenable-rewrite-rules 
 without -O may not do what you expect, though, because without -O GHC ignores all optimisation information in 
-interface files; see -fignore-interface-pragmas, Section 4.10.2.) Note that -fenable-rewrite-rules is an 
+interface files; see -fignore-interface-pragmas, Section |4.10.2.|) Note that -fenable-rewrite-rules is an 
 optimisation flag, and has no effect on parsing or typechecking. 
 • Rules are regarded as left-to-right rewrite rules. When GHC finds an expression that is a substitution instance of the LHS of a 
 rule, it replaces the expression by the (appropriately-substituted) RHS. By "a substitution instance" we mean that the LHS can 
@@ -17767,15 +15315,10 @@ substitution which makes the LHS and expression syntactically equal modulo alpha
 expression, is eta-expanded if necessary. (Eta-expanding the expression can lead to laziness bugs.) But not beta conversion 
 (that’s called higher-order matching). 
 Matching is carried out on GHC’s intermediate language, which includes type abstractions and applications. So a rule only 
-matches if the types match too. See Section 7.19.5 below. 
+matches if the types match too. See Section |7.19.5| below. 
 
-• GHC keeps trying to apply the rules as it optimises the program. For example, consider: 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 229 
-/ 
-37 
+• GHC keeps trying to apply the rules as it optimises the program. For example, consider:/ 
+
 
 
 let s = map f 
@@ -17836,13 +15379,8 @@ an intermediate list constructed by a "good producer", the intermediate list sho
 
 The following are good producers: 
 
-• List comprehensions 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 230 
-/ 
-37 
+• List comprehensions/ 
+
 
 
 • Enumerations of Int, Integerand Char(e.g. [’a’..’z’]). 
@@ -17876,14 +15414,8 @@ array (1,10) [(i,i*i) | i <-map (+ 1) [0..9]]
 This list could readily be extended; if there are Prelude functions that you use a lot which are not included, please tell us. 
 
 If you want to write your own good consumers or producers, look at the Prelude definitions of the above functions to see how to 
-do so. 
+do so. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 231 
-/ 
-37 
 
 
 7.19.5 Specialisation 
@@ -17938,13 +15470,8 @@ Notice the INLINE! That prevents (:) from being inlined when compiling PrelBase,
 thing. I regret the delicacy of this. 
 
 • In libraries/base/GHC/Base.lhslook at the rules for mapto see how to write rules that will do fusion and yet give 
-an efficient program even if fusion doesn’t happen. More rules in GHC/List.lhs. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 232 
-/ 
-37 
+an efficient program even if fusion doesn’t happen. More rules in GHC/List.lhs./ 
+
 
 
 7.19.7 CORE pragma 
@@ -17996,18 +15523,12 @@ documentation. In particular:
 7.21 Generic classes 
 GHC used to have an implementation of generic classes as defined in the paper "Derivable type classes", Ralf Hinze and Simon 
 Peyton Jones, Haskell Workshop, Montreal Sept 2000, pp94-105. These have been removed and replaced by the more general 
-support for generic programming. 
+support for generic programming. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 233 
-/ 
-37 
 
 
 7.22 Generic programming 
-Using a combination of -XDeriveGeneric(Section 7.5.3) and -XDefaultSignatures(Section 7.6.1.4), you can easily 
+Using a combination of -XDeriveGeneric(Section |7.5.3|) and -XDefaultSignatures(Section |7.6.1.4|), you can easily 
 do datatype-generic programming using the GHC.Genericsframework. This section gives a very brief overview of how to do 
 it. 
 
@@ -18060,7 +15581,7 @@ to1 ::Rep1fa ->fa
 
 
 Generic1 is used for functions that can only be defined over type containers, such as map. Instances of these classes can 
-be derived by GHC with the -XDeriveGeneric (Section 7.5.3), and are necessary to be able to define generic instances 
+be derived by GHC with the -XDeriveGeneric (Section |7.5.3|), and are necessary to be able to define generic instances 
 automatically. 
 
 For example, a user-defined datatype of trees data UserTree a = Node a (UserTree a) (UserTree a) | Leafgets 
@@ -18070,14 +15591,8 @@ instance Generic (UserTree a) where
 --Representation type 
 type Rep (UserTree a) = 
 
-M1 D D1UserTree ( 
+M1 D D1UserTree ( / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 234 
-/ 
-37 
 
 
 M1 C C1_0UserTree ( 
@@ -18139,14 +15654,8 @@ gput (M1 x) = gput x
 instance (Serialize a) => GSerialize (K1 i a) where 
 gput (K1 x) = put x 
 
-Typically this class will not be exported, as it only makes sense to have instances for the representation types. 
+Typically this class will not be exported, as it only makes sense to have instances for the representation types. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 235 
-/ 
-37 
 
 
 7.22.3 Generic defaults 
@@ -18175,7 +15684,7 @@ of the third ACM Haskell symposium on Haskell (Haskell’2010), pp. 37-48, ACM, 20
 GHC supports two flags that control the way in which generalisation is carried out at let and where bindings. 
 
 7.23.1 Switching off the dreaded Monomorphism Restriction 
-Haskell’s monomorphism restriction (see Section 4.5.5 of the Haskell Report) can be completely switched off by -XNoMonomorphismRestriction. 
+Haskell’s monomorphism restriction (see Section |4.5.5| of the Haskell Report) can be completely switched off by -XNoMonomorphismRestriction. 
 
 
 7.23.2 Monomorphic pattern bindings 
@@ -18191,14 +15700,8 @@ f :: Int -> Int = \x -> x --Not a pattern binding
 (f) = e --A pattern binding 
 [x] = e --A pattern binding 
 Experimentally, GHC now makes pattern bindings monomorphic by default. Use -XNoMonoPatBindsto recover the standard 
-behaviour. 
+behaviour. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 236 
-/ 
-37 
 
 
 7.24 Concurrent and Parallel Haskell 
@@ -18241,24 +15744,18 @@ All these features are described in the papers mentioned earlier.
 7.24.3 Parallel Haskell 
 GHC includes support for running Haskell programs in parallel on symmetric, shared-memory multi-processor (SMP). By default 
 GHC runs your program on one processor; if you want it to run in parallel you must link your program with the -threaded, 
-and run it with the RTS -Noption; see Section 4.15). The runtime will schedule the running Haskell threads among the available 
+and run it with the RTS -Noption; see Section |4.15|). The runtime will schedule the running Haskell threads among the available 
 OS threads, running as many in parallel as you specified with the -NRTS option. 
 
 GHC only supports parallelism on a shared-memory multiprocessor. Glasgow Parallel Haskell (GPH) supports running Parallel 
 Haskell programs on both clusters of machines, and single multiprocessors. GPH is developed and distributed separately from 
-GHC (see The GPH Page). However, the current version of GPH is based on a much older version of GHC (4.06). 
+GHC (see The GPH Page). However, the current version of GPH is based on a much older version of GHC (4.06). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 237 
-/ 
-37 
 
 
 7.24.4 Annotating pure code for parallelism 
 Ordinary single-threaded Haskell programs will not benefit from enabling SMP parallelism alone: you must expose parallelism 
-to the compiler. One way to do so is forking threads using Concurrent Haskell (Section 7.24.1), but the simplest mechanism for 
+to the compiler. One way to do so is forking threads using Concurrent Haskell (Section |7.24.1|), but the simplest mechanism for 
 extracting parallelism from pure code is to use the parcombinator, which is closely related to (and often used with) seq. Both 
 of these are available from the parallel library: 
 
@@ -18298,7 +15795,7 @@ When using par, the general rule of thumb is that the sparked computation should
 Also, the sparked computation should not be too small, otherwise the cost of forking it in parallel will be too large relative to the 
 amount of parallelism gained. Getting these factors right is tricky in practice. 
 
-It is possible to glean a little information about how well paris working from the runtime statistics; see Section 4.17.3. 
+It is possible to glean a little information about how well paris working from the runtime statistics; see Section |4.17.3.| 
 
 More sophisticated combinators for expressing parallelism are available from the Control.Parallel.Strategiesmodule 
 in the parallel package. This module builds functionality around par, expressing more elaborate patterns of parallel computation, 
@@ -18310,14 +15807,8 @@ technology preview. More information can be found on the corresponding DPH wiki 
 
 7.25 Safe Haskell 
 Safe Haskell is an extension to the Haskell language that is implemented in GHC as of version 7.2. It allows for unsafe code to 
-be securely included in a trusted code base by restricting the features of GHC Haskell the code is allowed to use. Put simply, it 
+be securely included in a trusted code base by restricting the features of GHC Haskell the code is allowed to use. Put simply, it / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 238 
-/ 
-37 
 
 
 makes the types of programs trustable. Safe Haskell is aimed to be as minimal as possible while still providing strong enough 
@@ -18326,7 +15817,7 @@ guarantees about compiled Haskell code for more advance secure systems to be bui
 While this is the use case that Safe Haskell was motivated by it is important to understand that what Safe Haskell is tracking 
 and enforcing is a stricter form of type safety than is usually guaranteed in Haskell. As part of this, Safe Haskell is run during 
 every compilation of GHC, tracking safety and inferring it even for modules that don’t explicitly use Safe Haskell. Please refer 
-to section Section 7.25.5 for more details of this. This also means that there are some design choices that from a security point 
+to section Section |7.25.5| for more details of this. This also means that there are some design choices that from a security point 
 of view may seem strange but when thought of from the angle of tracking type safety are logical. Feedback on the current design 
 and this tension between the security and type safety view points is welcome. 
 
@@ -18373,14 +15864,8 @@ newtype RIO a = UnsafeRIO { runRIO :: IO a }
 
 
 instance Monad RIO where 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 239 
 / 
-37 
+
 
 
 return = UnsafeRIO . return 
@@ -18440,18 +15925,12 @@ extra requirement to the trust check for trustworthy modules, such that for trus
 allowed to be used in -XSafe compiled code, the client C compiling the code must tell GHC that they trust the package the 
 trustworthy module resides in. This is essentially a way of for C to say, while this package contains trustworthy modules that can 
 be used by untrusted modules compiled with -XSafe , I trust the author(s) of this package and trust the modules only expose a 
-safe API. The trust of a package can be changed at any time, so if a vulnerability found in a package, C can declare that package 
+safe API. The trust of a package can be changed at any time, so if a vulnerability found in a package, C can declare that package / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 240 
-/ 
-37 
 
 
 untrusted so that any future compilation against that package would fail. For a more detailed overview of this mechanism see 
-Section 7.25.4. 
+Section |7.25.4.| 
 
 In the example, Danger can import module RIO because RIO is marked trustworthy. Thus, Danger can make use of the rioRead-
 File and rioWriteFile functions to access permitted file names. The main application then imports both RIO and Danger. To run 
@@ -18508,13 +15987,8 @@ untrusted module. The extension is not disabled for a module M compiled with -XS
 overlapping instance declarations, they can only overlap other instance declaration defined in M. If in a module N that imports 
 M, at a call site that uses a type-class function there is a choice of which instance to use (i.e. an overlap) and the most specific 
 instances is from M, then all the other choices must also be from M. If not, a compilation error will occur. A simple way to 
-think of this is a same origin policy for overlapping instances defined in Safe compiled modules. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 241 
-/ 
-37 
+think of this is a same origin policy for overlapping instances defined in Safe compiled modules./ 
+
 
 
 • 
@@ -18572,14 +16046,8 @@ what it does. To control this there is an additional definition of package trust
 point of package trusts is to require that the client C explicitly say which packages are allowed to contain trustworthy modules. 
 That is, C establishes that it trusts a package P and its author and so trust the modules in P that use -XTrustworthy. When 
 package trust is enabled, any modules that are considered trustworthy but reside in a package that isn’t trusted are not considered 
-trusted. A more formal definition is given in the next section. 
+trusted. A more formal definition is given in the next section. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 242 
-/ 
-37 
 
 
 7.25.4.2 Trust check (-fpackage-trust 
@@ -18633,14 +16101,8 @@ import safe Buggle
 Suppose a client C decides to trust package P. Then does C trust module M? To decide, GHC must check M’s imports — M 
 imports System.IO.Unsafe. M was compiled with -XTrustworthy, so P’s author takes responsibility for that import. C trusts 
 P’s author, so C trusts M to only use its unsafe imports in a safe and consistent manner with respect to the API M exposes. M 
-also has a safe import of Buggle, so for this import P’s author takes no responsibility for the safety, so GHC must check whether 
+also has a safe import of Buggle, so for this import P’s author takes no responsibility for the safety, so GHC must check whether / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 243 
-/ 
-37 
 
 
 Buggle is trusted by C. Is it? Well, it is compiled with -XSafe, so the code in Buggle itself is machine-checked to be OK, 
@@ -18670,7 +16132,7 @@ to specify the trust property of packages:
 -distrust-all-packages — Considers all packages distrusted unless they are explicitly set to be trusted by subsequent command-
 line options. 
 
-To set a package’s trust property in the package database please refer to Section 4.9. 
+To set a package’s trust property in the package database please refer to Section |4.9.| 
 
 7.25.5 Safe Haskell Inference 
 In the case where a module is compiled without one of -XSafe, -XTrustworthy or -XUnsafe being used, GHC will try 
@@ -18700,13 +16162,8 @@ package, because the compiler vouches for its trustworthiness. The "safe" keywor
 statements, every import is required to be safe regardless. 
 
 • 
-Module Trusted — Yes 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 244 
-/ 
-37 
+Module Trusted — Yes/ 
+
 
 
 • Haskell Language — Restricted to Safe Language 
@@ -18738,14 +16195,8 @@ And two warning flags:
 of modules when using safe inference. 
 
 -fwarn-safe Issue a warning if the module being compiled is regarded to be safe. Should be used to check the safety status of 
-modules when using safe inference. 
+modules when using safe inference. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 245 
-/ 
-37 
 
 
 Chapter 8 
@@ -18756,7 +16207,7 @@ GHC (mostly) conforms to the Haskell Foreign Function Interface, whose definitio
 www.haskell.org/. 
 
 FFI support is enabled by default, but can be enabled or disabled explicitly with the -XForeignFunctionInterfaceflag. 
-GHC implements a number of GHC-specific extensions to the FFI Addendum. These extensions are described in Section 8.1, 
+GHC implements a number of GHC-specific extensions to the FFI Addendum. These extensions are described in Section |8.1|, 
 but please note that programs using these features are not portable. Hence, these features should be avoided where possible. 
 
 The FFI libraries are documented in the accompanying library documentation; see for example the Foreignmodule. 
@@ -18766,7 +16217,7 @@ The FFI features that are described in this section are specific to GHC. Your co
 use them. 
 
 8.1.1 Unboxed types 
-The following unboxed types may be used as basic foreign types (see FFI Addendum, Section 3.2): Int#, Word#, Char#, 
+The following unboxed types may be used as basic foreign types (see FFI Addendum, Section |3.2|): Int#, Word#, Char#, 
 Float#, Double#, Addr#, StablePtr# a, MutableByteArray#, ForeignObj#, and ByteArray#. 
 
 8.1.2 Newtype wrapping of the IO monad 
@@ -18778,19 +16229,13 @@ newtype MyIO a = MIO (IO a)
 (A reason for doing so might be to prevent the programmer from calling arbitrary IO procedures in some part of the program.) 
 
 The Haskell FFI already specifies that arguments and results of foreign imports and exports will be automatically unwrapped if 
-they are newtypes (Section 3.2 of the FFI addendum). GHC extends the FFI by automatically unwrapping any newtypes that wrap 
+they are newtypes (Section |3.2| of the FFI addendum). GHC extends the FFI by automatically unwrapping any newtypes that wrap 
 the IO monad itself. More precisely, wherever the FFI specification requires an IO type, GHC will accept any newtype-wrapping 
 of an IO type. For example, these declarations are OK: 
 
 foreign import foo :: Int -> MyIO Int 
-foreign import "dynamic" baz :: (Int -> MyIO Int) -> CInt -> MyIO Int 
+foreign import "dynamic" baz :: (Int -> MyIO Int) -> CInt -> MyIO Int / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 246 
-/ 
-37 
 
 
 8.1.3 Primitive imports 
@@ -18846,14 +16291,8 @@ will work regardless of whether piis defined as
 
 const double pi = 3.14; 
 
-or with 
+or with / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 247 
-/ 
-37 
 
 
 #define pi 3.14 
@@ -18900,7 +16339,7 @@ extern HsInt foo(HsInt a0);
 and Foo_stub.ccontains the compiler-generated definition of foo(). To invoke foo()from C, just #include "Foo_stub.
 h"and call foo(). 
 
-The foo_stub.cand foo_stub.hfiles can be redirected using the -stubdiroption; see Section 4.7.4. 
+The foo_stub.cand foo_stub.hfiles can be redirected using the -stubdiroption; see Section |4.7.4.| 
 
 When linking the program, remember to include M_stub.o in the final link command line, or you’ll get link errors for the 
 missing function(s) (this isn’t necessary when building your program with ghc --make, as GHC will automatically link in the 
@@ -18911,14 +16350,8 @@ Normally, GHC’s runtime system provides a main(), which arranges to invoke Main.
 you might want to link some Haskell code into a program which has a main function written in another language, say C. In order 
 to do this, you have to initialize the Haskell runtime system explicitly. 
 
-Let’s take the example from above, and invoke it from a standalone C program. Here’s the C code: 
+Let’s take the example from above, and invoke it from a standalone C program. Here’s the C code: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 248 
-/ 
-37 
 
 
 #include <stdio.h> 
@@ -18961,7 +16394,7 @@ NOTE: when linking the final program, it is normally easiest to do the link usin
 use GHC, then don’t forget the flag -no-hs-main, otherwise GHC will try to link to the MainHaskell module. 
 
 To use +RTSflags with hs_init(), we have to modify the example slightly. By default, GHC’s RTS will only accept "safe" 
-+RTS flags (see Section 4.12.6), and the -rtsopts link-time flag overrides this. However, -rtsopts has no effect when 
++RTS flags (see Section |4.12.6|), and the -rtsopts link-time flag overrides this. However, -rtsopts has no effect when 
 -no-hs-main is in use (and the same goes for -with-rtsopts). To set these options we have to call a GHC-specific API 
 instead of hs_init(): 
 
@@ -18990,14 +16423,8 @@ hs_init_ghc(&argc, &argv, conf);
 } 
 
 1The outermost hs_exit()will actually de-initialise the system. NOTE that currently GHC’s runtime cannot reliably re-initialise after this has happened, 
-see Section 14.1.1.8. 
+see Section |14.1.1.8.| / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 249 
-/ 
-37 
 
 
 #else 
@@ -19036,7 +16463,7 @@ undoubtedly be added to RtsConfigin the future, so in order to keep your code fo
 defaultRtsConfigand then modify the required fields, as in the code sample above. 
 
 8.2.1.2 Making a Haskell library that can be called from foreign code 
-The scenario here is much like in Section 8.2.1.1, except that the aim is not to link a complete program, but to make a library 
+The scenario here is much like in Section |8.2.1.1|, except that the aim is not to link a complete program, but to make a library 
 from Haskell code that can be deployed in the same way that you would deploy a library of C code. 
 
 The main requirement here is that the runtime needs to be initialized before any Haskell code can be called, so your library should 
@@ -19062,14 +16489,8 @@ return HS_BOOL_TRUE;
 
 void mylib_end(void){ 
 hs_exit(); 
-} 
+} / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 250 
-/ 
-37 
 
 
 The initialisation routine, mylib_init, calls hs_init() as normal to initialise the Haskell runtime, and the corresponding 
@@ -19121,7 +16542,7 @@ way to structure your memory allocation than using one of the other forms of all
 We do plan to provide an improved-performance implementation of Pools in the future, however. 
 
 8.2.4 Multi-threading and the FFI 
-In order to use the FFI in a multi-threaded setting, you must use the -threadedoption (see Section 4.12.6). 
+In order to use the FFI in a multi-threaded setting, you must use the -threadedoption (see Section |4.12.6|). 
 
 8.2.4.1 Foreign imports and multi-threading 
 When you call a foreign imported function that is annotated as safe(the default), and the program was linked using -threaded, 
@@ -19130,29 +16551,23 @@ then the other Haskell threads will be blocked until the call returns.
 
 This means that if you need to make a foreign call to a function that takes a long time or blocks indefinitely, then you should mark 
 it safeand use -threaded. Some library functions make such calls internally; their documentation should indicate when this 
-is the case. 
+is the case. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 251 
-/ 
-37 
 
 
 If you are making foreign calls from multiple Haskell threads and using -threaded, make sure that the foreign code you are 
 calling is thread-safe. In particularly, some GUI libraries are not thread-safe and require that the caller only invokes GUI methods 
 from a single thread. If this is the case, you may need to restrict your GUI operations to a single Haskell thread, and possibly 
-also use a bound thread (see Section 8.2.4.2). 
+also use a bound thread (see Section |8.2.4.2|). 
 
 Note that foreign calls made by different Haskell threads may execute in parallel, even when the +RTS -N flag is not being 
-used (Section 4.15.2). The +RTS -N flag controls parallel execution of Haskell threads, but there may be an arbitrary number 
+used (Section |4.15.2|). The +RTS -N flag controls parallel execution of Haskell threads, but there may be an arbitrary number 
 of foreign calls in progress at any one time, regardless of the +RTS -Nvalue. 
 
 If a call is annotated as interruptibleand the program was multithreaded, the call may be interrupted in the event that the 
 Haskell thread receives an exception. The mechanism by which the interrupt occurs is platform dependent, but is intended to 
 cause blocking system calls to return immediately with an interrupted error code. The underlying operating system thread is not 
-to be destroyed. See Section 8.1.4 for more details. 
+to be destroyed. See Section |8.1.4| for more details. 
 
 8.2.4.2 The relationship between Haskell threads and OS threads 
 Normally there is no fixed relationship between Haskell threads and OS threads. This means that when you make a foreign call, 
@@ -19191,14 +16606,8 @@ then call shutdownHaskellAndExit()instead).
 
 8.2.5 Floating point and the FFI 
 The standard C99 fenv.h header provides operations for inspecting and modifying the state of the floating point unit. In 
-particular, the rounding mode used by floating point operations can be changed, and the exception flags can be tested. 
+particular, the rounding mode used by floating point operations can be changed, and the exception flags can be tested. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 252 
-/ 
-37 
 
 
 In Haskell, floating-point operations have pure types, and the evaluation order is unspecified. So strictly speaking, since the 
@@ -19215,13 +16624,8 @@ context switch may change it. If you need to modify or test the floating point s
 threads (Control.Concurrent.forkOS), because a bound thread has its own OS thread, and OS threads do save and 
 restore the floating-point state. 
 • It is safe to modify the floating-point unit state temporarily during a foreign call, because foreign calls are never pre-empted by 
-GHC. 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 253 
-/ 
-37 
+GHC./ 
+
 
 
 Chapter 9 
@@ -19264,14 +16668,8 @@ redundant).
 If you feel strongly that any of these restrictions are too onerous, please give the GHC team a shout. 
 
 However, apart from these restrictions, many things are allowed, including expressions which are not fully evaluated! Annotation 
-expressions will be evaluated by the compiler just like Template Haskell splices are. So, this annotation is fine: 
+expressions will be evaluated by the compiler just like Template Haskell splices are. So, this annotation is fine: / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 254 
-/ 
-37 
 
 
 {-# ANN f SillyAnnotation { foo = (id 10) + $([| 20 |]), bar = ’f } #-} 
@@ -19325,14 +16723,8 @@ $ ./test_main
 hi 
 $ 
 
-For more information on using the API, as well as more samples and references, please see this Haskell.org wiki page. 
+For more information on using the API, as well as more samples and references, please see this Haskell.org wiki page. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 255 
-/ 
-37 
 
 
 9.3 Compiler Plugins 
@@ -19395,14 +16787,8 @@ plugin = defaultPlugin {
 installCoreToDos = install 
 } 
 
-install :: [CommandLineOption] -> [CoreToDo] -> CoreM [CoreToDo] 
+install :: [CommandLineOption] -> [CoreToDo] -> CoreM [CoreToDo] / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 256 
-/ 
-37 
 
 
 install _ todo = do 
@@ -19465,14 +16851,8 @@ plugin :: Plugin
 
 plugin = defaultPlugin { 
 installCoreToDos = install 
-} 
+} / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 257 
-/ 
-37 
 
 
 install :: [CommandLineOption] -> [CoreToDo] -> CoreM [CoreToDo] 
@@ -19492,7 +16872,7 @@ return bndr
 printBind bndr = return bndr 
 
 9.3.2.3 Using Annotations 
-Previously we discussed annotation pragmas (Section 9.1), which we mentioned could be used to give compiler plugins extra 
+Previously we discussed annotation pragmas (Section |9.1|), which we mentioned could be used to give compiler plugins extra 
 guidance or information. Annotations for a module can be retrieved by a plugin, but you must go through the modules ModGuts 
 in order to get it. Because annotations can be arbitrary instances of Data and Typeable, you need to give a type annotation 
 specifying the proper type of data to retrieve from the interface file, and you need to make sure the annotation type used by your 
@@ -19543,14 +16923,8 @@ annotationsOn guts bndr = do
 anns <-getAnnotations deserializeWithData guts 
 return $ lookupWithDefaultUFM anns [] (varUnique bndr) 
 
-Please see the GHC API documentation for more about how to use internal APIs, etc. 
+Please see the GHC API documentation for more about how to use internal APIs, etc. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 258 
-/ 
-37 
 
 
 Chapter 10 
@@ -19558,13 +16932,7 @@ Chapter 10
 An External Representation for the GHC Core Language 
 (For GHC 6.10) 
 
-Andrew Tolmach, Tim Chevalier ({apt,tjc}@cs.pdx.edu) and The GHC Team 
-
-
-Abstract 
-
-This document provides a precise definition for the GHC Core language, so that it can be used to communicate between GHC and 
-new stand-alone compilation tools such as back-ends or optimizers.1 The definition includes a formal grammar and an informal 
+Andrew Tolmach, Tim Chevalier ({apt,tjc}@cs.pdx.edu) and The GHC Team new stand-alone compilation tools such as back-ends or optimizers.1 The definition includes a formal grammar and an informal 
 semantics. An executable typechecker and interpreter (in Haskell), which formally embody the static and dynamic semantics, 
 are available separately. 
 
@@ -19574,14 +16942,8 @@ simplify the Core story.
 
 Support for generating external Core (post-optimization) was originally introduced in GHC 5.02. The definition of external Core in this document reflects the 
 version of external Core generated by the HEAD (unstable) branch of GHC as of May 3, 2008 (version 6.9), using the compiler flag -fext-core. We expect 
-that GHC 6.10 will be consistent with this definition. 
+that GHC 6.10 will be consistent with this definition. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 1 
-/ 
-37 
 
 
 10.1 Introduction 
@@ -19644,14 +17006,8 @@ it.
 Formal static and dynamic semantics in the form of an executable typechecker and interpreter are available separately in the GHC 
 source tree 2 under utils/ext-core. 
 
-2http://darcs.haskell.org/ghc 
+2http://darcs.haskell.org/ghc / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 2 
-/ 
-37 
 
 
 10.2 External Grammar of Core 
@@ -19751,14 +17107,8 @@ literal alternative
 default alternative 
 
 3These choices are certainly debatable. In particular, keeping type applications on tuples and case arms considerably increases the size of Core files and 
-makes them less human-readable, though it allows a Core parser to be simpler. 
+makes them less human-readable, though it allows a Core parser to be simpler. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 3 
-/ 
-37 
 
 
 Binder binder . 
@@ -19880,14 +17230,8 @@ digit .
 At the term level, Core resembles a explicitly-typed polymorphic lambda calculus (F. 
 ), with the addition of local letbindings, 
 algebraic type definitions, constructors, and case expressions, and primitive types, literals and operators. Its type system is 
-richer than that of System F, supporting explicit type equality coercions and type functions.[system-fc] 
+richer than that of System F, supporting explicit type equality coercions and type functions.[system-fc] / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 4 
-/ 
-37 
 
 
 In this section we concentrate on the less obvious points about Core. 
@@ -19896,7 +17240,7 @@ In this section we concentrate on the less obvious points about Core.
 Core programs are organized into modules, corresponding directly to source-level Haskell modules. Each module has a identifying 
 name mident. A module identifier consists of a package name followed by a module name, which may be hierarchical: 
 for example, base:GHC.Base is the module identifier for GHC’s Base module. Its name is Base, and it lives in the GHC 
-hierarchy within the basepackage. Section 5.8 of the GHC users’ guide explains package names [ghc-user-guide]. In particular, 
+hierarchy within the basepackage. Section |5.8| of the GHC users’ guide explains package names [ghc-user-guide]. In particular, 
 note that a Core program may contain multiple modules with the same (possibly hierarchical) module name that differ in their 
 package names. In some of the code examples that follow, we will omit package names and possibly full hierarchical module 
 names from identifiers for brevity, but be aware that they are always required.4 
@@ -19945,14 +17289,8 @@ qualified names. This would make the code more human-readable.
 
 5Two examples of such identifiers are: data constructors, and values that potentially appear in an unfolding. For an example of the latter, consider Main.foo 
 = ... Main.bar ..., where Main.foo is inlineable. Since bar appears in foo’s unfolding, it is defined and referenced with an external name, 
-even if barwas not exported by the original source module. 
+even if barwas not exported by the original source module. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 5 
-/ 
-37 
 
 
 1. module identifiers (mident), 
@@ -20008,14 +17346,8 @@ As described in the Haskell definition, it is necessary to distinguish well-form
 different kinds [haskell98, ?]. In particular, Core explicitly records the kind of every bound type variable. 
 
 In addition, Core’s kind system includes equality kinds, as in System FC [system-fc]. An application of a built-in coercion, or of 
-a user-defined coercion as introduced by a newtypedeclaration, has an equality kind. 
+a user-defined coercion as introduced by a newtypedeclaration, has an equality kind. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 6 
-/ 
-37 
 
 
 10.3.3.4 Lifted and Unlifted Types 
@@ -20068,14 +17400,8 @@ Leaf a)}
 which introduces the unary type constructor Bintree of kind *->*and two data constructors with types 
 
 Fork :: %forall a . Bintree a -> Bintree a -> Bintree a 
-Leaf :: %forall a . a -> Bintree a 
+Leaf :: %forall a . a -> Bintree a / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 7 
-/ 
-37 
 
 
 We define the arity of each data constructor to be the number of value arguments it takes; e.g. Fork has arity 2 and Leaf has 
@@ -20140,14 +17466,8 @@ Notice that the case in the Haskell source code above translates to a cast in th
 operationally, a case on a value whose type is declared by a newtype declaration is a no-op. Unlike a case on any other 
 value, such a casedoes no evaluation: its only function is to coerce its scrutinee’s type. 
 
-Also notice that unlike in a previous draft version of External Core, there is no need to handle recursive newtypes specially. 
+Also notice that unlike in a previous draft version of External Core, there is no need to handle recursive newtypes specially. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 8 
-/ 
-37 
 
 
 10.3.6 Expression Forms 
@@ -20215,14 +17535,8 @@ Fork (l::Bintree a) (r::Bintree a) ->
 Fork @ar l 
 Leaf (v::a) -> 
 Fork @at t 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 9 
 / 
-37 
+
 
 
 When performing a %caseover a value of an existentially-quantified algebraic type, the alternative must include extra local type 
@@ -20285,14 +17599,8 @@ additional information or a different interpretation of the name string.
 10.3.7 Expression Evaluation 
 The dynamic semantics of Core are defined on the type-erasure of the program: for example, we ignore all type abstractions and 
 applications. The denotational semantics of the resulting type-free program are just the conventional ones for a call-by-name 
-language, in which expressions are only evaluated on demand. But Core is intended to be a call-by-need language, in which 
+language, in which expressions are only evaluated on demand. But Core is intended to be a call-by-need language, in which / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 10 
-/ 
-37 
 
 
 expressions are only evaluated once. To express the sharing behavior of call-by-need, we give an operational model in the style 
@@ -20346,14 +17654,8 @@ Certain primitives and %externalfunctions cause side-effects to state threads or
 side-effects matters, Core already forces this order with data dependencies on the pseudo-values representing the threads. 
 
 An implementation must specially support the raisezh and handlezh primitives: for example, by using a handler stack. 
-Again, real-world threading guarantees that they will execute in the correct order. 
+Again, real-world threading guarantees that they will execute in the correct order. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 11 
-/ 
-37 
 
 
 10.4 Primitive Module 
@@ -20363,7 +17665,7 @@ The semantics of External Core rely on the contents and informal semantics of th
 m. Nearly all the primitives are required in order to cover GHC’s implementation of the Haskell98 standard prelude; the only 
 operators that can be completely omitted are those supporting the byte-code interpreter, parallelism, and foreign objects. Some 
 of the concurrency primitives are needed, but can be given degenerate implementations if it desired to target a purely sequential 
-backend (see Section the Non-concurrent Back End section). 
+backend (see Section |the| Non-concurrent Back End section). 
 In addition to these primitives, a large number of C library functions are required to implement the full standard Prelude, particularly 
 to handle I/O and arithmetic on less usual types. 
 
@@ -20410,14 +17712,8 @@ USA , 2006.
 
 [ghc-fc-commentary] GHC Wiki, 2006. 
 
-[ghc-inliner] Simon Peyton-Jones and Simon Marlow, 1999, Paris France . 
+[ghc-inliner] Simon Peyton-Jones and Simon Marlow, 1999, Paris France . / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 12 
-/ 
-37 
 
 
 [ghc-user-guide] The GHC Team, 2008. 
@@ -20433,25 +17729,19 @@ setts USA , 1991, August 26-28.
 
 [system-fc] Martin Sulzmann, Manuel M.T. Chakravarty, Simon Peyton-Jones, and Kevin Donnelly, ACM, New York NY 
 
-USA , 2007. 
+USA , 2007. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 13 
-/ 
-37 
 
 
 Chapter 11 
 
 What to do when something goes wrong 
 
-If you still have a problem after consulting this section, then you may have found a bug—please report it! See Section 1.3 for 
+If you still have a problem after consulting this section, then you may have found a bug—please report it! See Section |1.3| for 
 details on how to report a bug and a list of things we’d like to know about your bug. If in doubt, send a report—we love mail 
 from irate users :-! 
 
-(Section 14.1, which describes Glasgow Haskell’s shortcomings vs. the Haskell language definition, may also be of interest.) 
+(Section |14.1|, which describes Glasgow Haskell’s shortcomings vs. the Haskell language definition, may also be of interest.) 
 
 11.1 When the compiler “does the wrong thing” 
 “Help! The compiler crashed (or `panic’d)!” These events are always bugs in the GHC system—please report them. 
@@ -20482,14 +17772,8 @@ method.
 Please report line-number errors that you find particularly unhelpful. 
 
 11.2 When your program “does the wrong thing” 
-(For advice about overly slow or memory-hungry Haskell programs, please see Chapter 6). 
+(For advice about overly slow or memory-hungry Haskell programs, please see Chapter 6). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 14 
-/ 
-37 
 
 
 “Help! My program crashed!” (e.g., a `segmentation fault’ or `core dumped’) 
@@ -20513,7 +17797,7 @@ A useful option to alert you when interfaces change is -hi-diffs. It will run di
 
 and after, when applicable. 
 If you are using make, GHC can automatically generate the dependencies required in order to make sure that every module 
-is up-to-date with respect to its imported interfaces. Please see Section 4.7.11. 
+is up-to-date with respect to its imported interfaces. Please see Section |4.7.11.| 
 
 
 If you are down to your last-compile-before-a-bug-report, we would recommend that you add a -dcore-lint option 
@@ -20533,18 +17817,12 @@ So, before you report a bug because of a core dump, you should probably:
 Of course, if you have foreign calls in your program then all bets are off, because you can trash the heap, the stack, or 
 whatever. 
 
-“My program entered an `absent’ argument.” This is definitely caused by a bug in GHC. Please report it (see Section 1.3). 
+“My program entered an `absent’ argument.” This is definitely caused by a bug in GHC. Please report it (see Section |1.3|). 
 
 “What’s with this `arithmetic (or `floating’) exception’ ”? Int, Float, and Double arithmetic is unchecked. Overflows, 
 underflows and loss of precision are either silent or reported as an exception by the operating system (depending on the 
-platform). Divide-by-zero may cause an untrapped exception (please report it if it does). 
+platform). Divide-by-zero may cause an untrapped exception (please report it if it does). / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 15 
-/ 
-37 
 
 
 Chapter 12 
@@ -20601,14 +17879,8 @@ The linker to use (default: gcc).
 -C 
 FLAG 
 or --cflag=FLAG 
-An extra flag to pass to the C compiler. 
+An extra flag to pass to the C compiler. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 16 
-/ 
-37 
 
 
 -I 
@@ -20638,10 +17910,10 @@ Proceed as normal, but do not delete any intermediate files.
 
 -x 
 or --cross-compile 
-Activate cross-compilation mode (see Section 12.2.4). 
+Activate cross-compilation mode (see Section |12.2.4|). 
 
 --cross-safe 
-Restrict the .hsc directives to those supported by the --cross-compile mode (see Section 12.2.4). This 
+Restrict the .hsc directives to those supported by the --cross-compile mode (see Section |12.2.4|). This 
 
 should be useful if your .hscfiles must be safely cross-compiled and you wish to keep non-cross-compilable constructs 
 from creeping into them. 
@@ -20702,14 +17974,8 @@ comma-separated, not inside parens. Such macro is invoked as other #-constructs,
 will be put in the C program inside parens as arguments of printf. To refer to a parameter, close the quote, put a 
 parameter name and open the quote again, to let C string literals concatenate. Or use printf’s format directives. Values 
 of arguments must be given as strings, unless the macro stringifies them itself using the C preprocessor’s #parameter 
-syntax. 
+syntax. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 17 
-/ 
-37 
 
 
 #def 
@@ -20804,23 +18070,13 @@ not compilation fails.
 Only a subset of .hscsyntax is supported by --cross-compile. The following are unsupported: 
 
 • #{const_str} 
-• #{let} 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 18 
-/ 
-37 
+• #{let}/ 
+
 
 
 • #{def} 
-• Custom constructs 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 19 
-/ 
-37 
+• Custom constructs/ 
+
 
 
 Chapter 13 
@@ -20862,14 +18118,8 @@ with no console window, use the flag -optl-mwindowsin the link step.
 Warning: Windows GUI-only programs have no stdin, stdout or stderr so using the ordinary Haskell input/output functions will 
 cause your program to fail with an IO exception, such as: 
 
-Fail: <stdout>: hPutChar: failed (Bad file descriptor) 
+Fail: <stdout>: hPutChar: failed (Bad file descriptor) / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 20 
-/ 
-37 
 
 
 However using Debug.Trace.trace is alright because it uses Windows debugging output support rather than stderr. 
@@ -20917,13 +18167,8 @@ different tools on different platforms, you can simply write a short Haskell pro
 George Russell for this idea): compiled with GHC, this will give you the view of the file system that GHC depends on (which 
 will differ depending on whether GHC is compiled with cygwin’s gcc or mingw’s gcc or on a real unix system..) -that little 
 program can also deal with escaping ’\’ in paths. Apart from the banner and the startup time, something like this would also 
-do: 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 21 
-/ 
-37 
+do:/ 
+
 
 
 $ echo "Directory.getCurrentDirectory >>= putStrLn . init . tail . show " | ghci 
@@ -20937,7 +18182,7 @@ There are two distinct ways in which DLLs can be used:
 • You can turn each Haskell package into a DLL, so that multiple Haskell executables using the same packages can share the 
 DLL files. (As opposed to linking the libraries statically, which in effect creates a new copy of the RTS and all libraries for 
 each executable produced.) 
-That is the same as the dynamic linking on other platforms, and it is described in Section 4.13. 
+That is the same as the dynamic linking on other platforms, and it is described in Section |4.13.| 
 
 • You can package up a complete Haskell program as a DLL, to be called by some external (usually non-Haskell) program. This 
 is usually used to implement plugins and the like, and is described below. 
@@ -20972,19 +18217,13 @@ DLL: HScool.dll ==> import lib: libHScool.dll.a
 The naming scheme may look a bit weird, but it has the purpose of allowing the co-existence of import libraries with ordinary 
 static libraries (e.g., libHSfoo.a and libHSfoo.dll.a. Additionally, when the compiler driver is linking in non-static 
 mode, it will rewrite occurrence of -lHSfooon the command line to -lHSfoo.dll. By doing this for you, switching from 
-non-static to static linking is simply a question of adding -staticto your command line. 
+non-static to static linking is simply a question of adding -staticto your command line. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 22 
-/ 
-37 
 
 
 13.6.2 Making DLLs to be called from other languages 
 This section describes how to create DLLs to be called from other languages, such as Visual Basic or C++. This is a special case 
-of Section 8.2.1.2; we’ll deal with the DLL-specific issues that arise below. Here’s an example: 
+of Section |8.2.1.2;| we’ll deal with the DLL-specific issues that arise below. Here’s an example: 
 
 Use foreign export declarations to export the Haskell functions you want to call from the outside. For example: 
 
@@ -21046,14 +18285,8 @@ Private Declare Function Adder Lib "Adder.dll" Alias "adder@8" _
 Private Declare Sub HsStart Lib "Adder.dll" () 
 Private Declare Sub HsEnd Lib "Adder.dll" () 
 
-Private Sub Document_Close() 
+Private Sub Document_Close() / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 23 
-/ 
-37 
 
 
 HsEnd 
@@ -21103,14 +18336,8 @@ This can be compiled and run with:
 
 $ ghc -o tester Tester.cpp Adder.dll.a 
 $ tester 
-12 + 5 = 17 
+12 + 5 = 17 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 24 
-/ 
-37 
 
 
 Chapter 14 
@@ -21149,14 +18376,8 @@ This behaviour is controlled by the NondecreasingIndentationextension.
 
 • GHC doesn’t do the fixity resolution in expressions during parsing as required by Haskell 98 (but not by Haskell 2010). For 
 example, according to the Haskell 98 report, the following expression is legal: 
-let x = 42 in x == 42 == True 
+let x = 42 in x == 42 == True / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 25 
-/ 
-37 
 
 
 and parses as: 
@@ -21189,11 +18410,11 @@ use -fpedantic-bottoms.
 
 14.1.1.4 Declarations and bindings 
 In its default mode, GHC does not accept datatype contexts, as it has been decided to remove them from the next version of the 
-language standard. This behaviour can be controlled with the DatatypeContextsextension. See Section 7.4.2. 
+language standard. This behaviour can be controlled with the DatatypeContextsextension. See Section |7.4.2.| 
 
 14.1.1.5 Module system and interface files 
-GHC requires the use of hs-boot files to cut the recursive loops among mutually recursive modules as described in Section 
-4.7.9. This more of an infelicity than a bug: the Haskell Report says (Section 5.7) "Depending on the Haskell implementation 
+GHC requires the use of hs-boot files to cut the recursive loops among mutually recursive modules as described in Section ||
+4.7.9. This more of an infelicity than a bug: the Haskell Report says (Section |5.7|) "Depending on the Haskell implementation 
 used, separate compilation of mutually recursive modules may require that imported modules contain additional information so 
 that they may be referenced before they are compiled. Explicit type signatures for all exported values may be necessary to deal 
 with mutual recursion. The precise details of separate compilation are not defined by this Report." 
@@ -21210,13 +18431,8 @@ testBitand popCountmethods.
 
 You can make code that works with both Haskell2010 and GHC by: 
 
-• Whenever you make a Bitsinstance of a type, also make a Numinstance, and 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 26 
-/ 
-37 
+• Whenever you make a Bitsinstance of a type, also make a Numinstance, and/ 
+
 
 
 • Whenever you give a function, instance or class a Bits tconstraint, also give it a Num tconstraint, and 
@@ -21259,7 +18475,7 @@ neither upper nor lower case will still be identified as alphabetic by isAlpha.
 
 hGetContents 
 Lazy I/O throws an exception if an error is encountered, in contrast to the Haskell 98 spec which requires 
-that errors are discarded (see Section 21.2.2 of the Haskell 98 report). The exception thrown is the usual IO exception that 
+that errors are discarded (see Section |21.2.2| of the Haskell 98 report). The exception thrown is the usual IO exception that 
 would be thrown if the failing IO operation was performed in the IO monad, and can be caught by System.IO.Error.
 catchor Control.Exception.catch. 
 
@@ -21267,14 +18483,8 @@ catchor Control.Exception.catch.
 hs_init() 
 not allowed after hs_exit() 
 The FFI spec requires the implementation to support re-initialising itself after 
-being shut down with hs_exit(), but GHC does not currently support that. 
+being shut down with hs_exit(), but GHC does not currently support that. / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 27 
-/ 
-37 
 
 
 14.1.2 GHC’s interpretation of undefined behaviour in Haskell 98 and Haskell 2010 
@@ -21319,7 +18529,7 @@ has the following known bugs or infelicities. These bugs are more permanent; it 
 short term. 
 
 14.2.1 Bugs in GHC 
-• GHC can warn about non-exhaustive or overlapping patterns (see Section 4.8), and usually does so correctly. But not always. 
+• GHC can warn about non-exhaustive or overlapping patterns (see Section |4.8|), and usually does so correctly. But not always. 
 It gets confused by string patterns, and by guards, and can then emit bogus warnings. The entire overlap-check code needs an 
 overhaul really. 
 • GHC does not allow you to have a data type with a context that mentions type variables that are not data type parameters. For 
@@ -21334,13 +18544,8 @@ In principle, with a suitable class declaration with a functional dependency, it
 GHC nevertheless rejects it. The type variables mentioned in the context of the data type declaration must be among the type 
 parameters of the data type. 
 
-• GHC’s inliner can be persuaded into non-termination using the standard way to encode recursion via a data type: 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 28 
-/ 
-37 
+• GHC’s inliner can be persuaded into non-termination using the standard way to encode recursion via a data type:/ 
+
 
 
 data U = MkU (U -> Bool) 
@@ -21366,7 +18571,7 @@ means that floating-point calculations are non-deterministic, because depending 
 settings, for example), certain calculations might be done at 80-bit precision instead of the intended 32-bit or 64-bit precision. 
 Floating-point results may differ when optimisation is turned on. In the worst case, referential transparency is violated, because 
 for example let x = E1 in E2can evaluate to a different value than E2[E1/x]. 
-One workaround is to use the -msse2option (see Section 4.16, which generates code to use the SSE2 instruction set instead 
+One workaround is to use the -msse2option (see Section |4.16|, which generates code to use the SSE2 instruction set instead 
 of the x87 instruction set. SSE2 code uses the correct precision for all floating-point operations, and so gives deterministic 
 results. However, note that this only works with processors that support SSE2 (Intel Pentium 4 or AMD Athlon 64 and later), 
 which is why the option is not enabled by default. The libraries that come with GHC are probably built without this option, 
@@ -21390,14 +18595,8 @@ The last time we looked, this bug still wasn’t fixed in the BFD codebase, and th
 when we reported the bug back in 2001 or so. 
 The workaround is to split up the .o files that make up your package into two or more .o’s, along the lines of how the "base" 
 package does it. 
-
-
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 29 
 / 
-37 
+
 
 
 Chapter 15 
@@ -21490,14 +18689,8 @@ RTS option, 93
 -c, 43, 45, 78 
 RTS option, 87 
 -clear-package-db, 63 
--cpp, 45, 76 
+-cpp, 45, 76 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 30 
-/ 
-37 
 
 
 -cpp option, 76 
@@ -21614,14 +18807,8 @@ Version 7.6.3 30
 -framework-path, 78 
 -fsimpl-tick-factor, 73 
 -fspec-constr, 71 
--fspecialise, 72 
+-fspecialise, 72 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 31 
-/ 
-37 
 
 
 -fstatic-argument-transformation, 72 
@@ -21738,14 +18925,8 @@ RTS option, 116
 -package-db, 63, 66 
 -package-id, 61 
 -package-name, 62 
--pgmF, 75, 112 
+-pgmF, 75, 112 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 32 
-/ 
-37 
 
 
 -pgmL, 75, 112 
@@ -21862,14 +19043,8 @@ __PARALLEL_HASKELL__, 76
 ––make, 44 
 –shared, 21 
 
-A 
+A / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 33 
-/ 
-37 
 
 
 allocation area, size, 87 
@@ -21991,14 +19166,8 @@ GHCi support, 12
 fields, missing, 58 
 file suffixes for GHC, 43 
 filenames, 47 
-of modules, 13 
+of modules, 13 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 34 
-/ 
-37 
 
 
 finding interface files, 47 
@@ -22136,14 +19305,8 @@ language
 
 option, 138 
 language, GHC, 138 
-Latin-1, 47 
+Latin-1, 47 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 35 
-/ 
-37 
 
 
 ld options, 78 
@@ -22283,14 +19446,8 @@ pre-processing: cpp, 76
 pre-processing: custom, 77 
 Pre-processor options, 77 
 problems, 13 
-problems running your program, 13 
+problems running your program, 13 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 36 
-/ 
-37 
 
 
 problems with the compiler, 13 
@@ -22427,14 +19584,8 @@ unregisterised compilation, 75
 unused binds, warning, 59 
 unused do binding, warning, 59 
 unused imports, warning, 59 
-unused matches, warning, 59 
+unused matches, warning, 59 / 
 
-
-The Glorious Glasgow Haskell 
-Compilation System User’s Guide, 
-Version 7.6.3 37 
-/ 
-37 
 
 
 using GHC, 41 
@@ -22456,7 +19607,7 @@ Y
 
 Yacc for Haskell, 15 
 
-
+vim:tw=78:ts=8:ft=help:norl:
 ftplugin/haskell.vim	[[[1
 20
 " Vim filetype plugin file

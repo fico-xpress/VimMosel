@@ -122,7 +122,7 @@ let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
 doc/mosel.txt	[[[1
-24
+37
 *mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
 Author: Sebastien Lannez <sebastien.lannez@gmail.com>
@@ -136,6 +136,7 @@ mosel.vim for the license in its entirety.
 Mosel                                       *mosel*
 
 1. Introduction                             |mosel-intro|
+2. Commands                                 |mosel-commands|
 
 
 For Vim version 7.0 or later.
@@ -147,8 +148,20 @@ This plugin only works if 'compatible' is not set.
 
 Mosel is a language for mathematical programming.
 
+==============================================================================
+2. Commands                                 *mosel-commands*
+
+<F5> Compile the model in the current buffer
+<F6> Execute the model in the current buffer
+<F7> Profile the execution of the model in the current buffer
+<F8> List the symbols
+
+Mosel is a language for mathematical programming.
+
+vim:tw=78:ts=8:ft=help:norl:
+
 ftplugin/mosel.vim	[[[1
-219
+220
 " Vim filetype plugin file
 " Language:	Mosel
 " Maintainer:	Yves Colombani
@@ -348,7 +361,8 @@ map <F12> :!git svn dcommit \| tee
 
 map <F5> :call <SID>compmos()<CR><CR>
 map <F6> :!mosel -s -c 'exec %'
-map <F7> :!mosel -s -c 'load % ; symbols'
+map <F7> :!mosel -s -c 'cload -G % ; profile'
+map <F8> :!mosel -s -c 'cload -G % ; symbols'
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>
@@ -433,7 +447,7 @@ function! GetMoselIndent()
   let ind = indent(lnum)
   let line = getline(lnum)
 
-  let synid = synIDattr(synID(lnum, 1, 0), "name")
+  let synid = synIDattr(synID(lnum, -1, 0), "name")
 
   " Indent with syntax information
   if synid =~ 'moselHeader'
@@ -483,7 +497,7 @@ function! GetMoselIndent()
 endfunction
 
 function! s:is_continuation_line(line)
-  return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\|\*\|\/\|(\)\s*$'
+  return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\|\*\|\/\|(\|{\|=\|>\|<\)\s*$'
 endfunction
 
 function! s:is_oneline_block(line)
@@ -560,7 +574,7 @@ snippet for
 		${3:#statements}
 	end-do
 syntax/mosel.vim	[[[1
-280
+289
 as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
@@ -585,11 +599,11 @@ syn keyword moselStatement	is_binary is_continuous is_free is_integer
 syn keyword moselStatement	is_partint is_semcont is_semint is_sos1 is_sos2
 syn keyword moselStatement	uses options include
 syn keyword moselStatement	forall while break next
-syn keyword moselStatement	forward
+syn keyword moselStatement	evaluationforward
 syn keyword moselStatement	to from
 syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
-syn keyword moselStatement	array boolean integer real set string
+syn keyword moselStatement	array boolean integer real set string text
 syn keyword moselStatement	nlctr linctr mpvar of dynamic range basis
 syn keyword moselStatement      cpctr cpvar
 syn keyword moselStatement      logctr indicator implies
@@ -597,6 +611,7 @@ syn keyword moselStatement      logctr indicator implies
 syn keyword moselStatement	list imports
 syn keyword moselStatement	contained
 syn keyword moselStatement	version
+
 syn keyword moselConstant	true false
 
 syn keyword moselTodo contained	TODO YCO BUG
@@ -617,17 +632,25 @@ if exists("mosel_functions")
  syn keyword moselFunction	makesos1 makesos2 iseof exportprob
  syn keyword moselFunction	fskipline setrandseed
  syn keyword moselFunction	ceil round
- syn keyword moselFunction	load compile run
 
  syn keyword moselFunction	minimize minimise maximize maximise
  syn keyword insightFunction	insight_minimize insight_minimise insight_maximize insight_maximise
 
  " mmsystem
  syn keyword moselFunction	gettime
- syn keyword moselFunction	fdelete 
+ syn keyword moselFunction	fdelete fopen getfsize
+ syn keyword moselFunction	setdefstream
 
  " mmjobs
- syn keyword moselFunction	getfromid modid disconnect 
+ syn keyword moselFunction	getid 
+ syn keyword moselFunction	getfromid getclass send getvalue
+ syn keyword moselFunction	getnextevent dropnextevent
+ syn keyword moselFunction	disconnect 
+ syn keyword moselFunction	compile load run wait
+ syn keyword moselFunction	Model Mosel
+
+ " Constraints
+ syn keyword moselConstant	F_OUTPUT EVENT_END
 
 endif
 
@@ -806,30 +829,30 @@ if version >= 508 || !exists("did_mosel_syn_inits")
   HiLink moselComment		Comment
   HiLink moselHeader		Comment
 
-if !exists("mosel_only_comments")
-  HiLink moselConstant		Constant
-  HiLink moselNumber		Constant
-  HiLink moselString		String
-  HiLink moselStringEscape	Special
-  HiLink moselStringError	Error
-  HiLink moselIdentifier	Identifier
-  HiLink moselException		Exception
-  HiLink moselFunction		Function
-  HiLink moselOperator		Operator
-  
-  HiLink moselStatement		Statement
-  HiLink moselIf     		Statement
-  HiLink moselIfOneLine		Statement
-  HiLink moselCase		Statement
+  if !exists("mosel_only_comments")
+    HiLink moselConstant		Constant
+    HiLink moselNumber		Constant
+    HiLink moselString		String
+    HiLink moselStringEscape	Special
+    HiLink moselStringError	Error
+    HiLink moselIdentifier	Identifier
+    HiLink moselException		Exception
+    HiLink moselFunction		Function
+    HiLink moselOperator		Operator
+    
+    HiLink moselStatement		Statement
+    HiLink moselIf     		Statement
+    HiLink moselIfOneLine		Statement
+    HiLink moselCase		Statement
 
-  HiLink moselSymbolOperator	Operator
-  HiLink moselSymbolOpStat	Statement
-  HiLink moselTodo		Todo
-  HiLink moselError		Error
-  HiLink moselShowTab		Error
+    HiLink moselSymbolOperator	Operator
+    HiLink moselSymbolOpStat	Statement
+    HiLink moselTodo		Todo
+    HiLink moselError		Error
+    HiLink moselShowTab		Error
 
-  HiLink insightFunction		Function
-endif
+    HiLink insightFunction		Function
+  endif
 
   delcommand HiLink
 endif
