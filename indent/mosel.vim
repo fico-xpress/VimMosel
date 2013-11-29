@@ -54,21 +54,28 @@ function! GetMoselIndent()
     return 0
   endif
 
-  let pnum = prevnonblank(lnum - 1)
+  let pnum = prevnonblank(lnum - 1) " previous line
+  let nnum = nextnonblank(lnum + 1) " next line
+
   let pline = getline(pnum)
   let pind = indent(pnum)
 
   let ind = indent(lnum)
   let line = getline(lnum)
 
-  let synid = synIDattr(synID(lnum, 1, 0), "name")
+  let synid = synIDattr(synID(lnum,  -1, 0), "name")
+  let synid1 = synIDattr(synID(lnum, 1, 0), "name")
+  let synid2 = synIDattr(synID(nnum, 1, 0), "name")
 
   " Indent with syntax information
   if synid =~ 'moselHeader'
     " No indentation in header
     return pind
   elseif synid =~ 'moselComment'
-    return ind
+    if synid1 =~ 'moselComment' 
+      " No indentation for whole line comment
+      return pind
+    endif
   elseif synid =~ 'moselCase'
     if line =~ '^.*:\s*\<do\>'
     elseif line =~ '^.*:\s*$'
@@ -82,7 +89,11 @@ function! GetMoselIndent()
 
   if line =~ '^\s*\(public\)*\s*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|initializations\|if\|then\|.*\sdo\|else\|elif\|case\|while\|until\|for\|forall\|repeat\|requirements\)\>'
     if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
-      let ind += s:indent_value('default')
+     if s:is_continuation_line(pline)
+       return ind
+     else
+       let ind += s:indent_value('default')
+     endif
     endif
   elseif line =~ '\<\%(record\)\>' && line !~ '\<\%(end-record\)\>' 
       let ind += s:indent_value('default')
@@ -100,11 +111,13 @@ function! GetMoselIndent()
 
   let pine = line
   let line = getline(v:lnum)
-  if line =~ '^\s*\%(until\|then\|do\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
-    let ind -= s:indent_value('default')
+  if line =~ '^\s*\%(until\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
+    if synid !~ 'moselCase'
+      let ind -= s:indent_value('default')
+    endif
   endif
   if line =~ '^\s*\<end-case\>'
-    let ind -= s:indent_value('default')
+    let ind -= s:indent_value('default')*2
   endif
 
   return ind
@@ -112,10 +125,6 @@ endfunction
 
 function! s:is_continuation_line(line)
   return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\|\*\|\/\|(\|{\|=\|>\|<\)\s*$'
-endfunction
-
-function! s:is_oneline_block(line)
-  return a:line =~ '\%(forall(.*)\|if([^,]*,[^,]*,[^,]*)\)\s*$'
 endfunction
 
 function! s:find_continued_lnum(lnum)

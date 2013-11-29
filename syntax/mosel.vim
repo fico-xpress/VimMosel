@@ -22,7 +22,7 @@ syn keyword moselStatement	is_binary is_continuous is_free is_integer
 syn keyword moselStatement	is_partint is_semcont is_semint is_sos1 is_sos2
 syn keyword moselStatement	uses options include
 syn keyword moselStatement	forall while break next
-syn keyword moselStatement	evaluation forward
+syn keyword moselStatement	evaluationforward
 syn keyword moselStatement	to from
 syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
@@ -180,7 +180,7 @@ syn region moselFunc matchgroup=moselStatement
 
 syn cluster mMethod add=moselProc,moselFunc
 
-syn region moselBlock matchgroup=moselStatement
+syn region moselDo matchgroup=moselStatement
       \ start=/\<do\>/ end=/end-do/ 
       \ containedin=@mRoot transparent fold
 
@@ -192,7 +192,7 @@ syn region moselCase matchgroup=moselStatement
       \ start=/\<case\>/ end=/\<end-case\>/
       \ containedin=@mRoot transparent fold
 
-syn region moselBlock matchgroup=moselStatement
+syn region moselRepeat matchgroup=moselStatement
       \ start=/\<repeat\>/ end=/\<until\>/ 
       \ contained transparent fold
 
