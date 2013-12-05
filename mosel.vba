@@ -161,7 +161,7 @@ Mosel is a language for mathematical programming.
 vim:tw=78:ts=8:ft=help:norl:
 
 ftplugin/mosel.vim	[[[1
-220
+231
 " Vim filetype plugin file
 " Language:	Mosel
 " Maintainer:	Yves Colombani
@@ -339,11 +339,21 @@ if !exists("*Mosel_setcomp")
 	an <silent> 100.85 &Mosel.&Syntax.&off :set syn=OFF<CR>
 	an 100.90 &Mosel.Close\ &Error :cclose<CR>
 
+	" Examine a module 
+	fun! s:examine()
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+      :!mosel -c 'examine <cword>'
+		endif
+	endfunc
+
 endif
 
-" Add the commands 'Compile' and 'Run'
+" Add the commands 'Compile', 'Run' and 'Examine'
 command! -buffer -narg=? Run call s:runmos(<q-args>)
 command! -buffer Compile call s:compmos()
+command! -buffer Examine call s:examine()
 
 " If syntax is ON, select the right style
 if exists("g:syntax_on")
@@ -355,14 +365,15 @@ unlet s:mosel_cpo_save
 
 set wildignore+=*.bim
 
-map <F9> :!git svn rebase \| tee
-map <F11> :!git commit \| tee
-map <F12> :!git svn dcommit \| tee
+map <F9> :!git update \| tee
+map <F10> :!git commit \| tee
+" map <F9> :!git svn rebase \| tee
+" map <F12> :!git svn dcommit \| tee
 
 map <F5> :call <SID>compmos()<CR><CR>
 map <F6> :!mosel -s -c 'exec %'
 map <F7> :!mosel -s -c 'cload -G % ; profile'
-map <F8> :!mosel -s -c 'cload -G % ; symbols'
+map <F8> :call <SID>examine()<CR><CR>
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>
@@ -383,7 +394,7 @@ endif
 
 " vim: et:ts=2:sw=2:sts=2
 indent/mosel.vim	[[[1
-130
+139
 " Vim indent file
 " Language:         Mosel Script
 " Maintainer:       sebastien Lannez <sebastien.lannez@gmail.com>
@@ -440,21 +451,28 @@ function! GetMoselIndent()
     return 0
   endif
 
-  let pnum = prevnonblank(lnum - 1)
+  let pnum = prevnonblank(lnum - 1) " previous line
+  let nnum = nextnonblank(lnum + 1) " next line
+
   let pline = getline(pnum)
   let pind = indent(pnum)
 
   let ind = indent(lnum)
   let line = getline(lnum)
 
-  let synid = synIDattr(synID(lnum, -1, 0), "name")
+  let synid = synIDattr(synID(lnum,  -1, 0), "name")
+  let synid1 = synIDattr(synID(lnum, 1, 0), "name")
+  let synid2 = synIDattr(synID(nnum, 1, 0), "name")
 
   " Indent with syntax information
   if synid =~ 'moselHeader'
     " No indentation in header
     return pind
   elseif synid =~ 'moselComment'
-    return ind
+    if synid1 =~ 'moselComment' 
+      " No indentation for whole line comment
+      return pind
+    endif
   elseif synid =~ 'moselCase'
     if line =~ '^.*:\s*\<do\>'
     elseif line =~ '^.*:\s*$'
@@ -468,7 +486,11 @@ function! GetMoselIndent()
 
   if line =~ '^\s*\(public\)*\s*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|initializations\|if\|then\|.*\sdo\|else\|elif\|case\|while\|until\|for\|forall\|repeat\|requirements\)\>'
     if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
-      let ind += s:indent_value('default')
+     if s:is_continuation_line(pline)
+       return ind
+     else
+       let ind += s:indent_value('default')
+     endif
     endif
   elseif line =~ '\<\%(record\)\>' && line !~ '\<\%(end-record\)\>' 
       let ind += s:indent_value('default')
@@ -486,11 +508,13 @@ function! GetMoselIndent()
 
   let pine = line
   let line = getline(v:lnum)
-  if line =~ '^\s*\%(until\|then\|do\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
-    let ind -= s:indent_value('default')
+  if line =~ '^\s*\%(until\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
+    if synid !~ 'moselCase'
+      let ind -= s:indent_value('default')
+    endif
   endif
   if line =~ '^\s*\<end-case\>'
-    let ind -= s:indent_value('default')
+    let ind -= s:indent_value('default')*2
   endif
 
   return ind
@@ -498,10 +522,6 @@ endfunction
 
 function! s:is_continuation_line(line)
   return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\|\*\|\/\|(\|{\|=\|>\|<\)\s*$'
-endfunction
-
-function! s:is_oneline_block(line)
-  return a:line =~ '\%(forall(.*)\|if([^,]*,[^,]*,[^,]*)\)\s*$'
 endfunction
 
 function! s:find_continued_lnum(lnum)
@@ -574,7 +594,7 @@ snippet for
 		${3:#statements}
 	end-do
 syntax/mosel.vim	[[[1
-289
+290
 as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
@@ -621,6 +641,7 @@ if exists("mosel_functions")
  syn keyword moselFunction	setparam getparam create fopen fclose
  syn keyword moselFunction	write writeln read readln exists fselect
  syn keyword moselFunction	getfid getsize getfirst getlast substr strfmt
+ syn keyword moselFunction	textfmt
  syn keyword moselFunction	maxlist minlist sqrt sin cos 
  syn keyword moselFunction	arctan arccos arcsin
  syn keyword moselFunction	abs
@@ -756,7 +777,7 @@ syn region moselFunc matchgroup=moselStatement
 
 syn cluster mMethod add=moselProc,moselFunc
 
-syn region moselBlock matchgroup=moselStatement
+syn region moselDo matchgroup=moselStatement
       \ start=/\<do\>/ end=/end-do/ 
       \ containedin=@mRoot transparent fold
 
@@ -768,7 +789,7 @@ syn region moselCase matchgroup=moselStatement
       \ start=/\<case\>/ end=/\<end-case\>/
       \ containedin=@mRoot transparent fold
 
-syn region moselBlock matchgroup=moselStatement
+syn region moselRepeat matchgroup=moselStatement
       \ start=/\<repeat\>/ end=/\<until\>/ 
       \ contained transparent fold
 

@@ -112,12 +112,7 @@ function! GetMoselIndent()
   let pine = line
   let line = getline(v:lnum)
   if line =~ '^\s*\%(until\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
-    if synid !~ 'moselCase'
-      let ind -= s:indent_value('default')
-    endif
-  endif
-  if line =~ '^\s*\<end-case\>'
-    let ind -= s:indent_value('default')*2
+    let ind -= s:indent_value('default')
   endif
 
   return ind

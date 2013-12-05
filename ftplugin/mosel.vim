@@ -175,11 +175,21 @@ if !exists("*Mosel_setcomp")
 	an <silent> 100.85 &Mosel.&Syntax.&off :set syn=OFF<CR>
 	an 100.90 &Mosel.Close\ &Error :cclose<CR>
 
+	" Examine a module 
+	fun! s:examine()
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+      :!mosel -c 'examine <cword>'
+		endif
+	endfunc
+
 endif
 
-" Add the commands 'Compile' and 'Run'
+" Add the commands 'Compile', 'Run' and 'Examine'
 command! -buffer -narg=? Run call s:runmos(<q-args>)
 command! -buffer Compile call s:compmos()
+command! -buffer Examine call s:examine()
 
 " If syntax is ON, select the right style
 if exists("g:syntax_on")
@@ -191,14 +201,15 @@ unlet s:mosel_cpo_save
 
 set wildignore+=*.bim
 
-map <F9> :!git svn rebase \| tee
-map <F11> :!git commit \| tee
-map <F12> :!git svn dcommit \| tee
+map <F9> :!git update \| tee
+map <F10> :!git commit \| tee
+" map <F9> :!git svn rebase \| tee
+" map <F12> :!git svn dcommit \| tee
 
 map <F5> :call <SID>compmos()<CR><CR>
 map <F6> :!mosel -s -c 'exec %'
 map <F7> :!mosel -s -c 'cload -G % ; profile'
-map <F8> :!mosel -s -c 'cload -G % ; symbols'
+map <F8> :call <SID>examine()<CR><CR>
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>
