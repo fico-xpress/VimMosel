@@ -394,7 +394,7 @@ endif
 
 " vim: et:ts=2:sw=2:sts=2
 indent/mosel.vim	[[[1
-139
+134
 " Vim indent file
 " Language:         Mosel Script
 " Maintainer:       sebastien Lannez <sebastien.lannez@gmail.com>
@@ -509,12 +509,7 @@ function! GetMoselIndent()
   let pine = line
   let line = getline(v:lnum)
   if line =~ '^\s*\%(until\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
-    if synid !~ 'moselCase'
-      let ind -= s:indent_value('default')
-    endif
-  endif
-  if line =~ '^\s*\<end-case\>'
-    let ind -= s:indent_value('default')*2
+    let ind -= s:indent_value('default')
   endif
 
   return ind
@@ -594,7 +589,7 @@ snippet for
 		${3:#statements}
 	end-do
 syntax/mosel.vim	[[[1
-290
+295
 as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
@@ -623,14 +618,18 @@ syn keyword moselStatement	evaluationforward
 syn keyword moselStatement	to from
 syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
-syn keyword moselStatement	array boolean integer real set string text
-syn keyword moselStatement	nlctr linctr mpvar of dynamic range basis
-syn keyword moselStatement      cpctr cpvar
-syn keyword moselStatement      logctr indicator implies
+syn keyword moselStatement	array boolean set 
+syn keyword moselStatement	of dynamic range basis
+syn keyword moselStatement      indicator implies
 
 syn keyword moselStatement	list imports
 syn keyword moselStatement	contained
 syn keyword moselStatement	version
+
+syn keyword moselClass      	integer real string text
+syn keyword moselClass		nlctr linctr mpvar 
+syn keyword moselClass      	cpctr cpvar logctr
+syn match moselClass display	"\<[a-zA-Z_][a-zA-Z0-9_]*T\>"
 
 syn keyword moselConstant	true false
 
@@ -857,13 +856,13 @@ if version >= 508 || !exists("did_mosel_syn_inits")
     HiLink moselStringEscape	Special
     HiLink moselStringError	Error
     HiLink moselIdentifier	Identifier
-    HiLink moselException		Exception
-    HiLink moselFunction		Function
-    HiLink moselOperator		Operator
+    HiLink moselException	Exception
+    HiLink moselFunction	Function
+    HiLink moselOperator	Operator
     
-    HiLink moselStatement		Statement
+    HiLink moselStatement	Statement
     HiLink moselIf     		Statement
-    HiLink moselIfOneLine		Statement
+    HiLink moselIfOneLine	Statement
     HiLink moselCase		Statement
 
     HiLink moselSymbolOperator	Operator
@@ -872,7 +871,8 @@ if version >= 508 || !exists("did_mosel_syn_inits")
     HiLink moselError		Error
     HiLink moselShowTab		Error
 
-    HiLink insightFunction		Function
+    HiLink moselClass		Statement
+    HiLink insightFunction	Function
   endif
 
   delcommand HiLink

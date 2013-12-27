@@ -26,14 +26,18 @@ syn keyword moselStatement	evaluationforward
 syn keyword moselStatement	to from
 syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
-syn keyword moselStatement	array boolean integer real set string text
-syn keyword moselStatement	nlctr linctr mpvar of dynamic range basis
-syn keyword moselStatement      cpctr cpvar
-syn keyword moselStatement      logctr indicator implies
+syn keyword moselStatement	array boolean set 
+syn keyword moselStatement	of dynamic range basis
+syn keyword moselStatement	indicator implies
 
 syn keyword moselStatement	list imports
 syn keyword moselStatement	contained
 syn keyword moselStatement	version
+
+syn keyword moselClass		integer real string text
+syn keyword moselClass		nlctr linctr mpvar 
+syn keyword moselClass		cpctr cpvar logctr
+syn match moselClass display	/\<\u\w*T\>/
 
 syn keyword moselConstant	true false
 
@@ -260,13 +264,13 @@ if version >= 508 || !exists("did_mosel_syn_inits")
     HiLink moselStringEscape	Special
     HiLink moselStringError	Error
     HiLink moselIdentifier	Identifier
-    HiLink moselException		Exception
-    HiLink moselFunction		Function
-    HiLink moselOperator		Operator
+    HiLink moselException	Exception
+    HiLink moselFunction	Function
+    HiLink moselOperator	Operator
     
-    HiLink moselStatement		Statement
+    HiLink moselStatement	Statement
     HiLink moselIf     		Statement
-    HiLink moselIfOneLine		Statement
+    HiLink moselIfOneLine	Statement
     HiLink moselCase		Statement
 
     HiLink moselSymbolOperator	Operator
@@ -275,7 +279,8 @@ if version >= 508 || !exists("did_mosel_syn_inits")
     HiLink moselError		Error
     HiLink moselShowTab		Error
 
-    HiLink insightFunction		Function
+    HiLink moselClass		Statement
+    HiLink insightFunction	Function
   endif
 
   delcommand HiLink
