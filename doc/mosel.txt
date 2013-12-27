@@ -11,6 +11,7 @@ mosel.vim for the license in its entirety.
 Mosel                                       *mosel*
 
 1. Introduction                             |mosel-intro|
+2. Commands                                 |mosel-commands|
 
 
 For Vim version 7.0 or later.
@@ -21,4 +22,16 @@ This plugin only works if 'compatible' is not set.
 1. Introduction                             *mosel-intro*
 
 Mosel is a language for mathematical programming.
+
+==============================================================================
+2. Commands                                 *mosel-commands*
+
+<F5> Compile the model in the current buffer
+<F6> Execute the model in the current buffer
+<F7> Profile the execution of the model in the current buffer
+<F8> List the symbols
+
+Mosel is a language for mathematical programming.
+
+vim:tw=78:ts=8:ft=help:norl:
 
