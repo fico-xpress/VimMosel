@@ -22,6 +22,22 @@ This plugin only works if 'compatible' is not set.
 1. Introduction                             *mosel-intro*
 
 Mosel is a language for mathematical programming.
+My .vimrc addendum to properly work with VIM.
+----8<---- .vimrc --------------------------
+"
+" My Mosel configuration
+"
+au Bufenter *.mos compiler mosel
+let g:xml_syntax_folding = 1
+" Enable context aware completion
+let g:SuperTabDefaultCompletionType = "context"
+" No completion after spaces, comma, minus...
+let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+']
+" Show mosel functions
+let mosel_functions = 1
+" Fold using syntax
+set foldmethod=syntax
+---------------------------------------------
 
 ==============================================================================
 2. Commands                                 *mosel-commands*
