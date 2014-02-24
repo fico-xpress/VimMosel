@@ -122,7 +122,7 @@ let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
 doc/mosel.txt	[[[1
-37
+53
 *mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
 Author: Sebastien Lannez <sebastien.lannez@gmail.com>
@@ -147,6 +147,22 @@ This plugin only works if 'compatible' is not set.
 1. Introduction                             *mosel-intro*
 
 Mosel is a language for mathematical programming.
+My .vimrc addendum to properly work with VIM.
+----8<---- .vimrc --------------------------
+"
+" My Mosel configuration
+"
+au Bufenter *.mos compiler mosel
+let g:xml_syntax_folding = 1
+" Enable context aware completion
+let g:SuperTabDefaultCompletionType = "context"
+" No completion after spaces, comma, minus...
+let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+']
+" Show mosel functions
+let mosel_functions = 1
+" Fold using syntax
+set foldmethod=syntax
+---------------------------------------------
 
 ==============================================================================
 2. Commands                                 *mosel-commands*
@@ -394,7 +410,7 @@ endif
 
 " vim: et:ts=2:sw=2:sts=2
 indent/mosel.vim	[[[1
-134
+135
 " Vim indent file
 " Language:         Mosel Script
 " Maintainer:       sebastien Lannez <sebastien.lannez@gmail.com>
@@ -486,11 +502,11 @@ function! GetMoselIndent()
 
   if line =~ '^\s*\(public\)*\s*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|initializations\|if\|then\|.*\sdo\|else\|elif\|case\|while\|until\|for\|forall\|repeat\|requirements\)\>'
     if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
-     if s:is_continuation_line(pline)
-       return ind
-     else
-       let ind += s:indent_value('default')
-     endif
+      if s:is_continuation_line(pline)
+        return ind
+      else
+        let ind += s:indent_value('default')
+      endif
     endif
   elseif line =~ '\<\%(record\)\>' && line !~ '\<\%(end-record\)\>' 
       let ind += s:indent_value('default')
@@ -503,6 +519,7 @@ function! GetMoselIndent()
       let ind += s:indent_value('continuation-line')
     endif
   elseif pnum != 0 && s:is_continuation_line(getline(pnum))
+    " Indentation of the latest non continutation line
     let ind = indent(s:find_continued_lnum(pnum))
   endif
 
@@ -511,7 +528,7 @@ function! GetMoselIndent()
   if line =~ '^\s*\%(until\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
     let ind -= s:indent_value('default')
   endif
-
+    
   return ind
 endfunction
 
@@ -620,16 +637,16 @@ syn keyword moselStatement	as
 syn keyword moselStatement	else elif then
 syn keyword moselStatement	array boolean set 
 syn keyword moselStatement	of dynamic range basis
-syn keyword moselStatement      indicator implies
+syn keyword moselStatement	indicator implies
 
 syn keyword moselStatement	list imports
 syn keyword moselStatement	contained
 syn keyword moselStatement	version
 
-syn keyword moselClass      	integer real string text
+syn keyword moselClass		integer real string text
 syn keyword moselClass		nlctr linctr mpvar 
-syn keyword moselClass      	cpctr cpvar logctr
-syn match moselClass display	"\<[a-zA-Z_][a-zA-Z0-9_]*T\>"
+syn keyword moselClass		cpctr cpvar logctr
+syn match moselClass display	/\<\u\w*T\>/
 
 syn keyword moselConstant	true false
 

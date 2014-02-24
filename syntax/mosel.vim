@@ -80,7 +80,13 @@ if exists("mosel_functions")
  " Constraints
  syn keyword moselConstant	F_OUTPUT EVENT_END
 
-endif
+ " mmodbc
+ syn keyword moselParam 	sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
+ syn keyword moselParam 	sqlndxcol sqlrowcnt sqlrowxfr sqlsuccess sqlverbose
+
+ syn keyword moselFunction 	SQLconnect SQLdisconnect
+ syn keyword moselFunction 	SQLexecute SQLgetiparam SQLgetrparam SQLgetsparam SQLparam 
+ syn keyword moselFunction 	SQLreadinteger SQLreadreal SQLreadstring SQLupdate 
 
 " (De)Select IVE style
 fun! Mosel_symbopt(p)

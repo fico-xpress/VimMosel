@@ -89,11 +89,11 @@ function! GetMoselIndent()
 
   if line =~ '^\s*\(public\)*\s*\%(model\|package\|procedure\|function\|parameters\|declarations\|initialisations\|initializations\|if\|then\|.*\sdo\|else\|elif\|case\|while\|until\|for\|forall\|repeat\|requirements\)\>'
     if line !~ '\<\%(end-.*\|until\)\>\s*\%(#.*\)\=$'
-     if s:is_continuation_line(pline)
-       return ind
-     else
-       let ind += s:indent_value('default')
-     endif
+      if s:is_continuation_line(pline)
+        return ind
+      else
+        let ind += s:indent_value('default')
+      endif
     endif
   elseif line =~ '\<\%(record\)\>' && line !~ '\<\%(end-record\)\>' 
       let ind += s:indent_value('default')
@@ -106,6 +106,7 @@ function! GetMoselIndent()
       let ind += s:indent_value('continuation-line')
     endif
   elseif pnum != 0 && s:is_continuation_line(getline(pnum))
+    " Indentation of the latest non continutation line
     let ind = indent(s:find_continued_lnum(pnum))
   endif
 
@@ -114,7 +115,7 @@ function! GetMoselIndent()
   if line =~ '^\s*\%(until\|else\|elif\|end-.*\)\>' || line =~ '^\s*}'
     let ind -= s:indent_value('default')
   endif
-
+    
   return ind
 endfunction
 
