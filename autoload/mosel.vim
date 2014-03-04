@@ -1,16 +1,22 @@
-" Vim autoload file for the forwarddecl plugin.
+" Vim autoload file for the ampl2mosel plugin.
 " Maintainer: Sebastien Lannez <sebastienlannez@fico.com>
-" Last Change: 2014 Feb 24
+" Last Change: 2013 Sep 12
 "
 " Additional contributors:
 "
+"   It currently does not support AMPL type line continuation
 "
 
 " this file uses line continuations
 let s:cpo_sav = &cpo
 set cpo-=C
 
-func! forwarddecl#ForwardDeclaration(line1, line2)
+func! Mosel#AMPL2MOSEL(line1, line2)
+	" Copy/paste whole buffer to cpliboard
+	%y+
+	new
+	put
+	
 	" ***** Processing constraints *****
 	" Convert constraints (simple conditional + singleline)
 	%s/subject to \(\w*\)\s*{\(\w*\) in \(.*\)\s*:\s*\(.*\)}\s*:\s*\(\_..*\);/forall (\2 in \3 | \4) \1(\2) := \5/
@@ -80,5 +86,31 @@ func! forwarddecl#ForwardDeclaration(line1, line2)
 
 	" Format the whole buffer
 	%=
+
+endfunc
+
+func! Mosel#UpdateForwardDeclaration(line1, line2)
+	" ***** Get list of public functions and procedures *****
+	" Convert constraints (simple conditional + singleline)
+
+	" Copy/paste whole buffer to cpliboard
+	%y+
+	new
+	put
+
+	" Only keep public procedure/function
+	v/^\s*\<public procedure\|public function\>/d
+
+	" Prefix with forward keyword
+	%s/public/forward public/
+
+	" Sort alphabetically
+	%sort
+
+	" Format the whole buffer
+	%=
+
+	" Yank everything
+	%y+
 
 endfunc

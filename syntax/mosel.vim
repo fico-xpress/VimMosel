@@ -87,6 +87,7 @@ if exists("mosel_functions")
  syn keyword moselFunction 	SQLconnect SQLdisconnect
  syn keyword moselFunction 	SQLexecute SQLgetiparam SQLgetrparam SQLgetsparam SQLparam 
  syn keyword moselFunction 	SQLreadinteger SQLreadreal SQLreadstring SQLupdate 
+endif
 
 " (De)Select IVE style
 fun! Mosel_symbopt(p)
@@ -264,7 +265,7 @@ if version >= 508 || !exists("did_mosel_syn_inits")
   HiLink moselHeader		Comment
 
   if !exists("mosel_only_comments")
-    HiLink moselConstant		Constant
+    HiLink moselConstant	Constant
     HiLink moselNumber		Constant
     HiLink moselString		String
     HiLink moselStringEscape	Special

@@ -1,8 +1,8 @@
 " Vimball Archiver by Charles E. Campbell, Jr., Ph.D.
 UseVimball
 finish
-autoload/ampl2mosel.vim	[[[1
-85
+autoload/mosel.vim	[[[1
+116
 " Vim autoload file for the ampl2mosel plugin.
 " Maintainer: Sebastien Lannez <sebastienlannez@fico.com>
 " Last Change: 2013 Sep 12
@@ -16,7 +16,12 @@ autoload/ampl2mosel.vim	[[[1
 let s:cpo_sav = &cpo
 set cpo-=C
 
-func! ampl2mosel#Convert2MOSEL(line1, line2)
+func! Mosel#AMPL2MOSEL(line1, line2)
+	" Copy/paste whole buffer to cpliboard
+	%y+
+	new
+	put
+	
 	" ***** Processing constraints *****
 	" Convert constraints (simple conditional + singleline)
 	%s/subject to \(\w*\)\s*{\(\w*\) in \(.*\)\s*:\s*\(.*\)}\s*:\s*\(\_..*\);/forall (\2 in \3 | \4) \1(\2) := \5/
@@ -86,6 +91,32 @@ func! ampl2mosel#Convert2MOSEL(line1, line2)
 
 	" Format the whole buffer
 	%=
+
+endfunc
+
+func! Mosel#UpdateForwardDeclaration(line1, line2)
+	" ***** Get list of public functions and procedures *****
+	" Convert constraints (simple conditional + singleline)
+
+	" Copy/paste whole buffer to cpliboard
+	%y+
+	new
+	put
+
+	" Only keep public procedure/function
+	v/^\s*\<public procedure\|public function\>/d
+
+	" Prefix with forward keyword
+	%s/public/forward public/
+
+	" Sort alphabetically
+	%sort
+
+	" Format the whole buffer
+	%=
+
+	" Yank everything
+	%y+
 
 endfunc
 compiler/mosel.vim	[[[1
@@ -177,7 +208,7 @@ Mosel is a language for mathematical programming.
 vim:tw=78:ts=8:ft=help:norl:
 
 ftplugin/mosel.vim	[[[1
-231
+233
 " Vim filetype plugin file
 " Language:	Mosel
 " Maintainer:	Yves Colombani
@@ -390,6 +421,8 @@ map <F5> :call <SID>compmos()<CR><CR>
 map <F6> :!mosel -s -c 'exec %'
 map <F7> :!mosel -s -c 'cload -G % ; profile'
 map <F8> :call <SID>examine()<CR><CR>
+map m<F8> :vimgrep /\<public procedure\\|public function\>/ %<CR>:copen<CR>
+
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>
@@ -547,7 +580,7 @@ endfunction
 let &cpo = s:cpo_save
 unlet s:cpo_save
 plugin/mosel.vim	[[[1
-30
+38
 " Vim global plugin file
 " Language:	Mosel
 " Maintainer:	Sebastien Lannez <sebastienlannez@fico.com>
@@ -567,12 +600,20 @@ augroup END
 " Enable automatic file type detection
 filetype plugin on
 
-" Define the :TOmosel command when:
+" Define the :moselFromAmpl command when:
 " - 'compatible' is not set
 " - this plugin was not already loaded
 " - user commands are available.
-if !&cp && !exists(":TOmosel") && has("user_commands")
-  command -range=% TOmosel :call ampl2mosel#Convert2MOSEL(<line1>, <line2>)
+if !&cp && !exists(":MoselFromAmpl") && has("user_commands")
+  command -range=% MoselFromAmpl :call Mosel#AMPL2MOSEL(<line1>, <line2>)
+endif
+
+" Define the :moselDeclaration command when:
+" - 'compatible' is not set
+" - this plugin was not already loaded
+" - user commands are available.
+if !&cp && !exists(":MoselDeclaration") && has("user_commands")
+  command -range=% MoselDeclaration :call Mosel#UpdateForwardDeclaration(<line1>, <line2>)
 endif
 
 " Make sure any patches will probably use consistent indent
@@ -606,7 +647,7 @@ snippet for
 		${3:#statements}
 	end-do
 syntax/mosel.vim	[[[1
-295
+302
 as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
@@ -689,6 +730,13 @@ if exists("mosel_functions")
  " Constraints
  syn keyword moselConstant	F_OUTPUT EVENT_END
 
+ " mmodbc
+ syn keyword moselParam 	sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
+ syn keyword moselParam 	sqlndxcol sqlrowcnt sqlrowxfr sqlsuccess sqlverbose
+
+ syn keyword moselFunction 	SQLconnect SQLdisconnect
+ syn keyword moselFunction 	SQLexecute SQLgetiparam SQLgetrparam SQLgetsparam SQLparam 
+ syn keyword moselFunction 	SQLreadinteger SQLreadreal SQLreadstring SQLupdate 
 endif
 
 " (De)Select IVE style
@@ -867,7 +915,7 @@ if version >= 508 || !exists("did_mosel_syn_inits")
   HiLink moselHeader		Comment
 
   if !exists("mosel_only_comments")
-    HiLink moselConstant		Constant
+    HiLink moselConstant	Constant
     HiLink moselNumber		Constant
     HiLink moselString		String
     HiLink moselStringEscape	Special

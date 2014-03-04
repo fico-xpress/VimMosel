@@ -210,6 +210,8 @@ map <F5> :call <SID>compmos()<CR><CR>
 map <F6> :!mosel -s -c 'exec %'
 map <F7> :!mosel -s -c 'cload -G % ; profile'
 map <F8> :call <SID>examine()<CR><CR>
+map m<F8> :vimgrep /\<public procedure\\|public function\>/ %<CR>:copen<CR>
+
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>

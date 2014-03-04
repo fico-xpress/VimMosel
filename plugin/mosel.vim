@@ -17,12 +17,20 @@ augroup END
 " Enable automatic file type detection
 filetype plugin on
 
-" Define the :TOmosel command when:
+" Define the :moselFromAmpl command when:
 " - 'compatible' is not set
 " - this plugin was not already loaded
 " - user commands are available.
-if !&cp && !exists(":TOmosel") && has("user_commands")
-  command -range=% TOmosel :call ampl2mosel#Convert2MOSEL(<line1>, <line2>)
+if !&cp && !exists(":MoselFromAmpl") && has("user_commands")
+  command -range=% MoselFromAmpl :call Mosel#AMPL2MOSEL(<line1>, <line2>)
+endif
+
+" Define the :moselDeclaration command when:
+" - 'compatible' is not set
+" - this plugin was not already loaded
+" - user commands are available.
+if !&cp && !exists(":MoselDeclaration") && has("user_commands")
+  command -range=% MoselDeclaration :call Mosel#UpdateForwardDeclaration(<line1>, <line2>)
 endif
 
 " Make sure any patches will probably use consistent indent
