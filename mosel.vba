@@ -153,7 +153,7 @@ let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
 doc/mosel.txt	[[[1
-98
+102
 *mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
 Author: Sebastien Lannez <sebastien.lannez@gmail.com>
@@ -216,6 +216,10 @@ m<F8> List of public declarations (procedure and function) to QuickFix
 <F9> Git update
 <F10> Git commit
 
+<s-space> SnipMate forward expansion
+<c-space> SnipMate backward expansion
+<esc><space><space> List available snippets
+    
 2.2 Features
 
 Word autocompletion can be done by pressing <tab> key. A
@@ -701,66 +705,6 @@ endif
 " Make sure any patches will probably use consistent indent
 "   vim: ts=8 sw=2 sts=2 noet
 
-snippets/mosel.snippets	[[[1
-58
-snippet header
-	(!******************************************************
-	   ${1:title}
-	   =====================================================
-
-	   File   : `Filename()`.mos
-	   Project: ${2:project}
-	   
-	   Description: ${3:description}
-	   
-	   (c) 2013 Fair Isaac Corporation
-	       Author: ${4:author}, ${5:year}
-	       Maintainer: ${4}
-
-	   ChangeLog:
-
-	*******************************************************!)
-
-snippet model
-	model ${1:modelname}
-	  version 0.0.0
-	  options noimplicit
-	  uses "mmxprs"
-
-	  parameters
-	    (! A multi line, long description if
-	       the parameter is important !)
-	    PARAM_NAME="my value" ! A short comment
-	  end-parameters
-
-	  declarations
-	  end-declarations
-
-	  procedure main
-	  end-procedure main
-
-	  procedure init
-	  end-procedure
-
-	  init
-
-	  main
-
-	end-model	
-
-snippet if
-	if (${1:condition}) then
-		${2:statements}
-	end-if
-
-snippet elif
-	elif (${1:condition}) then
-		${2:statements}
-
-snippet for
-	forall(${1:index} in ${2:set} | ${3:condition}) do
-		${3:statements}
-	end-do
 syntax/mosel.vim	[[[1
 303
 as" Vim syntax file

@@ -60,6 +60,10 @@ m<F8> List of public declarations (procedure and function) to QuickFix
 <F9> Git update
 <F10> Git commit
 
+<s-space> SnipMate forward expansion
+<c-space> SnipMate backward expansion
+<esc><space><space> List available snippets
+    
 2.2 Features
 
 Word autocompletion can be done by pressing <tab> key. A

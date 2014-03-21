@@ -1,15 +1,14 @@
 :new 
-:r! git ls-files */*mosel*
+:r! git ls-files */*mosel* skeletons
 :%s/^\n//g
 :%MkVimball! mosel .
 :new 
-:r! git ls-files */*snip* snippets/*
-:%s/^\n//g
-:%MkVimball! snipmate .
 :new mosel.vba
 :so %
-:new snipmate.vba
-:so %
 :new supertab.vmb
+:so %
+:new tlib.vba
+:so %
+:new tskeleton.vba
 :so %
 
