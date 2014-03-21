@@ -1,25 +1,58 @@
-# #!/bin/bash
-snippet <+header+>
+snippet header
 	(!******************************************************
-	   ${1:<+introduction+>}
+	   ${1:title}
 	   =====================================================
 
-	   File: `Filename()`.mos
+	   File   : `Filename()`.mos
+	   Project: ${2:project}
 	   
-	   Description: ${3:<+description+>}
+	   Description: ${3:description}
 	   
 	   (c) 2013 Fair Isaac Corporation
-	       author: ${4:<+author+>}, ${5:<+year+>}
+	       Author: ${4:author}, ${5:year}
+	       Maintainer: ${4}
+
+	   ChangeLog:
+
 	*******************************************************!)
-	
+
+snippet model
+	model ${1:modelname}
+	  version 0.0.0
+	  options noimplicit
+	  uses "mmxprs"
+
+	  parameters
+	    (! A multi line, long description if
+	       the parameter is important !)
+	    PARAM_NAME="my value" ! A short comment
+	  end-parameters
+
+	  declarations
+	  end-declarations
+
+	  procedure main
+	  end-procedure main
+
+	  procedure init
+	  end-procedure
+
+	  init
+
+	  main
+
+	end-model	
+
 snippet if
 	if (${1:condition}) then
-		${2:#statements}
+		${2:statements}
 	end-if
+
 snippet elif
 	elif (${1:condition}) then
-		${2:#statements}
+		${2:statements}
+
 snippet for
 	forall(${1:index} in ${2:set} | ${3:condition}) do
-		${3:#statements}
+		${3:statements}
 	end-do

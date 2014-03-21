@@ -104,7 +104,7 @@ func! Mosel#UpdateForwardDeclaration(line1, line2)
 	put
 
 	" Only keep public procedure/function
-	v/^\s*\<public procedure\|public function\>/d
+	v/^\s*public procedure\|^\s*public function/d
 
 	" Prefix with forward keyword
 	%s/public/forward public/
@@ -153,7 +153,7 @@ let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
 doc/mosel.txt	[[[1
-53
+98
 *mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
 Author: Sebastien Lannez <sebastien.lannez@gmail.com>
@@ -168,6 +168,7 @@ Mosel                                       *mosel*
 
 1. Introduction                             |mosel-intro|
 2. Commands                                 |mosel-commands|
+3. Functions                                |mosel-functions|
 
 
 For Vim version 7.0 or later.
@@ -178,37 +179,81 @@ This plugin only works if 'compatible' is not set.
 1. Introduction                             *mosel-intro*
 
 Mosel is a language for mathematical programming.
-My .vimrc addendum to properly work with VIM.
-----8<---- .vimrc --------------------------
-"
-" My Mosel configuration
-"
-au Bufenter *.mos compiler mosel
-let g:xml_syntax_folding = 1
-" Enable context aware completion
-let g:SuperTabDefaultCompletionType = "context"
-" No completion after spaces, comma, minus...
-let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+']
-" Show mosel functions
-let mosel_functions = 1
-" Fold using syntax
-set foldmethod=syntax
----------------------------------------------
+My .vimrc addendum to properly work with VIM:
+--- begin of code snippet -------------------
+>
+	"
+	" My Mosel configuration
+	"
+	au Bufenter *.mos compiler mosel
+	let g:xml_syntax_folding = 1
+	" Enable context aware completion
+	let g:SuperTabDefaultCompletionType = "context"
+	" No completion after spaces, comma, minus...
+	let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+']
+	" Show mosel functions
+	let mosel_functions = 1
+	" Fold using syntax
+	set foldmethod=syntax
+
+--- end of code snippet ----------------------
 
 ==============================================================================
 2. Commands                                 *mosel-commands*
 
-<F5> Compile the model in the current buffer
-<F6> Execute the model in the current buffer
-<F7> Profile the execution of the model in the current buffer
-<F8> List the symbols
+2.1 Mosel commands
 
-Mosel is a language for mathematical programming.
+<F5>  Compile the model in the current buffer
+<F6>  Execute the model in the current buffer
+<F7>  Profile the execution of the model in the current buffer
+<F8>  List the symbols with Mosel examine
 
-vim:tw=78:ts=8:ft=help:norl:
+m<F8> List of public declarations (procedure and function) to QuickFix
+
+]]    Jump to next procedure or function
+]]    Jump to previous procedure or function
+2.2 Versioning commands
+<F9> Git update
+<F10> Git commit
+
+2.2 Features
+
+Word autocompletion can be done by pressing <tab> key. A
+list of non word will then display.
+
+Code snippets are automatically inserted after pressing <space> (also
+soo <s-space>).
+<c-r> gives a list of code snippets.
+
+==============================================================================
+3. Functions                               *mosel-functions*
+
+3.1 MoselDeclaration
+This routine will extract a list of the signature of all procedure and 
+function that are declared public.
+The list is available in a newly created buffer and automatically yanked to
+the unnamed register.
+
+In the buffer containing the Mosel source code: >
+	:MoselDeclaration
+
+Then just paste with P or :"+gP
+  
+
+3.2 MoselFromAmpl
+This routine will copy the current buffer to a new one, and apply a list of
+rules to convert AMPL syntax to Mosel.
+
+In the buffer containing the Mosel source code: >
+	:MoselFromAmpl
+
+Then edit the buffer.
+
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:
 
 ftplugin/mosel.vim	[[[1
-233
+270
 " Vim filetype plugin file
 " Language:	Mosel
 " Maintainer:	Yves Colombani
@@ -227,8 +272,12 @@ let b:did_ftplugin = 1
 " or [i
 setlocal suffixesadd=.mos
 
+" Ignore bim files
+set wildignore+=*.bim
+
 " Guess the working directory from the buffer name
 let b:mosel_runpath=expand("%:p:h")
+let b:mosel_version=3.5
 
 " Add a default status line
 set statusline=
@@ -293,21 +342,45 @@ if !exists("*Mosel_setcomp")
 	endfunc
 
 	" Compile then execute a mos file
-	fun! s:runmos(p)
+	fun! s:mosexec(p)
 		if &filetype != "mosel"
 			echo "Not a Mosel file"
 		else
 			update
 			if a:p == ""
-				execute "mosel -s -c \"exe " . g:mosel_compopt . " " . % . " " . g:mosel_runparams ." \""
+        execute "!mosel execute " .g:mosel_compopt. " '" .expand("%:p"). "' " .g:mosel_runparams 
+      elseif a:p == "3.4"
+        execute "!mosel -s -c \"exe ".g:mosel_compopt." '".%."' ".g:mosel_runparams." \""
 			else
-				execute "!cd ". b:mosel_runpath . "; mosel -s -c \"exe " . g:mosel_compopt . " " . expand("%:p") . " " . a:p ." \""
+				execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." ".expand("%:p")." ".a:p." \""
 			endif
 		endif
 	endfunc
 
+  " Execute all commands in the file
+	fun! s:mostest(p)
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+			update
+			if a:p == ""
+        if g:mosel_version < "3.5"
+          execute "!mosel execute " .g:mosel_compopt. " '" .expand("%:p"). "' " .g:mosel_runparams 
+        else
+          execute "!mosel -s -c \"exe ".g:mosel_compopt." '".expand("%:p")."' ".g:mosel_runparams." \""
+        endif
+			else
+        if g:mosel_version < "3.5"
+				  execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." '".expand("%:p")."' ".a:p
+        else
+				  execute "!cd ".b:mosel_runpath."; mosel execute ".g:mosel_compopt." '".expand("%:p")."' ".a:p
+        endif
+			endif
+		endif
+  endfunc
+
 	" Compile a mos file (+quickfix)
-	fun! s:compmos()
+	fun! s:moscomp()
 		if &filetype != "mosel"
 			echo "Not a Mosel file"
 		else
@@ -316,6 +389,25 @@ if !exists("*Mosel_setcomp")
 			cwindow
 		endif
 	endfunc
+
+  " Examine a module 
+	fun! s:mosexam()
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+      execute "!mosel -c 'exam <cword>'"
+		endif
+	endfunc
+
+  " Load module
+  fun! s:mosload()
+    if &filetype != "mosel"
+     echo "Not a Mosel file"
+   else
+     execute "!mosel -s -c 'cload -G % ; profile'"
+   endif
+ endfunc
+
 
 	" Get options (0=RT parameters, 1=Comp. Options, 2=Exec. Path)
 	fun! s:getopts(what)
@@ -373,8 +465,8 @@ if !exists("*Mosel_setcomp")
 	endfunc
 
 	" Define the menu "Mosel"
-	an <silent> 100.10 &Mosel.&Compile :call <SID>compmos()<CR><CR>
-	an <silent> 100.20 &Mosel.&Run :call <SID>runmos("")<CR>
+	an <silent> 100.10 &Mosel.&Compile :call <SID>moscomp()<CR><CR>
+	an <silent> 100.20 &Mosel.&Run :call <SID>mosexec("")<CR>
 	an 100.50 &Mosel.-sep1- <Nop>
 	an <silent> 100.55 &Mosel.Compiler\ &Options :call <SID>getopts(1)<CR>
 	an <silent> 100.60 &Mosel.Execution\ &Parameters :call <SID>getopts(0)<CR>
@@ -386,21 +478,12 @@ if !exists("*Mosel_setcomp")
 	an <silent> 100.85 &Mosel.&Syntax.&off :set syn=OFF<CR>
 	an 100.90 &Mosel.Close\ &Error :cclose<CR>
 
-	" Examine a module 
-	fun! s:examine()
-		if &filetype != "mosel"
-			echo "Not a Mosel file"
-		else
-      :!mosel -c 'examine <cword>'
-		endif
-	endfunc
-
 endif
 
 " Add the commands 'Compile', 'Run' and 'Examine'
-command! -buffer -narg=? Run call s:runmos(<q-args>)
-command! -buffer Compile call s:compmos()
-command! -buffer Examine call s:examine()
+command! -buffer -narg=? Run call s:mosexec(<q-args>)
+command! -buffer Compile call s:moscomp()
+command! -buffer Examine call s:mosexam()
 
 " If syntax is ON, select the right style
 if exists("g:syntax_on")
@@ -410,19 +493,18 @@ endif
 let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
-set wildignore+=*.bim
-
 map <F9> :!git update \| tee
 map <F10> :!git commit \| tee
 " map <F9> :!git svn rebase \| tee
 " map <F12> :!git svn dcommit \| tee
 
-map <F5> :call <SID>compmos()<CR><CR>
-map <F6> :!mosel -s -c 'exec %'
-map <F7> :!mosel -s -c 'cload -G % ; profile'
-map <F8> :call <SID>examine()<CR><CR>
-map m<F8> :vimgrep /\<public procedure\\|public function\>/ %<CR>:copen<CR>
+map <F5> :call <SID>moscomp()<CR><CR>
+map <F6> :call <SID>mosexec("")<CR>
+map <F7> :call <SID>mosload()<CR>
+map <F8> :call <SID>mosexam()<CR><CR>
 
+map m<F6> :call <SID>mostest()<CR>
+map m<F8> :vimgrep /^\s*\(public procedure\\|public function\)/ %<CR>:copen<CR>
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>
@@ -566,7 +648,7 @@ function! GetMoselIndent()
 endfunction
 
 function! s:is_continuation_line(line)
-  return a:line =~ '\%(^\|and\|or\|(\|+\|-\|,\|\*\|\/\|(\|{\|=\|>\|<\)\s*$'
+  return a:line =~ '\%(^\|\<and\>\|\<or\>\|+\|-\|,\|\*\|\/\|(\|{\|=\|>\|<\)\s*$'
 endfunction
 
 function! s:find_continued_lnum(lnum)
@@ -620,34 +702,67 @@ endif
 "   vim: ts=8 sw=2 sts=2 noet
 
 snippets/mosel.snippets	[[[1
-25
-# #!/bin/bash
-snippet <+header+>
+58
+snippet header
 	(!******************************************************
-	   ${1:<+introduction+>}
+	   ${1:title}
 	   =====================================================
 
-	   File: `Filename()`.mos
+	   File   : `Filename()`.mos
+	   Project: ${2:project}
 	   
-	   Description: ${3:<+description+>}
+	   Description: ${3:description}
 	   
 	   (c) 2013 Fair Isaac Corporation
-	       author: ${4:<+author+>}, ${5:<+year+>}
+	       Author: ${4:author}, ${5:year}
+	       Maintainer: ${4}
+
+	   ChangeLog:
+
 	*******************************************************!)
-	
+
+snippet model
+	model ${1:modelname}
+	  version 0.0.0
+	  options noimplicit
+	  uses "mmxprs"
+
+	  parameters
+	    (! A multi line, long description if
+	       the parameter is important !)
+	    PARAM_NAME="my value" ! A short comment
+	  end-parameters
+
+	  declarations
+	  end-declarations
+
+	  procedure main
+	  end-procedure main
+
+	  procedure init
+	  end-procedure
+
+	  init
+
+	  main
+
+	end-model	
+
 snippet if
 	if (${1:condition}) then
-		${2:#statements}
+		${2:statements}
 	end-if
+
 snippet elif
 	elif (${1:condition}) then
-		${2:#statements}
+		${2:statements}
+
 snippet for
 	forall(${1:index} in ${2:set} | ${3:condition}) do
-		${3:#statements}
+		${3:statements}
 	end-do
 syntax/mosel.vim	[[[1
-302
+303
 as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
@@ -683,6 +798,7 @@ syn keyword moselStatement	indicator implies
 syn keyword moselStatement	list imports
 syn keyword moselStatement	contained
 syn keyword moselStatement	version
+syn keyword moselStatement 	with returned
 
 syn keyword moselClass		integer real string text
 syn keyword moselClass		nlctr linctr mpvar 
@@ -793,34 +909,34 @@ syn region moselModel matchgroup=moselStatement
       \ transparent fold 
 
 syn region moselPackage matchgroup=moselStatement 
-      \ start=/^\s*package\>/ 
-      \ end=/^\s*end-package\>/ 
+      \ start=/^\s*\<package\>/ 
+      \ end=/^\s*\<end-package\>/ 
       \ transparent fold 
 
 syn cluster mRoot add=moselModel,moselPackage
 
 syn region moselParam matchgroup=moselStatement
-      \ start=/^\s*parameters\>/
-      \ end=/^\s*end-parameters\>/ 
+      \ start=/^\s*\<parameters\>/
+      \ end=/^\s*\<end-parameters\>/ 
       \ containedin=moselModel transparent fold
 
 syn region moselDeclr matchgroup=moselStatement
-      \ start=/^\s*declarations\>/ 
-      \ end=/^\s*end-declarations\>/ 
+      \ start=/^\s*\<declarations\>/ 
+      \ end=/^\s*\<end-declarations\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselPDecl matchgroup=moselStatement
-      \ start=/^\s*public\s*declarations/ 
-      \ end=/^\s*end-declarations/ 
+      \ start=/^\s*\<public\>\s*\<declarations\>/ 
+      \ end=/^\s*\<end-declarations\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselIniti matchgroup=moselStatement
-      \ start=/^\s*initiali[sz]ations\>/ 
-      \ end=/^\s*end-initiali[sz]ations\>/ 
+      \ start=/^\s*\<initiali[sz]ations\>/ 
+      \ end=/^\s*\<end-initiali[sz]ations\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselRequire matchgroup=moselStatement
-      \ start=/^\s*requirements\>/ end=/^\s*end-requirements\>/ 
+      \ start=/^\s*\<requirements\>/ end=/^\s*\<end-requirements\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselRecord matchgroup=moselStatement
@@ -830,19 +946,19 @@ syn region moselRecord matchgroup=moselStatement
 syn cluster mDatadef add=moselParam,moselDeclr,modelPDecl,moselRequire,moselIniti
 
 syn region moselProc matchgroup=moselStatement
-      \ start=/^\s*procedure\s\|^\s*public\s*procedure\s/ 
-      \ end=/^\s*end-procedure/ 
+      \ start=/^\s*\<procedure\>\s\|^\s*\<public\>\s*\<procedure\>\s/ 
+      \ end=/^\s*\<end-procedure\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselFunc matchgroup=moselStatement
-      \ start=/^\s*function\s \|^\s*public\s*function\s/ 
-      \ end=/^\s*end-function/
+      \ start=/^\s*\<function\>\s\|^\s*\<public\>\s*\<function\>\s/ 
+      \ end=/^\s*\<end-function\>/
       \ containedin=@mRoot transparent fold
 
 syn cluster mMethod add=moselProc,moselFunc
 
 syn region moselDo matchgroup=moselStatement
-      \ start=/\<do\>/ end=/end-do/ 
+      \ start=/\<do\>/ end=/\<end-do\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselIf matchgroup=moselStatement
@@ -859,7 +975,7 @@ syn region moselRepeat matchgroup=moselStatement
 
 " Enable manual fodling
 syn region moselFold
-      \ start="{{{" end="}}}"                 
+      \ start="(! @{" end="@} !)"                 
       \ transparent fold
 
 " Format of comments
@@ -877,7 +993,7 @@ syn region moselHeader
 
 syn cluster mComment add=moselComment,moselHeader
 
-" syn match moselIfOneLine "if\s*(.*,.*,.*)\(^then\)"
+syn match moselIfOneLine ":=\s*if\s*(.*)"
 
 function! MoselFoldText()
   let nl = v:foldend - v:foldstart + 1

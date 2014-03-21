@@ -33,6 +33,7 @@ syn keyword moselStatement	indicator implies
 syn keyword moselStatement	list imports
 syn keyword moselStatement	contained
 syn keyword moselStatement	version
+syn keyword moselStatement 	with returned
 
 syn keyword moselClass		integer real string text
 syn keyword moselClass		nlctr linctr mpvar 
@@ -143,34 +144,34 @@ syn region moselModel matchgroup=moselStatement
       \ transparent fold 
 
 syn region moselPackage matchgroup=moselStatement 
-      \ start=/^\s*package\>/ 
-      \ end=/^\s*end-package\>/ 
+      \ start=/^\s*\<package\>/ 
+      \ end=/^\s*\<end-package\>/ 
       \ transparent fold 
 
 syn cluster mRoot add=moselModel,moselPackage
 
 syn region moselParam matchgroup=moselStatement
-      \ start=/^\s*parameters\>/
-      \ end=/^\s*end-parameters\>/ 
+      \ start=/^\s*\<parameters\>/
+      \ end=/^\s*\<end-parameters\>/ 
       \ containedin=moselModel transparent fold
 
 syn region moselDeclr matchgroup=moselStatement
-      \ start=/^\s*declarations\>/ 
-      \ end=/^\s*end-declarations\>/ 
+      \ start=/^\s*\<declarations\>/ 
+      \ end=/^\s*\<end-declarations\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselPDecl matchgroup=moselStatement
-      \ start=/^\s*public\s*declarations/ 
-      \ end=/^\s*end-declarations/ 
+      \ start=/^\s*\<public\>\s*\<declarations\>/ 
+      \ end=/^\s*\<end-declarations\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselIniti matchgroup=moselStatement
-      \ start=/^\s*initiali[sz]ations\>/ 
-      \ end=/^\s*end-initiali[sz]ations\>/ 
+      \ start=/^\s*\<initiali[sz]ations\>/ 
+      \ end=/^\s*\<end-initiali[sz]ations\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselRequire matchgroup=moselStatement
-      \ start=/^\s*requirements\>/ end=/^\s*end-requirements\>/ 
+      \ start=/^\s*\<requirements\>/ end=/^\s*\<end-requirements\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselRecord matchgroup=moselStatement
@@ -180,19 +181,19 @@ syn region moselRecord matchgroup=moselStatement
 syn cluster mDatadef add=moselParam,moselDeclr,modelPDecl,moselRequire,moselIniti
 
 syn region moselProc matchgroup=moselStatement
-      \ start=/^\s*procedure\s\|^\s*public\s*procedure\s/ 
-      \ end=/^\s*end-procedure/ 
+      \ start=/^\s*\<procedure\>\s\|^\s*\<public\>\s*\<procedure\>\s/ 
+      \ end=/^\s*\<end-procedure\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselFunc matchgroup=moselStatement
-      \ start=/^\s*function\s \|^\s*public\s*function\s/ 
-      \ end=/^\s*end-function/
+      \ start=/^\s*\<function\>\s\|^\s*\<public\>\s*\<function\>\s/ 
+      \ end=/^\s*\<end-function\>/
       \ containedin=@mRoot transparent fold
 
 syn cluster mMethod add=moselProc,moselFunc
 
 syn region moselDo matchgroup=moselStatement
-      \ start=/\<do\>/ end=/end-do/ 
+      \ start=/\<do\>/ end=/\<end-do\>/ 
       \ containedin=@mRoot transparent fold
 
 syn region moselIf matchgroup=moselStatement
@@ -209,7 +210,7 @@ syn region moselRepeat matchgroup=moselStatement
 
 " Enable manual fodling
 syn region moselFold
-      \ start="{{{" end="}}}"                 
+      \ start="(! @{" end="@} !)"                 
       \ transparent fold
 
 " Format of comments
@@ -227,7 +228,7 @@ syn region moselHeader
 
 syn cluster mComment add=moselComment,moselHeader
 
-" syn match moselIfOneLine "if\s*(.*,.*,.*)\(^then\)"
+syn match moselIfOneLine ":=\s*if\s*(.*)"
 
 function! MoselFoldText()
   let nl = v:foldend - v:foldstart + 1

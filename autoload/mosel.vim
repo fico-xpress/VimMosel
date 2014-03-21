@@ -99,7 +99,7 @@ func! Mosel#UpdateForwardDeclaration(line1, line2)
 	put
 
 	" Only keep public procedure/function
-	v/^\s*\<public procedure\|public function\>/d
+	v/^\s*public procedure\|^\s*public function/d
 
 	" Prefix with forward keyword
 	%s/public/forward public/

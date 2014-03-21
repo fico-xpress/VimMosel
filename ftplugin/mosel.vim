@@ -16,8 +16,12 @@ let b:did_ftplugin = 1
 " or [i
 setlocal suffixesadd=.mos
 
+" Ignore bim files
+set wildignore+=*.bim
+
 " Guess the working directory from the buffer name
 let b:mosel_runpath=expand("%:p:h")
+let b:mosel_version=3.5
 
 " Add a default status line
 set statusline=
@@ -82,21 +86,45 @@ if !exists("*Mosel_setcomp")
 	endfunc
 
 	" Compile then execute a mos file
-	fun! s:runmos(p)
+	fun! s:mosexec(p)
 		if &filetype != "mosel"
 			echo "Not a Mosel file"
 		else
 			update
 			if a:p == ""
-				execute "mosel -s -c \"exe " . g:mosel_compopt . " " . % . " " . g:mosel_runparams ." \""
+        execute "!mosel execute " .g:mosel_compopt. " '" .expand("%:p"). "' " .g:mosel_runparams 
+      elseif a:p == "3.4"
+        execute "!mosel -s -c \"exe ".g:mosel_compopt." '".%."' ".g:mosel_runparams." \""
 			else
-				execute "!cd ". b:mosel_runpath . "; mosel -s -c \"exe " . g:mosel_compopt . " " . expand("%:p") . " " . a:p ." \""
+				execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." ".expand("%:p")." ".a:p." \""
 			endif
 		endif
 	endfunc
 
+  " Execute all commands in the file
+	fun! s:mostest(p)
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+			update
+			if a:p == ""
+        if g:mosel_version < "3.5"
+          execute "!mosel execute " .g:mosel_compopt. " '" .expand("%:p"). "' " .g:mosel_runparams 
+        else
+          execute "!mosel -s -c \"exe ".g:mosel_compopt." '".expand("%:p")."' ".g:mosel_runparams." \""
+        endif
+			else
+        if g:mosel_version < "3.5"
+				  execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." '".expand("%:p")."' ".a:p
+        else
+				  execute "!cd ".b:mosel_runpath."; mosel execute ".g:mosel_compopt." '".expand("%:p")."' ".a:p
+        endif
+			endif
+		endif
+  endfunc
+
 	" Compile a mos file (+quickfix)
-	fun! s:compmos()
+	fun! s:moscomp()
 		if &filetype != "mosel"
 			echo "Not a Mosel file"
 		else
@@ -105,6 +133,25 @@ if !exists("*Mosel_setcomp")
 			cwindow
 		endif
 	endfunc
+
+  " Examine a module 
+	fun! s:mosexam()
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+      execute "!mosel -c 'exam <cword>'"
+		endif
+	endfunc
+
+  " Load module
+  fun! s:mosload()
+    if &filetype != "mosel"
+     echo "Not a Mosel file"
+   else
+     execute "!mosel -s -c 'cload -G % ; profile'"
+   endif
+ endfunc
+
 
 	" Get options (0=RT parameters, 1=Comp. Options, 2=Exec. Path)
 	fun! s:getopts(what)
@@ -162,8 +209,8 @@ if !exists("*Mosel_setcomp")
 	endfunc
 
 	" Define the menu "Mosel"
-	an <silent> 100.10 &Mosel.&Compile :call <SID>compmos()<CR><CR>
-	an <silent> 100.20 &Mosel.&Run :call <SID>runmos("")<CR>
+	an <silent> 100.10 &Mosel.&Compile :call <SID>moscomp()<CR><CR>
+	an <silent> 100.20 &Mosel.&Run :call <SID>mosexec("")<CR>
 	an 100.50 &Mosel.-sep1- <Nop>
 	an <silent> 100.55 &Mosel.Compiler\ &Options :call <SID>getopts(1)<CR>
 	an <silent> 100.60 &Mosel.Execution\ &Parameters :call <SID>getopts(0)<CR>
@@ -175,21 +222,12 @@ if !exists("*Mosel_setcomp")
 	an <silent> 100.85 &Mosel.&Syntax.&off :set syn=OFF<CR>
 	an 100.90 &Mosel.Close\ &Error :cclose<CR>
 
-	" Examine a module 
-	fun! s:examine()
-		if &filetype != "mosel"
-			echo "Not a Mosel file"
-		else
-      :!mosel -c 'examine <cword>'
-		endif
-	endfunc
-
 endif
 
 " Add the commands 'Compile', 'Run' and 'Examine'
-command! -buffer -narg=? Run call s:runmos(<q-args>)
-command! -buffer Compile call s:compmos()
-command! -buffer Examine call s:examine()
+command! -buffer -narg=? Run call s:mosexec(<q-args>)
+command! -buffer Compile call s:moscomp()
+command! -buffer Examine call s:mosexam()
 
 " If syntax is ON, select the right style
 if exists("g:syntax_on")
@@ -199,19 +237,18 @@ endif
 let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
-set wildignore+=*.bim
-
 map <F9> :!git update \| tee
 map <F10> :!git commit \| tee
 " map <F9> :!git svn rebase \| tee
 " map <F12> :!git svn dcommit \| tee
 
-map <F5> :call <SID>compmos()<CR><CR>
-map <F6> :!mosel -s -c 'exec %'
-map <F7> :!mosel -s -c 'cload -G % ; profile'
-map <F8> :call <SID>examine()<CR><CR>
-map m<F8> :vimgrep /\<public procedure\\|public function\>/ %<CR>:copen<CR>
+map <F5> :call <SID>moscomp()<CR><CR>
+map <F6> :call <SID>mosexec("")<CR>
+map <F7> :call <SID>mosload()<CR>
+map <F8> :call <SID>mosexam()<CR><CR>
 
+map m<F6> :call <SID>mostest()<CR>
+map m<F8> :vimgrep /^\s*\(public procedure\\|public function\)/ %<CR>:copen<CR>
 
 nnoremap <silent> <buffer> ]] :call <SID>Mosel_jump('/^\s*\(procedure\\|function\)')<cr>
 nnoremap <silent> <buffer> [[ :call <SID>Mosel_jump('?^\s*\(procedure\\|function\)')<cr>
