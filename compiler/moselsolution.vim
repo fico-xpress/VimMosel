@@ -1,20 +1,18 @@
 " Vim compiler file
 " Compiler:	Mosel
-" Maintainer:	Yves Colombani
+" Maintainer:	Sebastien Lannez
 " Last Change:	8, April 2002
 
 if exists("current_compiler")
   finish
 endif
-let current_compiler = "mosel"
+let current_compiler = "moselsolution"
 
 let s:mosel_cpo_save = &cpo
 set cpo&vim
 
 if exists("*Mosel_setcomp")
- call Mosel_setcomp("")
-else
- set makeprg=$XPRESSDIR/mosel\ -s\ -c\ \'comp\ -g\ \"%\"\'
+ call Mosel_setcomp("solution")
 endif
 
 setlocal errorformat=%.%#:\ %t\-%n\ %.%#\ (%l%\\,%c)\ %.%#\ `%f':\ %m,

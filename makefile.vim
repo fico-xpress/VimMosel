@@ -7,8 +7,3 @@
 :so %
 :new supertab.vmb
 :so %
-:new tlib.vba
-:so %
-:new tskeleton.vba
-:so %
-

@@ -70,11 +70,11 @@ function! GetMoselIndent()
   " Indent with syntax information
   if synid =~ 'moselHeader'
     " No indentation in header
-    return pind
+    return ind
   elseif synid =~ 'moselComment'
     if synid1 =~ 'moselComment' 
       " No indentation for whole line comment
-      return pind
+      return ind
     endif
   elseif synid =~ 'moselCase'
     if line =~ '^.*:\s*\<do\>'

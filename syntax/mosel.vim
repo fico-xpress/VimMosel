@@ -75,7 +75,7 @@ if exists("mosel_functions")
  syn keyword moselFunction	getfromid getclass send getvalue
  syn keyword moselFunction	getnextevent dropnextevent
  syn keyword moselFunction	disconnect 
- syn keyword moselFunction	compile load run wait
+ syn keyword moselFunction	compile load unload run wait waitfor
  syn keyword moselFunction	Model Mosel
 
  " Constraints

@@ -1,0 +1,54 @@
+(!*******************************************************
+  <+projectname+>
+  ===============
+
+  file <+filename+>
+  -------------------------------------------------------
+  <+one line description+>
+
+  <+detailed description+>
+
+  Changelog
+  ---------
+  0.0.1 Initial
+
+  Examples
+  --------
+  Solve the _ebay01 case >
+    mosel mediaplanner CASEID=_ebay01
+
+  
+  (c) 2014 Fair Isaac Corporation
+      author: S. Lannez, Feb. 2014
+
+*******************************************************!)
+model mediaplanner
+  version 0.0.1
+  options noimplicit
+
+  uses "mmxprs"
+  uses "mmsystem"
+
+  parameters
+    PARAM=0 	
+  end-parameters
+
+  declarations
+    a: real	  
+  end-declarations
+
+  procedure init
+    	  
+  end-procedure
+
+  procedure main
+	  
+  end-procedure
+
+  init
+  
+  main
+
+end-model
+
+! vim: et:ts=2:sw=2:sts=2:ft=mosel:foldlevel=1:

@@ -1,7 +1,7 @@
 " Vim filetype plugin file
 " Language:	Mosel
-" Maintainer:	Yves Colombani
-" Last Change:	8, April 2002
+" Maintainer:	Sebastien Lannez <sebastienlannez@fico.com>
+" Last Change:	10, Mar. 2015
 
 " Only do this when not done yet for this buffer
 if exists("b:did_ftplugin") | finish | endif
@@ -22,6 +22,7 @@ set wildignore+=*.bim
 " Guess the working directory from the buffer name
 let b:mosel_runpath=expand("%:p:h")
 let b:mosel_version=3.5
+let b:mosel_xpdir=$XPRESSDIR
 
 " Add a default status line
 set statusline=
@@ -65,6 +66,14 @@ compiler mosel
 " Define all global things
 if !exists("*Mosel_setcomp")
 
+  " Make sure to call the right compiler
+	if !exists("g:mosel_cmd")
+    let g:mosel_cmd=expand(b:mosel_xpdir."/bin/mosel")
+  endif
+
+  " Make sure to use the right dso
+  let $MOSEL_DSO = "build/mosel/;build/test/;src/main/mosel/;src/test/mosel/;."
+
 	" Options for the compiler
 	if !exists("g:mosel_compopt")
 		let g:mosel_compopt="-g"
@@ -81,8 +90,12 @@ if !exists("*Mosel_setcomp")
 	endif
 
 	" Set the 'makeprg' option
-	fun! Mosel_setcomp()
-		execute "set makeprg=mosel\\ -s\\ -c\\ \'comp\\ " . g:mosel_compopt . "\\ %\'"
+	fun! Mosel_setcomp(p)
+    if a:p == "solution"
+      let &mp=g:mosel_cmd." make "
+    else
+      let &mp=g:mosel_cmd." compile ".g:mosel_compopt." \"".expand("%:p")."\""
+    endif
 	endfunc
 
 	" Compile then execute a mos file
@@ -92,11 +105,11 @@ if !exists("*Mosel_setcomp")
 		else
 			update
 			if a:p == ""
-        execute "!mosel execute " .g:mosel_compopt. " '" .expand("%:p"). "' " .g:mosel_runparams 
+        execute "!".g:mosel_cmd." execute " .g:mosel_compopt. " \"" .expand("%:p"). "\" " .g:mosel_runparams 
       elseif a:p == "3.4"
-        execute "!mosel -s -c \"exe ".g:mosel_compopt." '".%."' ".g:mosel_runparams." \""
+        execute "!".g:mosel_cmd." -s -c \"exe ".g:mosel_compopt." '".%."' ".g:mosel_runparams." \""
 			else
-				execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." ".expand("%:p")." ".a:p." \""
+				execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." \"".expand("%:p")."\" ".a:p." \""
 			endif
 		endif
 	endfunc
@@ -108,17 +121,11 @@ if !exists("*Mosel_setcomp")
 		else
 			update
 			if a:p == ""
-        if g:mosel_version < "3.5"
-          execute "!mosel execute " .g:mosel_compopt. " '" .expand("%:p"). "' " .g:mosel_runparams 
-        else
-          execute "!mosel -s -c \"exe ".g:mosel_compopt." '".expand("%:p")."' ".g:mosel_runparams." \""
-        endif
+        execute "!".g:mosel_cmd." execute " .g:mosel_compopt. " \"" .expand("%:p"). "\" " .g:mosel_runparams 
+      elseif a:p == "3.4"
+        execute "!".g:mosel_cmd." -s -c \"exe ".g:mosel_compopt." '".%."' ".g:mosel_runparams." \""
 			else
-        if g:mosel_version < "3.5"
-				  execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." '".expand("%:p")."' ".a:p
-        else
-				  execute "!cd ".b:mosel_runpath."; mosel execute ".g:mosel_compopt." '".expand("%:p")."' ".a:p
-        endif
+				execute "!cd ".b:mosel_runpath."; mosel -s -c \"exe ".g:mosel_compopt." \"".expand("%:p")."\" ".a:p." \""
 			endif
 		endif
   endfunc
@@ -134,12 +141,23 @@ if !exists("*Mosel_setcomp")
 		endif
 	endfunc
 
+  " Execute all commands in the file
+	fun! s:mosmake()
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+			update
+      execute "!".g:mosel_cmd." make"
+      cwindow
+		endif
+  endfunc
+
   " Examine a module 
 	fun! s:mosexam()
 		if &filetype != "mosel"
 			echo "Not a Mosel file"
 		else
-      execute "!mosel -c 'exam <cword>'"
+      execute "!".g:mosel_cmd." examine <cword>"
 		endif
 	endfunc
 
@@ -148,7 +166,7 @@ if !exists("*Mosel_setcomp")
     if &filetype != "mosel"
      echo "Not a Mosel file"
    else
-     execute "!mosel -s -c 'cload -G % ; profile'"
+     execute "!".g:mosel_cmd." -s -c 'cload -G % ; profile'"
    endif
  endfunc
 
@@ -167,12 +185,19 @@ if !exists("*Mosel_setcomp")
 				let n=inputdialog("Compilation options",g:mosel_compopt)
 				if n != ""
 					let g:mosel_compopt=n
-					Mosel_setcomp()
+					Mosel_setcomp("")
 				endif
 			elseif a:what == 2
 				let n=inputdialog("Execution Directory",b:mosel_runpath)
 				if n != ""
 					let b:mosel_runpath=n
+				endif
+			elseif a:what == 3
+				let n=inputdialog("Xpress Directory",b:mosel_xpdir)
+				if n != ""
+					let b:mosel_xpdir=n
+          let $XPRESSDIR=b:mosel_xpdir
+          let g:mosel_cmd=expand(b:mosel_xpdir."/bin/mosel")
 				endif
 			endif
 		endif
@@ -215,6 +240,7 @@ if !exists("*Mosel_setcomp")
 	an <silent> 100.55 &Mosel.Compiler\ &Options :call <SID>getopts(1)<CR>
 	an <silent> 100.60 &Mosel.Execution\ &Parameters :call <SID>getopts(0)<CR>
 	an <silent> 100.60 &Mosel.Execution\ &Directory :call <SID>getopts(2)<CR>
+	an <silent> 100.60 &Mosel.Execution\ &Xpress\ Directory :call <SID>getopts(3)<CR>
 	an 100.70 &Mosel.-sep2- <Nop>
 	an <silent> 100.75 &Mosel.&Syntax.&Haiti :call <SID>moscols(0)<CR>
 	an <silent> 100.77 &Mosel.&Syntax.&IVE :call <SID>moscols(1)<CR>
@@ -247,6 +273,7 @@ map <F6> :call <SID>mosexec("")<CR>
 map <F7> :call <SID>mosload()<CR>
 map <F8> :call <SID>mosexam()<CR><CR>
 
+map m<F5> :call <SID>mosmake()<CR>
 map m<F6> :call <SID>mostest()<CR>
 map m<F8> :vimgrep /^\s*\(public procedure\\|public function\)/ %<CR>:copen<CR>
 
