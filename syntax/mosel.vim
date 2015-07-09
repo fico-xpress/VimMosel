@@ -42,7 +42,7 @@ syn match moselClass display	/\<\u\w*T\>/
 
 syn keyword moselConstant	true false
 
-syn keyword moselTodo contained	TODO YCO BUG
+syn keyword moselTodo contained	TODO YCO BUG SLA SH
 
 " In case someone wants to see the predefined functions/procedures
 if exists("mosel_functions")
@@ -63,7 +63,8 @@ if exists("mosel_functions")
  syn keyword moselFunction	ceil round
 
  syn keyword moselFunction	minimize minimise maximize maximise
- syn keyword insightFunction	insight_minimize insight_minimise insight_maximize insight_maximise
+ syn keyword insightFunction	insightminimize insightminimise insightmaximize insightmaximise
+ syn keyword insightFunction    insightgetmode insightpopulate
 
  " mmsystem
  syn keyword moselFunction	gettime
@@ -78,8 +79,8 @@ if exists("mosel_functions")
  syn keyword moselFunction	compile load unload run wait waitfor
  syn keyword moselFunction	Model Mosel
 
- " Constraints
- syn keyword moselConstant	F_OUTPUT EVENT_END
+ " Constants
+ syn keyword moselConstant	F_OUTPUT F_INPUT F_ERROR EVENT_END
 
  " mmodbc
  syn keyword moselParam 	sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
