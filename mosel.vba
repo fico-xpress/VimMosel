@@ -581,7 +581,7 @@ ftplugin/mosel.vim	[[[1
 " Vim filetype plugin file
 " Language:	Mosel
 " Maintainer:	Sebastien Lannez <sebastienlannez@fico.com>
-" Last Change:	18, Nov. 2014
+" Last Change:	10, Mar. 2015
 
 " Only do this when not done yet for this buffer
 if exists("b:did_ftplugin") | finish | endif
@@ -1109,7 +1109,7 @@ end-model
 
 ! vim: et:ts=2:sw=2:sts=2:ft=mosel:foldlevel=1:
 syntax/mosel.vim	[[[1
-303
+304
 as" Vim syntax file
 " Language: Mosel
 " Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
@@ -1154,7 +1154,7 @@ syn match moselClass display	/\<\u\w*T\>/
 
 syn keyword moselConstant	true false
 
-syn keyword moselTodo contained	TODO YCO BUG
+syn keyword moselTodo contained	TODO YCO BUG SLA SH
 
 " In case someone wants to see the predefined functions/procedures
 if exists("mosel_functions")
@@ -1175,7 +1175,8 @@ if exists("mosel_functions")
  syn keyword moselFunction	ceil round
 
  syn keyword moselFunction	minimize minimise maximize maximise
- syn keyword insightFunction	insight_minimize insight_minimise insight_maximize insight_maximise
+ syn keyword insightFunction	insightminimize insightminimise insightmaximize insightmaximise
+ syn keyword insightFunction    insightgetmode insightpopulate
 
  " mmsystem
  syn keyword moselFunction	gettime
@@ -1190,8 +1191,8 @@ if exists("mosel_functions")
  syn keyword moselFunction	compile load unload run wait waitfor
  syn keyword moselFunction	Model Mosel
 
- " Constraints
- syn keyword moselConstant	F_OUTPUT EVENT_END
+ " Constants
+ syn keyword moselConstant	F_OUTPUT F_INPUT F_ERROR EVENT_END
 
  " mmodbc
  syn keyword moselParam 	sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
