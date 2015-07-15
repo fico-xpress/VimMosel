@@ -1,11 +1,12 @@
 *mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
-Author: Sebastien Lannez <sebastien.lannez@gmail.com>
+Author: Sebastien Lannez 
 Last Change: September 12, 2013
+License: LICENSE.vimmosel.txt
 
-This plugin is licensed under the terms of the BSD license. Please see
-mosel.vim for the license in its entirety.
-
+This plugin is licensed under the terms of the license defined
+in the file LICENSE.vimmosel.txt and copied in its entirety
+at the beginning of the file mosel.vim.
 
 ==============================================================================
 Mosel                                       *mosel*

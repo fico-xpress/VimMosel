@@ -1,7 +1,8 @@
 " Vim autoload file for the Mosel language
-" Maintainer: Sebastien Lannez <sebastienlannez@fico.com>
-" Last Change: 2013 Sep 12
-"
+" License:     LICENSE.vimmosel.txt
+" Author:      Sebastien Lannez 
+" Maintainer:  Sebastien Lannez
+" Last Change: 12, September 2013
 
 " this file uses line continuations
 let s:cpo_sav = &cpo

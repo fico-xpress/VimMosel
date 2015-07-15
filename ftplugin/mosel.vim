@@ -1,7 +1,11 @@
 " Vim filetype plugin file
+" 
+" License: LICENSE.vimmosel.txt
 " Language:	Mosel
-" Maintainer:	Sebastien Lannez <sebastienlannez@fico.com>
+" Author: Sebastien Lannez
+" Maintainer:	Sebastien Lannez
 " Last Change:	10, Mar. 2015
+"
 
 " Only do this when not done yet for this buffer
 if exists("b:did_ftplugin") | finish | endif

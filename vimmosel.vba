@@ -28,11 +28,12 @@ VimMosel -- Vim configuration files for the Mosel language
   yvescolombani@fico.com      sebastienlannez@gmail.com
 
 autoload/mosel.vim	[[[1
-34
+35
 " Vim autoload file for the Mosel language
-" Maintainer: Sebastien Lannez <sebastienlannez@fico.com>
-" Last Change: 2013 Sep 12
-"
+" License:     LICENSE.vimmosel.txt
+" Author:      Sebastien Lannez 
+" Maintainer:  Sebastien Lannez
+" Last Change: 12, September 2013
 
 " this file uses line continuations
 let s:cpo_sav = &cpo
@@ -64,11 +65,38 @@ func! Mosel#UpdateForwardDeclaration(line1, line2)
 
 endfunc
 compiler/mosel.vim	[[[1
-26
+53
 " Vim compiler file
+"
+" VimMosel -- Vim configuration files for the Mosel language
+"  version 1.0.0, July 15th, 2015
+"
+"  Copyright (C) 2014-2015 Yves Colombani and Sebastien Lannez
+"
+"  This software is provided 'as-is', without any express or implied
+"  warranty.  In no event will the authors be held liable for any damages
+"  arising from the use of this software.
+"
+"  Permission is granted to anyone to use this software for any purpose,
+"  including commercial applications, and to alter it and redistribute it
+"  freely, subject to the following restrictions:
+"
+"  1. The origin of this software must not be misrepresented; you must not
+"     claim that you wrote the original software. If you use this software
+"     in a product, an acknowledgment in the product documentation would be
+"     appreciated but is not required.
+"  2. Altered source versions must be plainly marked as such, and must not be
+"     misrepresented as being the original software.
+"  3. This notice may not be removed or altered from any source distribution.
+"
+"  Yves Colombani              Sebastien Lannez
+"  yvescolombani@fico.com      sebastienlannez@gmail.com
+"
 " Compiler:	Mosel
+" Author:       Yves Colombani
 " Maintainer:	Yves Colombani
 " Last Change:	8, April 2002
+"
 
 if exists("current_compiler")
   finish
@@ -91,42 +119,17 @@ setlocal errorformat=%.%#:\ %t\-%n\ %.%#\ (%l%\\,%c)\ %.%#\ `%f':\ %m,
 let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
-compiler/moselsolution.vim	[[[1
-24
-" Vim compiler file
-" Compiler:	Mosel
-" Maintainer:	Sebastien Lannez
-" Last Change:	8, April 2002
-
-if exists("current_compiler")
-  finish
-endif
-let current_compiler = "moselsolution"
-
-let s:mosel_cpo_save = &cpo
-set cpo&vim
-
-if exists("*Mosel_setcomp")
- call Mosel_setcomp("solution")
-endif
-
-setlocal errorformat=%.%#:\ %t\-%n\ %.%#\ (%l%\\,%c)\ %.%#\ `%f':\ %m,
-                    \%.%#:\ %t\-%n\ %.%#\ %l\ %.%#\ `%f':\ %m,
-		    \%.%#:\ %t\-%n\ %#:\ %m
-
-let &cpo = s:mosel_cpo_save
-unlet s:mosel_cpo_save
-
 doc/mosel.txt	[[[1
-401
+402
 *mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
-Author: Sebastien Lannez <sebastien.lannez@gmail.com>
+Author: Sebastien Lannez 
 Last Change: September 12, 2013
+License: LICENSE.vimmosel.txt
 
-This plugin is licensed under the terms of the BSD license. Please see
-mosel.vim for the license in its entirety.
-
+This plugin is licensed under the terms of the license defined
+in the file LICENSE.vimmosel.txt and copied in its entirety
+at the beginning of the file mosel.vim.
 
 ==============================================================================
 Mosel                                       *mosel*
@@ -521,11 +524,15 @@ DEC	Symbol	HTML Number	Description
  vim:tw=78:ts=8:ft=help:norl:
 
 ftplugin/mosel.vim	[[[1
-297
+301
 " Vim filetype plugin file
+" 
+" License: LICENSE.vimmosel.txt
 " Language:	Mosel
-" Maintainer:	Sebastien Lannez <sebastienlannez@fico.com>
+" Author: Sebastien Lannez
+" Maintainer:	Sebastien Lannez
 " Last Change:	10, Mar. 2015
+"
 
 " Only do this when not done yet for this buffer
 if exists("b:did_ftplugin") | finish | endif
@@ -820,11 +827,13 @@ endif
 
 " vim: et:ts=2:sw=2:sts=2
 indent/mosel.vim	[[[1
-135
+137
 " Vim indent file
+" License:          LICENSE.vimmosel.txt
 " Language:         Mosel Script
-" Maintainer:       sebastien Lannez <sebastien.lannez@gmail.com>
-" Latest Revision:  2010-01-06
+" Maintainer:       sebastien Lannez
+" Latest Revision:  6, January 2010
+"
 
 if exists("b:did_indent")
   finish
@@ -957,10 +966,11 @@ endfunction
 let &cpo = s:cpo_save
 unlet s:cpo_save
 plugin/mosel.vim	[[[1
-30
+31
 " Vim global plugin file
+" License:      LICENSE.vimmosel.txt
 " Language:	Mosel
-" Maintainer:	Sebastien Lannez <sebastienlannez@fico.com>
+" Maintainer:	Sebastien Lannez
 " Contributor:	Yves Colombani
 " Last Change:	13, September 2013
 
@@ -1047,13 +1057,15 @@ end-model
 ! Command style for Mosel models
 ! vim: et:ts=2:sw=2:sts=2:ft=mosel:foldlevel=1:
 syntax/mosel.vim	[[[1
-304
-as" Vim syntax file
+306
+" Vim syntax file
 " Language: Mosel
-" Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
+" License: LICENSE.vimmosel.txt
+" Maintainer: Sebastien Lannez
 " Version: 1.0
 " Last Change: July 2013
-" Contributors: Yves Colombani <YvesColombani@fico.com>
+" Contributors: Yves Colombani
+"
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded

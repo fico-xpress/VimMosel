@@ -1,6 +1,7 @@
 " Vim global plugin file
+" License:      LICENSE.vimmosel.txt
 " Language:	Mosel
-" Maintainer:	Sebastien Lannez <sebastienlannez@fico.com>
+" Maintainer:	Sebastien Lannez
 " Contributor:	Yves Colombani
 " Last Change:	13, September 2013
 

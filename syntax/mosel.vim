@@ -1,9 +1,11 @@
-as" Vim syntax file
+" Vim syntax file
 " Language: Mosel
-" Current Maintainer: Sebastien Lannez <SebastienLannez@fico.com>
+" License: LICENSE.vimmosel.txt
+" Maintainer: Sebastien Lannez
 " Version: 1.0
 " Last Change: July 2013
-" Contributors: Yves Colombani <YvesColombani@fico.com>
+" Contributors: Yves Colombani
+"
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded

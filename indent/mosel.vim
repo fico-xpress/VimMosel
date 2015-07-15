@@ -1,7 +1,9 @@
 " Vim indent file
+" License:          LICENSE.vimmosel.txt
 " Language:         Mosel Script
-" Maintainer:       sebastien Lannez <sebastien.lannez@gmail.com>
-" Latest Revision:  2010-01-06
+" Maintainer:       sebastien Lannez
+" Latest Revision:  6, January 2010
+"
 
 if exists("b:did_indent")
   finish
