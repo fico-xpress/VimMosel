@@ -1,9 +1,9 @@
 :new 
 :r! git ls-files LICENSE*txt */*mosel* skeletons
 :%s/^\n//g
-:%MkVimball! mosel .
+:%MkVimball! vimmosel .
 :new 
-:new mosel.vba
+:new vimmosel.vba
 :so %
 :new supertab.vmb
 :so %
