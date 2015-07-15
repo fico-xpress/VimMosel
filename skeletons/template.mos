@@ -14,15 +14,15 @@
 
   Examples
   --------
-  Solve the _ebay01 case >
-    mosel mediaplanner CASEID=_ebay01
+  <+command line command examples+>
+    mosel <+model+> <+list of arguments+>
 
   
   (c) 2014 Fair Isaac Corporation
       author: S. Lannez, Feb. 2014
 
 *******************************************************!)
-model mediaplanner
+model mymodel
   version 0.0.1
   options noimplicit
 
@@ -33,22 +33,24 @@ model mediaplanner
     PARAM=0 	
   end-parameters
 
-  declarations
+
+  (! Begin of forward declarations !)
+  public procedure myproc
+  (! End of forward declarations !)
+
+  public declarations
     a: real	  
   end-declarations
 
-  procedure init
-    	  
+  public procedure myproc
+    ;  
   end-procedure
 
-  procedure main
-	  
-  end-procedure
+  !*** Application ***!
 
-  init
-  
-  main
+  ! do something
 
 end-model
 
+! Command style for Mosel models
 ! vim: et:ts=2:sw=2:sts=2:ft=mosel:foldlevel=1:

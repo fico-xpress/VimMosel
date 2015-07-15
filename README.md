@@ -6,7 +6,7 @@ Mosel.
 
 Content
 =======
-* Supertab allows for auto-completion based on currently open buffers
+* Supertab allows for auto-completion based on currently opened buffers
 * Snippets allows for code snippet insertion
 * Vim tools to develop Mosel application
 
@@ -23,6 +23,9 @@ Install Mosel-Vim
 =================
 Simply enter the following command:
 > vim -c 'so mosel.vba' -c 'q'
+
+or load the file in vim and enter the following command:
+> :so %
 
 Install SnipMate
 ================
@@ -46,9 +49,6 @@ F5: Compile model in current buffer
 F6: Execute model in current buffer
 F7: Profile execution of model in current buffer
 F8: List symbols of the module under the cursor
-
-F9: git update
-F10: git commit
 
 ]] -> next procedure/function
 [[ -> previous procedure/function
