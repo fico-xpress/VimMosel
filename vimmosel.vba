@@ -120,7 +120,7 @@ let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
 doc/mosel.txt	[[[1
-402
+407
 *mosel.txt*  Plugin for developing Mosel scripts in Vim.
 
 Author: Sebastien Lannez 
@@ -154,12 +154,17 @@ My .vimrc addendum to properly work with VIM:
 	"
 	" My Mosel configuration
 	"
-	au Bufenter *.mos compiler mosel
+	if !exists("autocommands_mosel")
+		let autocommands_mosel = 1
+		au BufNewFile *.mos	TSkeletonSetup template.mos
+		au Bufenter *.mos 	compiler mosel
+		au Bufenter *.vdl 	set filetype=xml
+	endif
 	let g:xml_syntax_folding = 1
 	" Enable context aware completion
 	let g:SuperTabDefaultCompletionType = "context"
 	" No completion after spaces, comma, minus...
-	let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+']
+	let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+', '>']
 	" Show mosel functions
 	let mosel_functions = 1
 	" Fold using syntax
@@ -524,7 +529,7 @@ DEC	Symbol	HTML Number	Description
  vim:tw=78:ts=8:ft=help:norl:
 
 ftplugin/mosel.vim	[[[1
-301
+355
 " Vim filetype plugin file
 " 
 " License: LICENSE.vimmosel.txt
@@ -554,6 +559,28 @@ set wildignore+=*.bim
 let b:mosel_runpath=expand("%:p:h")
 let b:mosel_version=3.5
 let b:mosel_xpdir=$XPRESSDIR
+
+" Microsoft Visual Studio configuration
+let b:mosel_mvscver="11.0"
+let b:mosel_mvscarch="amd64\\"
+
+" Setup Visual Studio
+if has("gui_win32") && exists("b:mosel_mvscver")
+  let $VCDIR="C:\\Program Files (x86)\\Microsoft Visual Studio ".b:mosel_mvscver."\\VC\\"
+
+  " C Compiler
+  let $PATH=$VCDIR."BIN\\".b:mosel_mvscarch.";".$PATH
+  let $INCLUDE=$VCDIR."include\\;".$INCLUDE
+  let $LIB=$VCDIR."lib\\".b:mosel_mvscarch.";".$LIB
+  let $LIBPATH=$VCDIR."lib\\".b:mosel_mvscarch.";".$LIBPATH
+
+  " Windows SDK
+  " let $PATH=$VCSDK."BIN\\;".$PATH
+  let $INCLUDE="C:\\Program Files (x86)\\Windows Kits\\8.0\\Include\\um\\;".$INCLUDE
+  let $LIB="C:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x64\\;".$LIB
+  " let $LIBPATH=$VCSDK."lib\\;".$LIBPATH
+
+endif
 
 " Add a default status line
 set statusline=
@@ -645,6 +672,22 @@ if !exists("*Mosel_setcomp")
 		endif
 	endfunc
 
+  " Compile then profile a mos file
+	fun! s:mosprof(p)
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+			update
+			if a:p == ""
+        execute "!".g:mosel_cmd." profile " .g:mosel_compopt. " \"" .expand("%:p"). "\" " .g:mosel_runparams 
+      elseif a:p == "3.4"
+        execute "!".g:mosel_cmd." -s -c \"profile ".g:mosel_compopt." '".%."' ".g:mosel_runparams." \""
+			else
+				execute "!cd ".b:mosel_runpath."; mosel -s -c \"profile ".g:mosel_compopt." \"".expand("%:p")."\" ".a:p." \""
+			endif
+		endif
+	endfunc
+
   " Execute all commands in the file
 	fun! s:mostest(p)
 		if &filetype != "mosel"
@@ -669,6 +712,18 @@ if !exists("*Mosel_setcomp")
 			update
 			make
 			cwindow
+		endif
+	endfunc
+
+  " Compile a mos file (+quickfix) into an executable
+	fun! s:moscompexe()
+		if &filetype != "mosel"
+			echo "Not a Mosel file"
+		else
+			update
+			make
+			cwindow
+      execute "!" .g:mosel_cmd. " compile " .g:mosel_compopt. " \"" .expand("%:p"). "\" " .g:mosel_runparams . " -o deploy.exe:" .expand("%:r")
 		endif
 	endfunc
 
@@ -716,7 +771,7 @@ if !exists("*Mosel_setcomp")
 				let n=inputdialog("Compilation options",g:mosel_compopt)
 				if n != ""
 					let g:mosel_compopt=n
-					Mosel_setcomp("")
+					call Mosel_setcomp("")
 				endif
 			elseif a:what == 2
 				let n=inputdialog("Execution Directory",b:mosel_runpath)
@@ -767,6 +822,7 @@ if !exists("*Mosel_setcomp")
 	" Define the menu "Mosel"
 	an <silent> 100.10 &Mosel.&Compile :call <SID>moscomp()<CR><CR>
 	an <silent> 100.20 &Mosel.&Run :call <SID>mosexec("")<CR>
+	an <silent> 100.20 &Mosel.&Profile :call <SID>mosprof("")<CR>
 	an 100.50 &Mosel.-sep1- <Nop>
 	an <silent> 100.55 &Mosel.Compiler\ &Options :call <SID>getopts(1)<CR>
 	an <silent> 100.60 &Mosel.Execution\ &Parameters :call <SID>getopts(0)<CR>
@@ -781,8 +837,9 @@ if !exists("*Mosel_setcomp")
 
 endif
 
-" Add the commands 'Compile', 'Run' and 'Examine'
+" Add the commands 'Compile', 'Run', 'Profile' and 'Examine'
 command! -buffer -narg=? Run call s:mosexec(<q-args>)
+command! -buffer -narg=? Profile call s:mosprof(<q-args>)
 command! -buffer Compile call s:moscomp()
 command! -buffer Examine call s:mosexam()
 
@@ -794,8 +851,8 @@ endif
 let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save
 
-map <F9> :!git update \| tee
-map <F10> :!git commit \| tee
+" map <F9> :!git update \| tee
+" map <F10> :!git commit \| tee
 " map <F9> :!git svn rebase \| tee
 " map <F12> :!git svn dcommit \| tee
 
@@ -803,6 +860,8 @@ map <F5> :call <SID>moscomp()<CR><CR>
 map <F6> :call <SID>mosexec("")<CR>
 map <F7> :call <SID>mosload()<CR>
 map <F8> :call <SID>mosexam()<CR><CR>
+
+map <F9> :call <SID>moscompexe()<CR><CR>
 
 map m<F5> :call <SID>mosmake()<CR>
 map m<F6> :call <SID>mostest()<CR>

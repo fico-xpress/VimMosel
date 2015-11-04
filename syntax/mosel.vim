@@ -39,6 +39,7 @@ syn keyword moselStatement 	with returned
 
 syn keyword moselClass		integer real string text
 syn keyword moselClass		nlctr linctr mpvar 
+syn keyword moselClass 		robustctr uncertain uncertainctr
 syn keyword moselClass		cpctr cpvar logctr
 syn match moselClass display	/\<\u\w*T\>/
 

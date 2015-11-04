@@ -31,12 +31,17 @@ My .vimrc addendum to properly work with VIM:
 	"
 	" My Mosel configuration
 	"
-	au Bufenter *.mos compiler mosel
+	if !exists("autocommands_mosel")
+		let autocommands_mosel = 1
+		au BufNewFile *.mos	TSkeletonSetup template.mos
+		au Bufenter *.mos 	compiler mosel
+		au Bufenter *.vdl 	set filetype=xml
+	endif
 	let g:xml_syntax_folding = 1
 	" Enable context aware completion
 	let g:SuperTabDefaultCompletionType = "context"
 	" No completion after spaces, comma, minus...
-	let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+']
+	let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+', '>']
 	" Show mosel functions
 	let mosel_functions = 1
 	" Fold using syntax
