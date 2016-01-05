@@ -98,7 +98,7 @@ if !exists("*Mosel_setcomp")
   endif
 
   " Make sure to use the right dso
-  let $MOSEL_DSO = "build/mosel/;build/test/;src/main/mosel/;src/test/mosel/;."
+  let $MOSEL_DSO = "target/mosel/;target/test/;src/main/mosel/;src/test/mosel/;."
 
 	" Options for the compiler
 	if !exists("g:mosel_compopt")
