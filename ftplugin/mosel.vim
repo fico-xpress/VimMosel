@@ -340,7 +340,7 @@ unlet s:mosel_cpo_save
 
 map <F5> :call <SID>moscomp()<CR><CR>
 map <F6> :call <SID>mosexec("")<CR>
-map <F7> :call <SID>mosload()<CR>
+map <F7> :call <SID>mosprof("")<CR>
 map <F8> :call <SID>mosexam()<CR><CR>
 
 map <F9> :call <SID>mosdebug("")<CR><CR>

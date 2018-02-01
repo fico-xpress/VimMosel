@@ -59,13 +59,13 @@ My .vimrc addendum to properly work with VIM:
 <F7>  Profile the execution of the model in the current buffer
 <F8>  List the symbols with Mosel examine
 
+<F9>  Run model in the debugger
+
 m<F8> List of public declarations (procedure and function) to QuickFix
 
 ]]    Jump to next procedure or function
 ]]    Jump to previous procedure or function
 2.2 Versioning commands
-<F9> Git update
-<F10> Git commit
 
 <s-space> SnipMate forward expansion
 <c-space> SnipMate backward expansion
