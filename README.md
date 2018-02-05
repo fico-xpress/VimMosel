@@ -2,7 +2,9 @@ Mosel vim plugin
 ================
 
 A compilation of usefull plugins for developing with
-Mosel.
+Mosel. The 'mosel.vba' vimball enables syntax highlighting and folding.
+We also recommend two very usefull packages: SnipMate and Supertab which
+can be used to add code snippet pasting and autocompletion.
 
 Content
 =======

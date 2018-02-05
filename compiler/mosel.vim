@@ -46,7 +46,7 @@ endif
 
 setlocal errorformat=%.%#:\ %t\-%n\ %.%#\ (%l%\\,%c)\ %.%#\ `%f':\ %m,
                     \%.%#:\ %t\-%n\ %.%#\ %l\ %.%#\ `%f':\ %m,
-		    \%.%#:\ %t\-%n\ %#:\ %m
+                    \%.%#:\ %t\-%n\ %#:\ %m
 
 let &cpo = s:mosel_cpo_save
 unlet s:mosel_cpo_save

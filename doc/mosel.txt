@@ -84,10 +84,9 @@ soo <s-space>).
 3. Functions                               *mosel-functions*
 
 3.1 MoselDeclaration
-This routine will extract a list of the signature of all procedure and 
-function that are declared public.
-The list is available in a newly created buffer and automatically yanked to
-the unnamed register.
+This routine will extract a list of the signature of all procedures and 
+functions that are declared public. The list will be copied to the unnamed
+register.
 
 In the buffer containing the Mosel source code: >
 	:MoselDeclaration
@@ -97,7 +96,9 @@ Then just paste with P or :"+gP
 
 3.2 MoselFromAmpl
 This routine will copy the current buffer to a new one, and apply a list of
-rules to convert AMPL syntax to Mosel.
+rules to convert AMPL syntax to Mosel. The conversion is incomplete and will
+not produce a valid AMPL file but can be used as a good starting point when
+converting large models.
 
 In the buffer containing the Mosel source code: >
 	:MoselFromAmpl

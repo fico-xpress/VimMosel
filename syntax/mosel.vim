@@ -3,8 +3,8 @@
 " License: LICENSE.vimmosel.txt
 " Maintainer: Sebastien Lannez
 " Version: 1.0
-" Last Change: July 2013
-" Contributors: Yves Colombani
+" Last Change: February 2018
+" Contributors: Yves Colombani, Sebastien Lannez
 "
 
 " For version 5.x: Clear all syntax items
@@ -17,57 +17,88 @@ endif
 
 syntax case ignore
 
-" List of keyword and operators
-syn keyword moselOperator	and div in mod not or xor sum prod min max
-syn keyword moselOperator	inter union
-syn keyword moselStatement	is_binary is_continuous is_free is_integer
-syn keyword moselStatement	is_partint is_semcont is_semint is_sos1 is_sos2
-syn keyword moselStatement	uses options include
-syn keyword moselStatement	forall while break next
-syn keyword moselStatement	evaluationforward
-syn keyword moselStatement	to from
-syn keyword moselStatement	as
-syn keyword moselStatement	else elif then
-syn keyword moselStatement	array boolean set 
-syn keyword moselStatement	of dynamic range basis
-syn keyword moselStatement	indicator implies
+syn sync lines=250
+" List of operators and modifiers
+syn keyword moselOperator	and div in mod not or sum prod min max
+syn keyword moselOperator	inter union count
+syn keyword moselOperator	is_binary is_continuous is_free is_integer
+syn keyword moselOperator	is_partint is_semcont is_semint is_sos1 is_sos2
 
-syn keyword moselStatement	list imports
-syn keyword moselStatement	contained
-syn keyword moselStatement	version
-syn keyword moselStatement 	with returned
+" List of statements
+syn keyword moselStatement	uses options include imports
+syn keyword moselStatement	as list set range array as counter dynamic
+syn keyword moselStatement	end- do with forall next until while repeat break
+syn keyword moselStatement	case if else elif then
+syn keyword moselStatement	initialisations evaluation from to
+syn keyword moselStatement	initializations linctr
+syn keyword moselStatement	model of package
+syn keyword moselStatement	forward declarations requirements parameters function procedure public  
+syn keyword moselStatement	record return returned
+syn keyword moselStatement	uses version
+syn keyword moselStatement	indicator implies basis
 
-syn keyword moselClass		integer real string text
-syn keyword moselClass		nlctr linctr mpvar 
-syn keyword moselClass 		robustctr uncertain uncertainctr
-syn keyword moselClass		cpctr cpvar logctr
+" List of builtin types
+syn keyword moselClass	mpproblem
+syn keyword moselClass	boolean integer string real date datetime text
+syn keyword moselClass	linctr nlctr robustctr mpvar
+syn keyword moselClass	robustctr uncertain uncertainctr
+syn keyword moselClass	cpctr cpvar logctr
 syn match moselClass display	/\<\u\w*T\>/
 
+" List of builtin constants (case insensitive)
 syn keyword moselConstant	true false
 
-syn keyword moselTodo contained	TODO YCO BUG SLA SH
+" List of builtin constants (case sensitive)
+syntax case match
+syn keyword moselConstant	NAN INFINITY MAX_INT MAX_REAL
+syn keyword moselConstant	CT_BIN CT_CONT CT_EQ CT_FREE CT_GEQ CT_INT 
+syn keyword moselConstant	CT_LEQ CT_PINT CT_SEC CT_SINT CT_SOS1 CT_SOS2 
+syn keyword moselConstant	CT_UNB EP_MAX EP_MIN EP_MPS EP_STRIP
+syn keyword moselConstant	F_APPEND F_BINARY F_DELCLOSE F_ERROR F_INPUT
+syn keyword moselConstant	F_IOERR F_LINBUF F_OUTPUT F_SILENT F_TEXT
+syn keyword moselConstant	IOERR_IN IOERR_OUT M_E M_PI
+ 
+syn keyword moselTodo contained	TODO BUG
 
 " In case someone wants to see the predefined functions/procedures
 if exists("mosel_functions")
- syn keyword moselFunction	setparam getparam create fopen fclose
- syn keyword moselFunction	write writeln read readln exists fselect
- syn keyword moselFunction	getfid getsize getfirst getlast substr strfmt
- syn keyword moselFunction	textfmt
- syn keyword moselFunction	maxlist minlist sqrt sin cos 
- syn keyword moselFunction	arctan arccos arcsin
- syn keyword moselFunction	abs
+ syn keyword moselFunction	_ asproc assert bitflip bitneg
+ syn keyword moselFunction	bitset bitshift bittest bitval create
+ syn keyword moselFunction	currentdate currenttime timestamp cuthead cuttail gettail
+ syn keyword moselFunction	delcell exists exit exp getfirst gethead getlast getreverse getsize
+ syn keyword moselFunction	finalize finalise findfirst findlast getparam isdynamic setparam
+ syn keyword moselFunction	splithead splittail unpublish publish
 
- syn keyword moselFunction	isodd bittest random log finalize finalise
- syn keyword moselFunction	getsol getobjval getrcost getdual getslack
- syn keyword moselFunction	getact ishidden sethidden gettype settype
- syn keyword moselFunction	getcoeff setcoeff getvars exit fflush
- syn keyword moselFunction	makesos1 makesos2 iseof exportprob
- syn keyword moselFunction	fskipline setrandseed
- syn keyword moselFunction	ceil round
+" math 
+ syn keyword moselFunction	floor round ceil sqrt abs arctan arcsin arccos sin cos
 
+" file access
+ syn keyword moselFunction	fflush fopen fclose fselect fskipline fwrite fwrite_ 
+ syn keyword moselFunction	fwriteln fwriteln_ getfname iseof getfid getreadcnt
+ syn keyword moselFunction	read readln
+ syn keyword moselFunction	write write_ writeln writeln_
+ syn keyword moselFunction	random 
+
+" optimizer
+ syn keyword moselFunction	getact getcoeff getcoeffs exportprob
+ syn keyword moselFunction	getdual getslack getsol getobjval getrcost
+ syn keyword moselFunction	gettype getvars isfinite setcoeff sethidden
+ syn keyword moselFunction	settype
  syn keyword moselFunction	minimize minimise maximize maximise
- syn keyword insightFunction	insightminimize insightminimise insightmaximize insightmaximise
- syn keyword insightFunction    insightgetmode insightpopulate
+ syn keyword moselFunction	ishidden isinf isnan isodd ln log makesos1 
+ syn keyword moselFunction	makesos2 maxlist minlist newmuid publish 
+
+" io
+ syn keyword moselFunction	reset reverse
+ syn keyword moselFunction	setioerr setmatherr setname  
+ syn keyword moselFunction	setrandseed
+
+" Text manipulation
+ syn keyword moselFunction	strfmt substr textfmt
+
+ " mminsight
+ syn keyword moselFunction	insightminimize insightminimise insightmaximize insightmaximise
+ syn keyword moselFunction	insightgetmode insightpopulate
 
  " mmsystem
  syn keyword moselFunction	gettime
@@ -86,12 +117,12 @@ if exists("mosel_functions")
  syn keyword moselConstant	F_OUTPUT F_INPUT F_ERROR EVENT_END
 
  " mmodbc
- syn keyword moselParam 	sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
- syn keyword moselParam 	sqlndxcol sqlrowcnt sqlrowxfr sqlsuccess sqlverbose
+ syn keyword moselParam	sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
+ syn keyword moselParam	sqlndxcol sqlrowcnt sqlrowxfr sqlsuccess sqlverbose
 
- syn keyword moselFunction 	SQLconnect SQLdisconnect
- syn keyword moselFunction 	SQLexecute SQLgetiparam SQLgetrparam SQLgetsparam SQLparam 
- syn keyword moselFunction 	SQLreadinteger SQLreadreal SQLreadstring SQLupdate 
+ syn keyword moselFunction	SQLconnect SQLdisconnect
+ syn keyword moselFunction	SQLexecute SQLgetiparam SQLgetrparam SQLgetsparam SQLparam 
+ syn keyword moselFunction	SQLreadinteger SQLreadreal SQLreadstring SQLupdate 
 endif
 
 " (De)Select IVE style
@@ -120,10 +151,9 @@ endif
 
   "right strings
   syn match   moselStringEscape	contained '\\.'
-  syn region  moselString matchgroup=moselString start=+'+ end=+'+ 
-	\ oneline
-  syn region  moselString matchgroup=moselString start=+"+ end=+"+ 
-	\ oneline contains=moselStringEscape
+  syn region  moselString matchgroup=moselString start=+'+ end=+'+ oneline
+  syn region  moselString matchgroup=moselString start=+"+ end=+"+ oneline contains=moselStringEscape
+  syn region  moselString matchgroup=moselString start=+`+ end=+`+
   " To see the start and end of strings:
 " syn region  moselString matchgroup=moselStringError start=+'+ end=+'+ oneline
 
@@ -140,6 +170,9 @@ if exists("mosel_no_tabs")
   syn match moselShowTab "\t"
 endif
 
+" Format of annotations
+syn region moselAnnot	start="(!@"  end="!)" contains=moselTodo fold
+syn region moselAnnot	start="!@"  end="$" contains=moselTodo fold
 
 " List of blocks
 syn region moselModel matchgroup=moselStatement 
@@ -176,7 +209,7 @@ syn region moselIniti matchgroup=moselStatement
 
 syn region moselRequire matchgroup=moselStatement
       \ start=/^\s*\<requirements\>/ end=/^\s*\<end-requirements\>/ 
-      \ containedin=@mRoot transparent fold
+      \ containedin=@mRoot contains=moselStatement,moselComment,moselFunction,moselClass transparent fold
 
 syn region moselRecord matchgroup=moselStatement
       \ start=/\<record\>/ end=/\<end-record\>/ 
@@ -219,20 +252,20 @@ syn region moselFold
 
 " Format of comments
 syn region moselComment
-      \ start="(!" end="!)" contains=moselTodo 
+      \ start=/(![^@]/ end=/!)/ contains=moselTodo 
       \ containedin=@mRoot fold
 
 syn region moselComment
-      \ start="!" end="$" contains=moselTodo
+      \ start=/![^@]/ end=/$/ contains=moselTodo
       \ containedin=@mRoot fold
 
 syn region moselHeader
-      \ start="\%^(!" end="!)" contains=moselTodo 
+      \ start=/\%^(!/ end=/!)/ contains=moselTodo 
       \ fold
 
 syn cluster mComment add=moselComment,moselHeader
 
-syn match moselIfOneLine ":=\s*if\s*(.*)"
+syn match moselIfOneLine ":=\s*if\s*(.*,.*,.*)"
 
 function! MoselFoldText()
   let nl = v:foldend - v:foldstart + 1
@@ -270,6 +303,7 @@ if version >= 508 || !exists("did_mosel_syn_inits")
   HiLink moselHeader		Comment
 
   if !exists("mosel_only_comments")
+    HiLink moselAnnot		Annotation
     HiLink moselConstant	Constant
     HiLink moselNumber		Constant
     HiLink moselString		String
@@ -279,20 +313,18 @@ if version >= 508 || !exists("did_mosel_syn_inits")
     HiLink moselException	Exception
     HiLink moselFunction	Function
     HiLink moselOperator	Operator
-    
+      
     HiLink moselStatement	Statement
     HiLink moselIf     		Statement
     HiLink moselIfOneLine	Statement
     HiLink moselCase		Statement
-
+  
     HiLink moselSymbolOperator	Operator
     HiLink moselSymbolOpStat	Statement
     HiLink moselTodo		Todo
     HiLink moselError		Error
     HiLink moselShowTab		Error
-
     HiLink moselClass		Statement
-    HiLink insightFunction	Function
   endif
 
   delcommand HiLink

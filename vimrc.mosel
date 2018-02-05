@@ -1,0 +1,40 @@
+" This is an example of how to configure the VimMosel. This configuration
+" should be included in ~/_vimrc (windows) or ~/.vimrc (unix).
+"
+"
+
+" Treat VDL files as XML files and automatically load the VimMosel plugin when
+" opening a .mos file. We also enable folding for XML file.
+if !exists("autocommands_mosel")
+	let autocommands_mosel = 1
+	" au BufNewFile *.mos	TSkeletonSetup template.mos
+	au Bufenter *.mos 	compiler mosel
+	au Bufenter *.vdl 	set filetype=xml
+endif
+let g:xml_syntax_folding = 1
+
+" Let's enable undo folder relative to current file. I prefer to have an undo
+" folder rather than using local files.
+if v:version >= 703
+	set undofile
+	set undodir=.vimundo
+	set norelativenumber
+endif
+
+" Toggle line numbering	 with <F2>
+" To disable :set nornu
+nnoremap <silent> <F2> :execute 'set ' . (&relativenumber ? 'number' : 'relativenumber')<CR>
+
+" Enable context aware completion (file, object attributes, ...)
+" let g:SuperTabDefaultCompletionType = "context"
+" No completion after spaces, comma, minus...
+let g:SuperTabNoCompleteAfter = [',', '\s', '-', '+', '>']
+
+" Show mosel functions
+let mosel_functions = 1
+" Use default style and not the Workbench.
+let mosel_style = 2 
+
+" Fold using syntax
+set foldmethod=syntax
+
