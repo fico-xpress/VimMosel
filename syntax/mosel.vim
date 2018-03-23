@@ -27,22 +27,23 @@ syn keyword moselOperator	is_partint is_semcont is_semint is_sos1 is_sos2
 " List of statements
 syn keyword moselStatement	uses options include imports
 syn keyword moselStatement	as list set range array as counter dynamic
-syn keyword moselStatement	end- do with forall next until while repeat break
-syn keyword moselStatement	case if else elif then
+syn keyword moselStatement	else elif then with forall next until while 
+syn keyword moselStatement	repeat break
+syn keyword moselStatement	case
 syn keyword moselStatement	initialisations evaluation from to
 syn keyword moselStatement	initializations linctr
-syn keyword moselStatement	model of package
+syn keyword moselStatement	of package
 syn keyword moselStatement	forward declarations requirements parameters function procedure public  
 syn keyword moselStatement	record return returned
 syn keyword moselStatement	uses version
 syn keyword moselStatement	indicator implies basis
 
 " List of builtin types
-syn keyword moselClass	mpproblem
-syn keyword moselClass	boolean integer string real date datetime text
-syn keyword moselClass	linctr nlctr robustctr mpvar
-syn keyword moselClass	robustctr uncertain uncertainctr
-syn keyword moselClass	cpctr cpvar logctr
+syn keyword moselClass		mpproblem
+syn keyword moselClass		boolean integer string real date datetime text
+syn keyword moselClass		linctr nlctr robustctr mpvar
+syn keyword moselClass		robustctr uncertain uncertainctr
+syn keyword moselClass		cpctr cpvar logctr
 syn match moselClass display	/\<\u\w*T\>/
 
 " List of builtin constants (case insensitive)
@@ -87,6 +88,7 @@ if exists("mosel_functions")
  syn keyword moselFunction	minimize minimise maximize maximise
  syn keyword moselFunction	ishidden isinf isnan isodd ln log makesos1 
  syn keyword moselFunction	makesos2 maxlist minlist newmuid publish 
+ syn keyword moselFunction	setinitval
 
 " io
  syn keyword moselFunction	reset reverse
@@ -117,8 +119,8 @@ if exists("mosel_functions")
  syn keyword moselConstant	F_OUTPUT F_INPUT F_ERROR EVENT_END
 
  " mmodbc
- syn keyword moselParam	sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
- syn keyword moselParam	sqlndxcol sqlrowcnt sqlrowxfr sqlsuccess sqlverbose
+ syn keyword moselParam		sqlbufsize sqlcolsize sqlconnection sqldebug sqldm sqlextn 
+ syn keyword moselParam		sqlndxcol sqlrowcnt sqlrowxfr sqlsuccess sqlverbose
 
  syn keyword moselFunction	SQLconnect SQLdisconnect
  syn keyword moselFunction	SQLexecute SQLgetiparam SQLgetrparam SQLgetsparam SQLparam 
@@ -145,17 +147,17 @@ if exists("mosel_symbol_operator")
 endif
 
 " String
-  "wrong strings
-"  syn region  moselStringError matchgroup=moselStringError start=+'+ end=+'+ end=+$+
-"  syn region  moselStringError matchgroup=moselStringError start=+"+ end=+"+ end=+$+ contains=moselStringEscape
+"wrong strings
+"syn region  moselStringError matchgroup=moselStringError start=+'+ end=+'+ end=+$+
+"syn region  moselStringError matchgroup=moselStringError start=+"+ end=+"+ end=+$+ contains=moselStringEscape
 
-  "right strings
-  syn match   moselStringEscape	contained '\\.'
-  syn region  moselString matchgroup=moselString start=+'+ end=+'+ oneline
-  syn region  moselString matchgroup=moselString start=+"+ end=+"+ oneline contains=moselStringEscape
-  syn region  moselString matchgroup=moselString start=+`+ end=+`+
-  " To see the start and end of strings:
-" syn region  moselString matchgroup=moselStringError start=+'+ end=+'+ oneline
+"right strings
+syn match   moselStringEscape	contained '\\.'
+syn region  moselString matchgroup=moselString start=+'+ end=+'+ oneline
+syn region  moselString matchgroup=moselString start=+"+ end=+"+ oneline contains=moselStringEscape
+syn region  moselString matchgroup=moselString start=+`+ end=+`+
+"To see the start and end of strings:
+"syn region  moselString matchgroup=moselStringError start=+'+ end=+'+ oneline
 
 
 " Format for identifiers and numbers
@@ -171,13 +173,13 @@ if exists("mosel_no_tabs")
 endif
 
 " Format of annotations
-syn region moselAnnot	start="(!@"  end="!)" contains=moselTodo fold
-syn region moselAnnot	start="!@"  end="$" contains=moselTodo fold
+syn region moselAnnot matchgroup=moselAnCom start="(!@[^\ ]*"  end="!)" contains=moselTodo fold
+syn region moselAnnot matchgroup=moselAnCom start="!@[^\ ]*"  end="$" contains=moselTodo fold
 
 " List of blocks
 syn region moselModel matchgroup=moselStatement 
-      \ start=/^\s*model\>/ 
-      \ end=/^\s*end-model\>/ 
+      \ start=/^\s*\<model\>/ 
+      \ end=/^\s*\<end-model\>/ 
       \ transparent fold 
 
 syn region moselPackage matchgroup=moselStatement 
@@ -250,11 +252,12 @@ syn region moselFold
       \ start="(! @{" end="@} !)"                 
       \ transparent fold
 
-" Format of comments
+" Format of block comments
 syn region moselComment
       \ start=/(![^@]/ end=/!)/ contains=moselTodo 
       \ containedin=@mRoot fold
 
+" Format of one line comment
 syn region moselComment
       \ start=/![^@]/ end=/$/ contains=moselTodo
       \ containedin=@mRoot fold
@@ -265,7 +268,7 @@ syn region moselHeader
 
 syn cluster mComment add=moselComment,moselHeader
 
-syn match moselIfOneLine ":=\s*if\s*(.*,.*,.*)"
+"syn match moselIfOneLine ":=\s*if\s*(.*,.*,.*)"
 
 function! MoselFoldText()
   let nl = v:foldend - v:foldstart + 1
@@ -304,6 +307,7 @@ if version >= 508 || !exists("did_mosel_syn_inits")
 
   if !exists("mosel_only_comments")
     HiLink moselAnnot		Annotation
+    HiLink moselAnnotF		Annotation
     HiLink moselConstant	Constant
     HiLink moselNumber		Constant
     HiLink moselString		String

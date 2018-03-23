@@ -2,7 +2,7 @@
 " 
 " License: LICENSE.vimmosel.txt
 " Language:	Mosel
-" Author: Sebastien Lannez
+" Author: Yves Colombani
 " Maintainer:  Sebastien Lannez
 " Last Change:  01, Feb. 2018
 "
@@ -276,17 +276,25 @@ fun! s:moscols(sty)
  else
   set syn=ON
  endif
- if a:sty==0
-  if exists("mosel_symbol_operator")
-   call Mosel_symbopt(0)
+ if a:sty==0 
+  " Workbench
+  if !exists("mosel_symbol_operator")
+   call Mosel_symbopt(1)
   endif
-  hi constant gui=none guifg=black
-  hi statement gui=bold guifg=black
-  hi annotation gui=bold guifg=darkgray
+  hi statement gui=none guifg=blue
+  hi moselOperator gui=none guifg=blue
+  hi moselFunction gui=none guifg=blue
   hi comment gui=none guifg=darkgreen
-  hi operator gui=bold guifg=black
-  hi string gui=none guifg=darkred
+  hi moselComment gui=none guifg=darkgreen
+  hi moselString gui=none guifg=darkred
+  hi annotation gui=bold guifg=darkgray
+  hi moselAnnot gui=none guifg=darkgray
+  hi moselAnCom gui=bold guifg=darkgray
+  hi constant gui=none guifg=red
+  hi operator gui=none guifg=red
+
  elseif a:sty==1
+  " IVE
   if !exists("mosel_symbol_operator")
    call Mosel_symbopt(1)
   endif
@@ -297,6 +305,7 @@ fun! s:moscols(sty)
   hi constant gui=none guifg=red
   hi operator gui=none guifg=red
  elseif a:sty==2
+  " default
   if !exists("mosel_symbol_operator")
    call Mosel_symbopt(1)
   endif
