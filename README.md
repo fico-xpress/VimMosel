@@ -16,13 +16,15 @@ Source:
 * Supertab: http://www.vim.org/scripts/script.php?script_id=1643
 * snipMate: http://www.vim.org/scripts/script.php?script_id=2540
 
-Install All
-===========
-Open Vim and simply source the file makefile.vim:
+Building the VIM ball
+=====================
+If you want to build the VimMosel vimball after you have done some modifications then simply source the VIM script makefile.vim. It will package up all files into vimmosel.vba and supertab.vmb. You will then have to manually save the vimmosel.vba and supertab.vmb files:
 > so makefile.vim
 
 Install Mosel-Vim
 =================
+If you simply want to install the VimMosel plugins then you just have to download the vimmosel.vba file and then issue any of the following commands.
+
 Simply enter the following command:
 > vim -c 'so mosel.vba' -c 'q'
 
