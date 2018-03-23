@@ -43,8 +43,8 @@ Simply enter the following command:
 
 Remove plugins
 ==============
-> vim -v 'RmVimball supertab.vmb' -c 'q'
-> vim -v 'RmVimball snipmate.vba' -c 'q'
+> vim -v 'RmVimball supertab.vmb' -c 'q' \
+> vim -v 'RmVimball snipmate.vba' -c 'q' \
 > vim -v 'RmVimball mosel.vba' -c 'q'
 
 Vim usefull command
