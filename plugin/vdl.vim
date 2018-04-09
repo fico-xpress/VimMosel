@@ -10,3 +10,7 @@ augroup END
 
 " Enable automatic file type detection
 filetype plugin on
+
+" Enable folding of XML files
+let g:xml_syntax_folding = 1
+

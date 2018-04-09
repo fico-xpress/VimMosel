@@ -13,6 +13,7 @@ let g:loaded_mosel_plugin = 'vim7.3_v6'
 " Define the file type "mosel"
 augroup filetype
  au! BufRead,BufNewFile *.mos set filetype=mosel
+ au BufEnter *.mos compiler mosel
 augroup END
 
 " Enable automatic file type detection

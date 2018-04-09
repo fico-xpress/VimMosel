@@ -360,7 +360,9 @@ map <F7> :call <SID>mosprof("")<CR>
 map <F8> :call <SID>mosexam()<CR><CR>
 
 map <F9> :call <SID>mosdebug("")<CR><CR>
+map <F10> :call <SID>moscompexe()<CR><CR>
 
+" Advanced command used for Xpress development
 map m<F5> :call <SID>mosmake()<CR>
 map m<F6> :call <SID>mostest()<CR>
 map m<F8> :vimgrep /^\s*\(public procedure\\|public function\)/ %<CR>:copen<CR>
