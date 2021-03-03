@@ -1,4 +1,4 @@
 REGEDIT4
 [HKEY_CURRENT_USER\Software\Classes\Folder\shell\Open Vim here\command]
-@="\"C:\\Program Files (x86)\\Vim\\vim80\\gvim.exe\" -c \"cd %1\""
+@="\"C:\\apps\\Vim\\vim81\\gvim.exe\" -c \"cd %1\""
 

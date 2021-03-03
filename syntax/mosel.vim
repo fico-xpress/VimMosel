@@ -27,9 +27,8 @@ syn keyword moselOperator	is_partint is_semcont is_semint is_sos1 is_sos2
 " List of statements
 syn keyword moselStatement	uses options include imports
 syn keyword moselStatement	as list set range array as counter dynamic
-syn keyword moselStatement	else elif then with forall next until while 
-syn keyword moselStatement	repeat break
-syn keyword moselStatement	case
+syn keyword moselStatement	if then else elif forall repeat until while do end- case of
+syn keyword moselStatement	break next with
 syn keyword moselStatement	initialisations evaluation from to
 syn keyword moselStatement	initializations linctr
 syn keyword moselStatement	of package
@@ -231,23 +230,27 @@ syn region moselFunc matchgroup=moselStatement
 
 syn cluster mMethod add=moselProc,moselFunc
 
-syn region moselDo matchgroup=moselStatement
-      \ start=/\<do\>/ end=/\<end-do\>/ 
-      \ containedin=@mRoot transparent fold
-
 syn region moselIf matchgroup=moselStatement
       \ start=/\<if\>/ end=/\<end-if\>/
-      \ containedin=@mRoot transparent fold
+      \ contained transparent fold
 
 syn region moselCase matchgroup=moselStatement
       \ start=/\<case\>/ end=/\<end-case\>/
-      \ containedin=@mRoot transparent fold
+      \ contained transparent fold
 
 syn region moselRepeat matchgroup=moselStatement
       \ start=/\<repeat\>/ end=/\<until\>/ 
       \ contained transparent fold
 
-" Enable manual fodling
+syn region moselWith matchgroup=moselStatement
+      \ start=/\<with\>/ end=/\<end-do\>/ 
+      \ contained transparent fold
+
+syn region moselDo matchgroup=moselStatement
+      \ start=/\<do\>/ end=/\<end-do\>/ 
+      \ contained transparent fold
+
+" Enable manual folding
 syn region moselFold
       \ start="(! @{" end="@} !)"                 
       \ transparent fold
